@@ -1,0 +1,6 @@
+{
+  "errors": {
+    "userExists": "User already exists",
+    "userCreated": "User created"
+  }
+}

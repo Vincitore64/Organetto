@@ -1,0 +1,1 @@
+export { ProvidedService } from './ProvidedService'
