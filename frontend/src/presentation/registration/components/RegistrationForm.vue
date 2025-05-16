@@ -14,9 +14,10 @@
       <a-form-item>
         <a-checkbox v-model:checked="form.agree">
           {{ t('registration.page.agreeText.before') }}
-          <a href="#" target="_blank">{{ t('registration.page.agreeText.middle') }}</a> &amp; <a href="#"
-            target="_blank">{{
-              t('registration.page.agreeText.policy') }}</a>.
+          <a href="#" target="_blank">{{ t('registration.page.agreeText.terms') }}</a>
+          {{ t('registration.page.agreeText.middle') }}
+          <a href="#" target="_blank">{{
+            t('registration.page.agreeText.policy') }}</a>.
         </a-checkbox>
       </a-form-item>
 
