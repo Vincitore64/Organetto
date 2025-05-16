@@ -26,6 +26,10 @@ import RegistrationForm from '@/presentation/registration/components/Registratio
   background: linear-gradient(135deg, #4b33c6, #fbe8c9);
 }
 
+.registration-page__form {
+  width: 390px;
+}
+
 @media (max-width: 768px) {
   .registration-page__wrapper {
     grid-template-columns: 1fr;

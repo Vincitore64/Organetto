@@ -1,0 +1,28 @@
+{
+  "errors": {
+    "userExists": "Пользователь уже существует",
+    "userCreated": "Пользователь создан"
+  },
+  "page": {
+    "title": "Регистрация",
+    "emailLabel": "Электронная почта",
+    "emailPlaceholder": "you@example.com",
+    "updatesText": {
+      "before": "Organetto может присылать мне обновления. Смотрите",
+      "link": "Политику конфиденциальности"
+    },
+    "agreeText": {
+      "before": "Я принимаю",
+      "terms": "Условия использования",
+      "middle": "и",
+      "policy": "Политику конфиденциальности"
+    },
+    "continueButton": "Продолжить",
+    "or": "ИЛИ",
+    "continueWith": {
+      "github": "Продолжить через GitHub",
+      "google": "Продолжить через Google",
+      "microsoft": "Продолжить через Microsoft"
+    }
+  }
+}

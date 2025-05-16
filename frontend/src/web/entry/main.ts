@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { createApp } from 'vue'
 
 import App from '@/web/entry/components/App.vue'

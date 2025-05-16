@@ -1,47 +1,49 @@
 <template>
   <main class="registration-form-wrapper">
-    <h2>Sign up</h2>
+    <h2>{{ t('registration.page.title') }}</h2>
     <a-form :model="form" layout="vertical" @submit.prevent="onSubmit">
       <a-form-item label="Email" name="email">
         <a-input v-model:value="form.email" placeholder="you@example.com" />
       </a-form-item>
 
       <p class="note">
-        Organetto may send me updates.&nbsp;
-        <a href="#" target="_blank">Privacy Policy</a>.
+        {{ t('registration.page.updatesText.before') }}&nbsp;
+        <a href="#" target="_blank">{{ t('registration.page.updatesText.link') }}</a>.
       </p>
 
       <a-form-item>
         <a-checkbox v-model:checked="form.agree">
-          I agree to the <a href="#" target="_blank">Terms of Service</a> &amp; <a href="#" target="_blank">Privacy
-            Policy</a>.
+          {{ t('registration.page.agreeText.before') }}
+          <a href="#" target="_blank">{{ t('registration.page.agreeText.middle') }}</a> &amp; <a href="#"
+            target="_blank">{{
+              t('registration.page.agreeText.policy') }}</a>.
         </a-checkbox>
       </a-form-item>
 
       <a-form-item>
         <a-button type="primary" block :disabled="!form.email || !form.agree" html-type="submit">
-          Continue
+          {{ t('registration.page.continueButton') }}
         </a-button>
       </a-form-item>
 
       <div class="or-separator">
-        <span>OR</span>
+        <span>{{ t('registration.page.or') }}</span>
       </div>
 
       <div class="social-buttons">
         <a-button block :icon="h(GithubOutlined)" class="social-btn">
           <span class="social-buttons__text">
-            Continue with GitHub
+            {{ t('registration.page.continueWith.github') }}
           </span>
         </a-button>
         <a-button block :icon="h(GoogleOutlined)" class="social-btn">
           <span class="social-buttons__text">
-            Continue with Google
+            {{ t('registration.page.continueWith.google') }}
           </span>
         </a-button>
         <a-button block :icon="h(WindowsOutlined)" class="social-btn">
           <span class="social-buttons__text">
-            Continue with Microsoft
+            {{ t('registration.page.continueWith.microsoft') }}
           </span>
         </a-button>
       </div>
@@ -53,6 +55,9 @@
 import { reactive, h } from 'vue'
 import { Form as AForm, Input as AInput, Button as AButton, Checkbox as ACheckbox } from 'ant-design-vue'
 import { GithubOutlined, WindowsOutlined, GoogleOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const form = reactive({
   email: '',
@@ -125,7 +130,7 @@ function onSubmit() {
   justify-content: center;
 }
 
-.social-btn ::v-deep .anticon {
+.social-btn :deep() {
   margin-right: 0.5rem;
 }
 </style>

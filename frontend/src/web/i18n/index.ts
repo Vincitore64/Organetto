@@ -1,12 +1,15 @@
 import { createI18n } from 'vue-i18n'
-import registration from './en/registration/index.json'
+import enRegistration from './en/registration/index.json'
+import ruRegistration from './ru/registration.json'
 
 const messages = {
-  en: { registration },
+  en: { registration: enRegistration },
+  ru: { registration: ruRegistration },
 }
 
 export function createLocalization() {
   const i18n = createI18n({
+    legacy: false,
     locale: 'en',
     fallbackLocale: 'en',
     messages,
