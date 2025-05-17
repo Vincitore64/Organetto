@@ -5,6 +5,9 @@
       <a-form-item label="Email" name="email">
         <a-input v-model:value="form.email" placeholder="you@example.com" />
       </a-form-item>
+      <a-form-item :label="t('registration.page.passwordLabel')" name="password">
+        <a-input-password v-model:value="form.password" :placeholder="t('registration.page.passwordPlaceholder')" />
+      </a-form-item>
 
       <p class="note">
         {{ t('registration.page.updatesText.before') }}&nbsp;
@@ -22,7 +25,7 @@
       </a-form-item>
 
       <a-form-item>
-        <a-button type="primary" block :disabled="!form.email || !form.agree" html-type="submit">
+        <a-button type="primary" block :disabled="!form.email || !form.password || !form.agree" html-type="submit">
           {{ t('registration.page.continueButton') }}
         </a-button>
       </a-form-item>
@@ -62,6 +65,7 @@ const { t } = useI18n()
 
 const form = reactive({
   email: '',
+  password: '',
   agree: false
 })
 

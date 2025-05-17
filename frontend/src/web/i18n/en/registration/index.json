@@ -7,6 +7,8 @@
     "title": "Sign up",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password",
     "updatesText": {
       "before": "Organetto may send me updates. See",
       "link": "Privacy Policy"

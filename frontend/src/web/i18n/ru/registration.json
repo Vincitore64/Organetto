@@ -7,6 +7,8 @@
     "title": "Регистрация",
     "emailLabel": "Электронная почта",
     "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Пароль",
     "updatesText": {
       "before": "Organetto может присылать мне обновления. Смотрите",
       "link": "Политику конфиденциальности"
