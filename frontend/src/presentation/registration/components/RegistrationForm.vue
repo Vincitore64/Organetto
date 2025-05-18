@@ -1,12 +1,18 @@
 <template>
   <main class="registration-form-wrapper">
     <h2>{{ t('registration.page.title') }}</h2>
-    <a-form :model="form" layout="vertical" @submit.prevent="onSubmit">
-      <a-form-item label="Email" name="email">
-        <a-input v-model:value="form.email" placeholder="you@example.com" />
+    <a-form layout="vertical">
+      <a-form-item label="Email" name="email" v-bind="validateInfos.email" :rules="rules.email">
+        <a-input v-model:value="formState.email" placeholder="you@example.com" />
       </a-form-item>
-      <a-form-item :label="t('registration.page.passwordLabel')" name="password">
-        <a-input-password v-model:value="form.password" :placeholder="t('registration.page.passwordPlaceholder')" />
+      <a-form-item :label="t('registration.page.passwordLabel')" name="password" v-bind="validateInfos.password"
+        :rules="rules.password">
+        <a-input-password v-model:value="formState.password"
+          :placeholder="t('registration.page.passwordPlaceholder')" />
+      </a-form-item>
+      <a-form-item :label="t('registration.page.confirmLabel')" name="confirm" v-bind="validateInfos.confirm"
+        :rules="rules.confirm">
+        <a-input-password v-model:value="formState.confirm" :placeholder="t('registration.page.confirmPlaceholder')" />
       </a-form-item>
 
       <p class="note">
@@ -14,8 +20,8 @@
         <a href="#" target="_blank">{{ t('registration.page.updatesText.link') }}</a>.
       </p>
 
-      <a-form-item>
-        <a-checkbox v-model:checked="form.agree">
+      <a-form-item v-bind="validateInfos.agree" :rules="rules.agree">
+        <a-checkbox v-model:checked="formState.agree">
           {{ t('registration.page.agreeText.before') }}
           <a href="#" target="_blank">{{ t('registration.page.agreeText.terms') }}</a>
           {{ t('registration.page.agreeText.middle') }}
@@ -25,7 +31,8 @@
       </a-form-item>
 
       <a-form-item>
-        <a-button type="primary" block :disabled="!form.email || !form.password || !form.agree" html-type="submit">
+        <a-button type="primary" block :disabled="!formState.email || !formState.password || !formState.agree"
+          html-type="submit" @click="onSubmit">
           {{ t('registration.page.continueButton') }}
         </a-button>
       </a-form-item>
@@ -60,18 +67,61 @@ import { reactive, h } from 'vue'
 import { Form as AForm, Input as AInput, Button as AButton, Checkbox as ACheckbox } from 'ant-design-vue'
 import { GithubOutlined, WindowsOutlined, GoogleOutlined } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
+import type { Rule } from 'ant-design-vue/lib/form/interface'
 
 const { t } = useI18n()
 
-const form = reactive({
+const formState = reactive({
   email: '',
   password: '',
+  confirm: '',
   agree: false
 })
 
-function onSubmit() {
+const rules: Record<string, Rule[]> = reactive({
+  email: [
+    { required: true, message: t('registration.validation.emailRequired'), trigger: 'blur' },
+    { type: 'email', message: t('registration.validation.emailInvalid'), trigger: ['blur', 'change'] }
+  ],
+  password: [
+    { required: true, message: t('registration.validation.passwordRequired'), trigger: 'blur' },
+    { min: 6, message: t('registration.validation.passwordMin'), trigger: 'blur' }
+  ],
+  confirm: [
+    { required: true, message: t('registration.validation.confirmRequired'), trigger: 'blur' },
+    { validator: validateConfirm, trigger: 'blur' }
+  ],
+  agree: [
+    {
+      validator: validateAgree,
+      trigger: 'change'
+    }
+  ]
+})
+
+function validateAgree(_: unknown, value: boolean) {
+  if (value) {
+    return Promise.resolve()
+  } else {
+    return Promise.reject(new Error(t('registration.validation.agreeRequired')))
+  }
+}
+
+function validateConfirm(_: unknown, value: string) { // callback: (error?: string) => void
+  // debugger
+  if (value !== formState.password) {
+    return Promise.reject(new Error(t('registration.validation.passwordMismatch')))
+  }
+  return Promise.resolve()
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { resetFields, validate, validateInfos } = AForm.useForm(formState, rules, { immediate: false, validateOnRuleChange: true })
+
+async function onSubmit() {
+  await validate()
   // TODO: hook into your auth service
-  console.log('register with', form)
+  console.log('register with', formState)
 }
 </script>
 
