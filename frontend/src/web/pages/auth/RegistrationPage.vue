@@ -8,8 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import SidebarBanner from '@/presentation/registration/components/SidebarBanner.vue'
-import RegistrationForm from '@/presentation/registration/components/RegistrationForm.vue'
+import { SidebarBanner, RegistrationForm } from '@/presentation'
 </script>
 
 <style scoped>
