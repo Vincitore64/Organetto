@@ -1,16 +1,26 @@
 ﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Organetto.Core.Authentication.Ports.Data;
 using Organetto.Core.Authentication.Ports.Services;
+using Organetto.Infrastructure.Infrastructure.Firebase.Data;
+using System.Text;
+using System.Text.Json;
 
 namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
 {
     internal sealed class AuthenticationService : IAuthenticationService
     {
         private readonly FirebaseAuth _auth;
+        private readonly FirebaseSettings _settings;
+        private readonly HttpClient _http;
 
-        public AuthenticationService(FirebaseApp app)
+        public AuthenticationService(FirebaseApp app, IOptions<FirebaseSettings> options, HttpClient httpClient)
         {
             _auth = FirebaseAuth.GetAuth(app);
+            _http = httpClient;
+            _settings = options.Value;
         }
 
         public async Task<string> RegisterUserAsync(string email, string password, string? displayName = null, CancellationToken ct = default)
@@ -27,5 +37,50 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             var user = await _auth.CreateUserAsync(args, ct);
             return user.Uid; // we return Firebase UID so domain can map profile if needed
         }
+
+        public async Task<TokenResponse> LoginUserAsync(string email, string password)
+        {
+            var requestBody = new
+            {
+                email,
+                password,
+                returnSecureToken = true
+            };
+
+            var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_settings.ApiKey}";
+            using var response = await _http.PostAsync(url, new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var doc = JsonDocument.Parse(json).RootElement;
+            return new TokenResponse(
+                IdToken: doc.GetProperty("idToken").GetString()!,
+                RefreshToken: doc.GetProperty("refreshToken").GetString()!,
+                ExpiresIn: int.Parse(doc.GetProperty("expiresIn").GetString()!)
+            );
+        }
+
+        public async Task<TokenResponse> RefreshTokenAsync(string refreshToken)
+        {
+            var body = new Dictionary<string, string>
+            {
+                ["grant_type"] = "refresh_token",
+                ["refresh_token"] = refreshToken
+            };
+
+            var url = $"https://securetoken.googleapis.com/v1/token?key={_settings.ApiKey}";
+            using var response = await _http.PostAsync(url, new FormUrlEncodedContent(body));
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var doc = JsonDocument.Parse(json).RootElement;
+            return new TokenResponse(
+                IdToken: doc.GetProperty("id_token").GetString()!,
+                RefreshToken: doc.GetProperty("refresh_token").GetString()!,
+                ExpiresIn: int.Parse(doc.GetProperty("expires_in").GetString()!)
+            );
+        }
+
+        public Task SetCustomUserClaimsAsync(string uid, IDictionary<string, object> claims) =>
+            FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims.AsReadOnly());
     }
 }

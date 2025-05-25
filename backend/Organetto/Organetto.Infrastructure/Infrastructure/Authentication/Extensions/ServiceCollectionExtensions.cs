@@ -16,13 +16,19 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Extensions
         /// </summary>
         public static IServiceCollection AddFirebaseAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<FirebaseOptions>(configuration.GetSection("Firebase"));
+            services.Configure<FirebaseSettings>(configuration.GetSection(FirebaseSettings.SectionName));
 
             // FirebaseApp as singleton
             services.AddSingleton(provider =>
             {
-                var opt = provider.GetRequiredService<IOptions<FirebaseOptions>>().Value;
+                var opt = provider.GetRequiredService<IOptions<FirebaseSettings>>().Value;
                 var cred = GoogleCredential.FromFile(opt.CredentialsPath);
+
+                //if (FirebaseApp.DefaultInstance == null)
+                //{
+                //    var credential = GoogleCredential.FromFile(_settings.ServiceAccountPath);
+                //    FirebaseApp.Create(new AppOptions { Credential = credential, ProjectId = _settings.ProjectId });
+                //}
 
                 return FirebaseApp.DefaultInstance ?? FirebaseApp.Create(new AppOptions
                 {
@@ -30,7 +36,7 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Extensions
                     ProjectId = opt.ProjectId
                 });
             });
-
+            services.AddHttpClient<IAuthenticationService, AuthenticationService>();
             services.AddSingleton<IAuthenticationService, AuthenticationService>();
             return services;
         }
