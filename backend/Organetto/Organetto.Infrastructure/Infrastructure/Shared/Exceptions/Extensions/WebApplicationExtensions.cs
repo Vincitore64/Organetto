@@ -15,6 +15,31 @@ namespace Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Extensions
                 errApp.Run(async context =>
                 {
                     var ex = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+                    if (ex is FluentValidation.ValidationException fv)
+                    {
+                        // build the errors dictionary once
+                        var errors = fv.Errors
+                                       .GroupBy(e => e.PropertyName)
+                                       .ToDictionary(g => g.Key,
+                                                     g => g.Select(e => e.ErrorMessage).ToArray());
+                        // TODO: Add codes from FluentValidation ValidationFailure
+                        var fluentValidationProblemDetails = new ProblemDetails
+                        {
+                            Status = StatusCodes.Status400BadRequest,
+                            Title = "One or more validation errors occurred.",
+                            Type = "https://docs.myapi.com/problems/ValidationError",
+                            Detail = "Validation failed.",
+                            Instance = context.Request.Path,
+                            Extensions = 
+                            {
+                                ["errors"] = errors,
+                                ["code"] = "ERR_VALIDATION"
+                            }
+                        };
+                        context.Response.StatusCode = fluentValidationProblemDetails.Status.Value;
+                        await context.Response.WriteAsJsonAsync(fluentValidationProblemDetails);
+                        return;
+                    }
                     if (ex is ApiException apiEx)
                     {
                         context.Response.StatusCode = apiEx.Status;
