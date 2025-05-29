@@ -1,7 +1,7 @@
 <template>
   <main class="registration-form-wrapper">
     <h2>{{ t('registration.page.title') }}</h2>
-    <a-form layout="vertical">
+    <a-form layout="vertical" :disabled="registerState.isLoading.value">
       <a-form-item label="Email" name="email" v-bind="validateInfos.email" :rules="rules.email">
         <a-input v-model:value="formState.email" placeholder="you@example.com" />
       </a-form-item>
@@ -32,7 +32,7 @@
 
       <a-form-item>
         <a-button type="primary" block :disabled="!formState.email || !formState.password || !formState.agree"
-          html-type="submit" @click="onSubmit">
+          html-type="submit" @click="onSubmit" :loading="registerState.isLoading.value">
           {{ t('registration.page.continueButton') }}
         </a-button>
       </a-form-item>
@@ -68,8 +68,14 @@ import { Form as AForm, Input as AInput, Button as AButton, Checkbox as ACheckbo
 import { GithubOutlined, WindowsOutlined, GoogleOutlined } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
 import type { Rule } from 'ant-design-vue/lib/form/interface'
+import { useRegister } from '@/application/authentication/hooks/useAuth'
+import { tryInjectServices } from '@/shared'
+import { ApiClient } from '@/dataAccess/services/ApiClient'
 
 const { t } = useI18n()
+
+const apiClient = tryInjectServices().resolve(ApiClient)
+const registerState = useRegister(apiClient)
 
 const formState = reactive({
   email: '',
@@ -115,13 +121,23 @@ function validateConfirm(_: unknown, value: string) { // callback: (error?: stri
   return Promise.resolve()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const { resetFields, validate, validateInfos } = AForm.useForm(formState, rules, { immediate: false, validateOnRuleChange: true })
 
 async function onSubmit() {
   await validate()
   // TODO: hook into your auth service
   console.log('register with', formState)
+  await registerState.execute(0, {
+    email: formState.email,
+    password: formState.password,
+    displayName: formState.email,
+  }).then((success) => {
+    if (success) {
+      resetFields()
+      // TODO: redirect to login page
+    }
+  })
 }
 </script>
 
