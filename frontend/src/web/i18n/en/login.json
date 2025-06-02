@@ -1,0 +1,22 @@
+{
+  "page": {
+    "tagline": "Log in to your account",
+    "title": "Log in",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "forgot": "Forgot password?",
+    "continue": "Continue",
+    "or": "OR",
+    "noAccount": "Don't have an account?",
+    "signup": "Sign up",
+    "github": "Continue with GitHub",
+    "google": "Continue with Google",
+    "microsoft": "Continue with Microsoft",
+    "soon": "OAuth {provider} coming soon 🚀"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required"
+  }
+}
