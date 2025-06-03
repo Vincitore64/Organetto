@@ -21,19 +21,19 @@
 }
 
 .logo {
-  width: 512px;
+  width: 750px;
 }
 
 .sidebar h1 {
   font-size: 2rem;
   line-height: 1.2;
   margin: 0;
-  padding-left: 3rem;
+  padding-left: 15%;
 }
 
 .sidebar p {
   font-size: 1rem;
   opacity: 0.9;
-  padding-left: 3rem;
+  padding-left: 15%;
 }
 </style>

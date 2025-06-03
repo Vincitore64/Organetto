@@ -1,0 +1,39 @@
+:root {
+  /* brand */
+  --color-primary-50: #eef4ff;
+  --color-primary-100: #d8ecff;
+  --color-primary-500: #315bff;
+  --color-primary-700: #2542cc;
+  --color-accent: #9b4dff;
+
+  /* neutrals – light theme */
+  --color-bg: #f6f8fa;
+  --color-surface: #ffffff;
+  --color-stroke: #d0d7de;
+  --color-text: #1c2331;
+  --color-text-weak: #5a667a;
+
+  /* status */
+  --color-success: #2dbe7f;
+  --color-warning: #ffb020;
+  --color-error: #f64f4f;
+
+  /* tints for badges / chips */
+  --color-success-20: #e8f9f1;
+  --color-warning-20: #fff6e3;
+  --color-error-20: #feedee;
+}
+
+[data-theme='dark'] {
+  --color-primary-50: #0b1633;
+  --color-primary-100: #13245c;
+  --color-primary-500: #3b78ff; /* slightly lighter for dark */
+  --color-primary-700: #5c8fff;
+  --color-accent: #b87dff;
+
+  --color-bg: #121219;
+  --color-surface: #1e1e26;
+  --color-stroke: #303347;
+  --color-text: #eceff4;
+  --color-text-weak: #9ba7c2;
+}

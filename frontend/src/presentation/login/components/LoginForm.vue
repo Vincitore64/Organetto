@@ -1,10 +1,10 @@
 <template>
-  <a-card :bordered="false" class="card" body-style="padding:24px">
+  <a-card :bordered="false" class="card" :body-style="{ padding: '24px' }">
     <h2 class="panel__title">{{ t('login.page.title') }}</h2>
 
     <a-form :model="form" :rules="rules" layout="vertical" @submit.prevent="handleSubmit">
       <a-form-item :label="t('login.page.email')" name="email">
-        <a-input v-model:value="form.email" type="email" :placeholder="t('login.page.emailPlaceholder')" />
+        <a-input v-model:value="form.email" type="email" placeholder="you@example.com" />
       </a-form-item>
 
       <a-form-item :label="t('login.page.password')" name="password">
@@ -57,13 +57,17 @@ import { useLogin } from '@/application/authentication/hooks/useAuth'
 import { message } from 'ant-design-vue'
 import { GithubOutlined, GoogleOutlined, WindowsOutlined } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { tryInjectServices } from '@/shared'
+import { ApiClient } from '@/dataAccess/services/ApiClient'
 
 const emits = defineEmits<{
   (e: 'success'): void
 }>()
 
 const { t } = useI18n()
-// const router = useRouter()
+const apiClient = tryInjectServices().resolve(ApiClient)
+const { execute: login, isLoading: loading, error } = useLogin(apiClient)
+
 const form = reactive({ email: '', password: '' })
 
 const rules = {
@@ -73,14 +77,12 @@ const rules = {
   password: [{ required: true, message: t('login.validation.passwordRequired'), trigger: 'blur' }],
 }
 
-const { execute: login, isLoading: loading, error } = useLogin()
-
 async function handleSubmit() {
-  const ok = await login({ ...form })
+  const ok = await login(0, { ...form })
   if (ok) {
     emits('success')
   } else if (error.value) {
-    message.error(error.value.message)
+    message.error((error.value as Error).message ?? 'Unknown error')
   }
 }
 

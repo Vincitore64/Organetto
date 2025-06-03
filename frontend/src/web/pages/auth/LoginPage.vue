@@ -34,7 +34,8 @@ function onSuccess() {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
-  background: var(--gradient-hero, linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fef6e9 100%));
+  // background: var(--gradient-hero, linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fef6e9 100%));
+  background: var(--gradient-hero, linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fbe6c5 100%));
 
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
@@ -46,7 +47,7 @@ function onSuccess() {
 }
 
 .splash {
-  padding-left: clamp(2rem, 6vw, 6rem);
+  padding-left: 20%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -59,14 +60,13 @@ function onSuccess() {
   }
 
   .brand {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 5rem;
     margin: 0;
     color: var(--color-text);
   }
 
   .tagline {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     color: var(--color-text-weak);
     max-width: 20ch;
   }
@@ -80,6 +80,7 @@ function onSuccess() {
 
   >.card {
     width: 390px;
+    background: linear-gradient(135deg, #ffffff, #fff7eb);
   }
 }
 </style>
