@@ -1,0 +1,41 @@
+{
+  "errors": {
+    "userExists": "Пользователь уже существует",
+    "userCreated": "Пользователь создан"
+  },
+  "page": {
+    "title": "Регистрация",
+    "emailLabel": "Электронная почта",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Пароль",
+    "confirmLabel": "Подтвердите пароль",
+    "confirmPlaceholder": "Повторно введите пароль",
+    "updatesText": {
+      "before": "Organetto может присылать мне обновления. Смотрите",
+      "link": "Политику конфиденциальности"
+    },
+    "agreeText": {
+      "before": "Я принимаю",
+      "terms": "Условия использования",
+      "middle": "и",
+      "policy": "Политику конфиденциальности"
+    },
+    "continueButton": "Продолжить",
+    "or": "ИЛИ",
+    "continueWith": {
+      "github": "Продолжить через GitHub",
+      "google": "Продолжить через Google",
+      "microsoft": "Продолжить через Microsoft"
+    }
+  },
+  "validation": {
+    "emailRequired": "Пожалуйста, укажите email",
+    "emailInvalid": "Укажите корректный email",
+    "passwordRequired": "Пожалуйста, введите пароль",
+    "passwordMin": "Пароль должен быть не менее 6 символов",
+    "confirmRequired": "Пожалуйста, подтвердите пароль",
+    "passwordMismatch": "Пароли не совпадают",
+    "agreeRequired": "Необходимо принять условия"
+  }
+}

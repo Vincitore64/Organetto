@@ -1,0 +1,41 @@
+{
+  "errors": {
+    "userExists": "User already exists",
+    "userCreated": "User created"
+  },
+  "page": {
+    "title": "Sign up",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password",
+    "confirmLabel": "Confirm Password",
+    "confirmPlaceholder": "Re-enter your password",
+    "updatesText": {
+      "before": "Organetto may send me updates. See",
+      "link": "Privacy Policy"
+    },
+    "agreeText": {
+      "before": "I agree to the",
+      "terms": "Terms of Service",
+      "middle": "&",
+      "policy": "Privacy Policy"
+    },
+    "continueButton": "Continue",
+    "or": "OR",
+    "continueWith": {
+      "github": "Continue with GitHub",
+      "google": "Continue with Google",
+      "microsoft": "Continue with Microsoft"
+    }
+  },
+  "validation": {
+    "emailRequired": "Please input your email",
+    "emailInvalid": "Please enter a valid email",
+    "passwordRequired": "Please input your password",
+    "passwordMin": "Password must be at least 6 characters",
+    "confirmRequired": "Please confirm your password",
+    "passwordMismatch": "Passwords do not match",
+    "agreeRequired": "You must accept the terms"
+  }
+}
