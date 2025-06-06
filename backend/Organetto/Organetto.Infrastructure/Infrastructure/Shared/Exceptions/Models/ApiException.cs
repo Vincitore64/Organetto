@@ -5,7 +5,7 @@
     {
         public int Status { get; }
         public string Title { get; }
-        public string Type => $"https://docs.myapi.com/problems/{GetType().Name}";
+        public string Type => GetType().Name;
         public string Code { get; }
         public string? Instance { get; }
         public IDictionary<string, string[]>? Errors { get; }

@@ -1,7 +1,10 @@
 using Organetto.Infrastructure.Infrastructure.Extensions;
 using Organetto.UseCases.Configuration.Extensions;
+using Organetto.Web.Configuration.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddAppSettingsServerConfigurationFile();
 
 // Add services to the container.
 

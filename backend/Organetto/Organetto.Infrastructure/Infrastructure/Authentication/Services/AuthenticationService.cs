@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Organetto.Core.Authentication.Ports.Data;
 using Organetto.Core.Authentication.Ports.Services;
+using Organetto.Infrastructure.Infrastructure.Authentication.Exceptions;
+using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
 using Organetto.Infrastructure.Infrastructure.Firebase.Data;
 using System.Text;
 using System.Text.Json;
@@ -34,8 +36,20 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
                 Disabled = false
             };
 
-            var user = await _auth.CreateUserAsync(args, ct);
-            return user.Uid; // we return Firebase UID so domain can map profile if needed
+            try
+            {
+                var user = await _auth.CreateUserAsync(args, ct);
+                return user.Uid; // we return Firebase UID so domain can map profile if needed
+            }
+            catch (FirebaseAuthException ex)
+            {
+                throw new AuthenticationException(
+                    (int)(ex.HttpResponse?.StatusCode ?? System.Net.HttpStatusCode.InternalServerError),
+                    "Register failed",
+                    ex.AuthErrorCode.HasValue ? ex.AuthErrorCode.Value.ToString() : "UNKNOWN",
+                    "Register failed on Google"
+                );
+            }
         }
 
         public async Task<TokenResponse> LoginUserAsync(string email, string password)
@@ -49,7 +63,8 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
 
             var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_settings.ApiKey}";
             using var response = await _http.PostAsync(url, new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
-            response.EnsureSuccessStatusCode();
+
+            await response.EnsureAuthenticationSuccessStatusCodeAsync("Login failed", "Login failed on Google");
 
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
@@ -70,7 +85,7 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
 
             var url = $"https://securetoken.googleapis.com/v1/token?key={_settings.ApiKey}";
             using var response = await _http.PostAsync(url, new FormUrlEncodedContent(body));
-            response.EnsureSuccessStatusCode();
+            await response.EnsureAuthenticationSuccessStatusCodeAsync("Refresh token failed", "Refresh token on Google");
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
             return new TokenResponse(
