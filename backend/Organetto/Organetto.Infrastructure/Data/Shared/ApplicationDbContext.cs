@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Data;
+using Organetto.Core.Shared.Databases;
+using Organetto.Core.Shared.Databases.Transactions;
 using Organetto.Core.Users.Data;
+using Organetto.Infrastructure.Data.Shared.Transactions;
 
-namespace Organetto.Infrastructure.Data
+namespace Organetto.Infrastructure.Data.Shared
 {
     /// <summary>
     /// The EF Core DbContext, reflecting the ER diagram in code.
     /// </summary>
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext, IUnitOfWork
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -25,6 +28,11 @@ namespace Organetto.Infrastructure.Data
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<DueDate> DueDates { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+
+        public Task<IDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IDatabaseTransaction>(new EntityFrameworkDatabaseTransaction(this));
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
