@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Organetto.UseCases.Boards.Services;
 using System.Reflection;
 
 namespace Organetto.UseCases.Configuration.Extensions
@@ -9,6 +10,7 @@ namespace Organetto.UseCases.Configuration.Extensions
         {
 
             services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            services.AddAutoMapper(typeof(BoardMappingProfile).Assembly);
             //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>));
 
