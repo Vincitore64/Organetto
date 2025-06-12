@@ -34,6 +34,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseAppCors();
+
 if (!builder.Environment.IsDevelopment())
 {
     app.MigrateApplicationDb();

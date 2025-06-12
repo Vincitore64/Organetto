@@ -23,7 +23,7 @@ export function useServices(app: App) {
   container.registerInstance(ProvidedService.Localization, localization)
 
   // Axios singleton
-  const axiosInstance = createAxios(import.meta.env.VITE_API_BASE_URL)
+  const axiosInstance = createAxios('https://localhost:44322') // import.meta.env.VITE_API_BASE_URL
   attachAuthInterceptor(axiosInstance)
   container.registerInstance(ProvidedService.AxiosInstance, axiosInstance)
 

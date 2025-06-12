@@ -45,7 +45,7 @@ namespace Organetto.Infrastructure.Data.Shared
                 entity.HasKey(u => u.Id);                            // Primary key (первичный ключ)
                 entity.Property(u => u.FirebaseUid)
                       .IsRequired()
-                      .HasColumnType("char(36)");
+                      .HasMaxLength(36);
                 entity.HasIndex(u => u.FirebaseUid)
                       .IsUnique();                                   // Unique index on FirebaseUid (уникальный индекс)
                 entity.Property(u => u.Email)

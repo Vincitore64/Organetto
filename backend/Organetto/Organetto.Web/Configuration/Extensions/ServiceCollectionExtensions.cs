@@ -22,5 +22,13 @@
         {
             return AddConfigurationFile(builder, "appsettings-server", environmentName);
         }
+
+        public static void UseAppCors(this WebApplication app)
+        {
+            app.UseCors(options => options
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+        }
     }
 }
