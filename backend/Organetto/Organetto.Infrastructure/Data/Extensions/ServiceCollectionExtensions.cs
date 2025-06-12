@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
+using Organetto.Core.Users.Services;
 using Organetto.Infrastructure.Data.Boards.Services;
 using Organetto.Infrastructure.Data.Shared;
+using Organetto.Infrastructure.Data.Users.Services;
 
 namespace Organetto.Infrastructure.Data.Extensions
 {
@@ -23,6 +25,7 @@ namespace Organetto.Infrastructure.Data.Extensions
             services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
 
             services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

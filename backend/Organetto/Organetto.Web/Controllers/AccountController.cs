@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Organetto.Core.Authentication.Ports.Data;
 using Organetto.UseCases.Authentication.Commands;
 using Organetto.UseCases.Authentication.Queries;
 using Organetto.Web.Authentication.Data;
@@ -27,6 +28,7 @@ namespace Organetto.Web.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest dto)
         {
@@ -35,6 +37,7 @@ namespace Organetto.Web.Controllers
         }
 
         [HttpPost("refresh")]
+        [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> Refresh([FromBody] RefreshRequest dto)
         {

@@ -2,6 +2,7 @@ using Organetto.Infrastructure.Infrastructure.Extensions;
 using Organetto.UseCases.Configuration.Extensions;
 using Organetto.Web.Configuration.Extensions;
 using Organetto.Infrastructure.Data.Extensions;
+using Organetto.Infrastructure.Infrastructure.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Configuration.AddAppSettingsServerConfigurationFile();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("Organetto"));
+builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("Organetto").ThrowIfNull());
 builder.Services.AddApplicationServices();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

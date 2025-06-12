@@ -7,6 +7,7 @@ using Organetto.Core.Authentication.Ports.Services;
 using Organetto.Infrastructure.Infrastructure.Authentication.Exceptions;
 using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
 using Organetto.Infrastructure.Infrastructure.Firebase.Data;
+using Organetto.Infrastructure.Infrastructure.Shared.Extensions;
 using System.Text;
 using System.Text.Json;
 
@@ -71,7 +72,8 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             return new TokenResponse(
                 IdToken: doc.GetProperty("idToken").GetString()!,
                 RefreshToken: doc.GetProperty("refreshToken").GetString()!,
-                ExpiresIn: int.Parse(doc.GetProperty("expiresIn").GetString()!)
+                ExpiresIn: int.Parse(doc.GetProperty("expiresIn").GetString()!),
+                Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
             );
         }
 
@@ -91,7 +93,8 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             return new TokenResponse(
                 IdToken: doc.GetProperty("id_token").GetString()!,
                 RefreshToken: doc.GetProperty("refresh_token").GetString()!,
-                ExpiresIn: int.Parse(doc.GetProperty("expires_in").GetString()!)
+                ExpiresIn: int.Parse(doc.GetProperty("expires_in").GetString()!),
+                Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
             );
         }
 
