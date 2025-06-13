@@ -1,1 +1,13 @@
+@use './base.scss';
 @use './colors.scss';
+
+.glass {
+  backdrop-filter: blur(33px);
+  background: rgb(142 141 145 / 15%) !important;
+  background-blend-mode: overlay;
+  box-shadow: 0 10px 15px #0000004d;
+}
+.rounded-glass {
+  @extend .glass;
+  border-radius: 12px;
+}

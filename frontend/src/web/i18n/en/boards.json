@@ -1,0 +1,11 @@
+{
+  "page": {
+    "title": "Boards",
+    "recentlyViewed": "Recently viewed",
+    "create": "Create board"
+  },
+  "sort": {
+    "recent": "Recently viewed",
+    "alphabet": "Alphabetically"
+  }
+}
