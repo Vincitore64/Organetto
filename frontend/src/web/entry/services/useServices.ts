@@ -7,6 +7,7 @@ import { createLocalization } from '@/web/i18n'
 import { attachAuthInterceptor, createAxios } from '@/dataAccess/shared/http'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 import { useAuthStore } from '@/application/authentication/stores/authStore'
+import { useUsersStore } from '@/application/users/stores/usersStore'
 
 /**
  * Initializes app with pinia and router
@@ -28,6 +29,10 @@ export function useServices(app: App) {
   container.registerInstance(ProvidedService.AxiosInstance, axiosInstance)
 
   container.registerSingleton(ApiClient)
+
+  container.register(ProvidedService.UsersStore, {
+    useFactory: () => useUsersStore(),
+  })
 
   // AuthStore factory (lazy)
   container.register(ProvidedService.AuthStore, {

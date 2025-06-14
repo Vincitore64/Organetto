@@ -1,5 +1,6 @@
 @use './base.scss';
 @use './colors.scss';
+@use './ant-design-override.scss';
 
 .glass {
   backdrop-filter: blur(33px);

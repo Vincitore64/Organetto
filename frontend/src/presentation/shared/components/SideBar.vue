@@ -1,8 +1,9 @@
 <template>
   <nav class="sidebar">
-    <section class="brand">
+    <!-- <section class="brand">
       <img src="@/presentation/shared/assets/images/logo.png" alt="logo" />
-    </section>
+    </section> -->
+    <ProjectLogo class="brand" size="middlePlus" />
     <a-menu mode="inline" :selectedKeys="['boards']" :style="{ background: 'transparent', border: 'none' }">
       <a-menu-item key="boards">
         <main class="sidebar__item">
@@ -30,6 +31,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { UnorderedListOutlined, SettingOutlined, ProfileOutlined } from '@ant-design/icons-vue'
+import ProjectLogo from './ProjectLogo.vue'
+
 const { t } = useI18n()
 </script>
 <style scoped lang="scss">
@@ -64,11 +67,8 @@ const { t } = useI18n()
 .brand {
   display: flex;
   align-items: center;
+  padding: 0 16px;
   padding-bottom: 16px;
-}
-
-.brand img {
-  width: 100%;
 }
 
 :deep(.ant-menu-item-selected) {

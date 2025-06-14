@@ -70,7 +70,7 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
             return new TokenResponse(
-                IdToken: doc.GetProperty("idToken").GetString()!,
+                AccessToken: doc.GetProperty("idToken").GetString()!,
                 RefreshToken: doc.GetProperty("refreshToken").GetString()!,
                 ExpiresIn: int.Parse(doc.GetProperty("expiresIn").GetString()!),
                 Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
@@ -91,7 +91,7 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
             return new TokenResponse(
-                IdToken: doc.GetProperty("id_token").GetString()!,
+                AccessToken: doc.GetProperty("id_token").GetString()!,
                 RefreshToken: doc.GetProperty("refresh_token").GetString()!,
                 ExpiresIn: int.Parse(doc.GetProperty("expires_in").GetString()!),
                 Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()

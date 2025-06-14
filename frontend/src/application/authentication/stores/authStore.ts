@@ -6,27 +6,22 @@ import type { ApiClient } from '@/dataAccess/services/ApiClient'
 export const useAuthStore = (apiClient: ApiClient) =>
   defineStore('auth', () => {
     const tokens = ref<AuthTokens | null>(
-      localStorage.getItem('accessToken') && localStorage.getItem('refreshToken')
-        ? {
-            accessToken: localStorage.getItem('accessToken')!,
-            refreshToken: localStorage.getItem('refreshToken')!,
-          }
-        : null,
+      localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth') ?? 'null') : null,
     )
 
     /** Derived helper – anywhere in the app you can do: `auth.isAuthenticated` */
     const isAuthenticated = computed(() => !!tokens.value?.accessToken)
 
-    function persist(t: AuthTokens) {
-      tokens.value = t
-      localStorage.setItem('accessToken', t.accessToken)
-      localStorage.setItem('refreshToken', t.refreshToken)
+    function persist(t?: AuthTokens) {
+      if (t) {
+        tokens.value = t
+        localStorage.setItem('auth', JSON.stringify(t))
+      }
     }
 
     function clear() {
       tokens.value = null
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      localStorage.removeItem('auth')
     }
 
     async function login(payload: LoginRequest) {

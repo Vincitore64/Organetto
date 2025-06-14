@@ -7,6 +7,7 @@ export interface AuthTokens {
   refreshToken: string
   /** Lifetime in seconds (optional – remove if backend omits it). */
   expiresIn?: number
+  uuid: string
 }
 
 export interface RegisterRequest {

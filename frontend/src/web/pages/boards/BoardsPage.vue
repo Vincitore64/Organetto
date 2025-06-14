@@ -1,6 +1,6 @@
 <template>
   <a-layout class="board-page" v-if="boadrdPageViews.state.value">
-    <a-layout-sider width="220" class="sider glass">
+    <a-layout-sider width="256" class="sider glass">
       <Sidebar />
     </a-layout-sider>
 
@@ -79,8 +79,10 @@ function startUp() {
 
 startUp()
 
-const openBoard = (id: number) => router.push({ name: 'BoardDetail', params: { id } })
-const createBoard = () => router.push({ name: 'BoardCreate' })
+const openBoard = (id: number) => router.push({ name: 'Board', params: { id, userId: props.userId } })
+const createBoard = () => {
+  // router.push({ name: 'BoardCreate' })
+}
 
 </script>
 

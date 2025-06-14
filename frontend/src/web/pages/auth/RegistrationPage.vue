@@ -2,13 +2,21 @@
   <main class="registration-page__wrapper">
     <SidebarBanner />
     <section class="registration-page__form-wrapper">
-      <RegistrationForm class="registration-page__form" />
+      <RegistrationForm class="registration-page__form" @success="onSuccess" />
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
 import { SidebarBanner, RegistrationForm } from '@/presentation'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function onSuccess() {
+  router.push({ name: 'Login' })
+}
+
 </script>
 
 <style scoped>

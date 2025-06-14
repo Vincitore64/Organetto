@@ -4,4 +4,5 @@ export enum ProvidedService {
   Container = 'Container',
   AxiosInstance = 'AxiosInstance',
   AuthStore = 'AuthStore',
+  UsersStore = 'UsersStore',
 }
