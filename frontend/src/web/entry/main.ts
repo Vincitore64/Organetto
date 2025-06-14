@@ -4,7 +4,6 @@ import { createApp } from 'vue'
 import App from '@/web/entry/components/App.vue'
 import { useUI } from './services/useUI'
 import 'ant-design-vue/dist/reset.css'
-import '@/assets/main.css'
 import '@/presentation/shared/assets/styles/index.scss'
 import { useServices } from './services/useServices'
 

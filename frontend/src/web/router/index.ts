@@ -26,13 +26,14 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterPage,
   },
   {
-    path: '/boards',
+    path: '/boards/:userId',
     name: 'Boards',
     component: BoardsPage,
+    props: true,
     meta: { requiresAuth: true },
   },
   {
-    path: '/boards/:id',
+    path: '/boards/:userId/:id',
     name: 'Board',
     component: BoardPage,
     props: true,

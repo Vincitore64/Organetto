@@ -37,21 +37,23 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         public async Task<IEnumerable<Board>> GetAllForUserAsync(long userId)
         {
             // Получаем доски, где пользователь является владельцем.
-            var ownerBoards = _dbContext.Boards
-                .Where(b => b.OwnerId == userId);
+            var ownerBoards = await _dbContext.Boards
+                .Where(b => b.OwnerId == userId)
+                .Include(b => b.Members).ThenInclude(m => m.User).Include(b => b.Lists)
+                .ToListAsync();
 
             // Получаем доски, где пользователь – участник.
-            var memberBoards = _dbContext.BoardMembers
+            var memberBoards = (await _dbContext.BoardMembers
                 .Where(bm => bm.UserId == userId)
-                .Select(bm => bm.Board!); // TODO: check that the Board is not null
+                .Include(bm => bm.User)
+                .Include(bm => bm.Board!)
+                .ThenInclude(b => b.Lists)
+                .ToListAsync())
+                .Select(bm => bm.Board!)
+                .ToList(); // TODO: check that the Board is not null
 
             // Объединяем оба набора без дубликатов.
-            return await ownerBoards
-                .Union(memberBoards)
-                .Include(b => b.Members)
-                    .ThenInclude(m => m.User)
-                .Include(b => b.Lists)
-                .ToListAsync();
+            return ownerBoards.Union(memberBoards).ToList();
         }
 
         /// <inheritdoc/>

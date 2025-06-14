@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="board-page">
+  <a-layout class="board-page" v-if="boadrdPageViews.state.value">
     <a-layout-sider width="220" class="sider glass">
       <Sidebar />
     </a-layout-sider>
@@ -10,7 +10,7 @@
           <h1>{{ t('boards.page.title') }}</h1>
         </div> -->
         <h1 class="page-title">{{ t('boards.page.title') }}</h1>
-        <SearchBar v-model="search" /><!-- style="width: max-content;"  -->
+        <SearchBar v-model="boadrdPageViews.state.value.searchTerms.value" /><!-- style="width: max-content;"  -->
         <!-- <section class="sort-desktop"></section> -->
         <!-- <SortDropdown v-model:value="sortOrder" class="sort-desktop" /> -->
         <bell-outlined class="bell" />
@@ -25,7 +25,8 @@
         <!-- <h1>{{ t('boards.page.title') }}</h1> -->
         <h2 class="subtitle">{{ t('boards.page.recentlyViewed') }}</h2>
         <div class="boards-grid">
-          <BoardCard v-for="board in filteredBoards" :key="board.id" :board="board" @open="openBoard" />
+          <BoardCard v-for="board in boadrdPageViews.state.value.views.value" :key="board.id" :board="board"
+            @open="openBoard" />
           <CreateBoardCard @create="createBoard" />
         </div>
       </a-layout-content>
@@ -34,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Sidebar from '@/presentation/shared/components/SideBar.vue'
@@ -43,24 +43,45 @@ import SearchBar from '@/presentation/shared/components/SearchBar.vue'
 import BoardCard from '@/presentation/boards/components/BoardCard.vue'
 import CreateBoardCard from '@/presentation/boards/components/CreateBoardCard.vue'
 import { BellOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { useBoardPageViews } from '@/presentation/boards/hooks/useBoardPageViews'
+import { useAsyncState } from '@vueuse/core'
+import { tryInjectServices } from '@/shared'
+import { ApiClient } from '@/dataAccess/services/ApiClient'
+import _ from 'lodash'
 
-interface Board { id: number; title: string; thumbnailUrl: string }
+const props = defineProps<{
+  userId: string,
+}>()
+
 const { t } = useI18n()
+const apiClient = tryInjectServices().resolve(ApiClient)
 const router = useRouter()
-const search = ref('')
-const sortOrder = ref('recent')
-const boards = ref<Board[]>([
-  { id: 1, title: 'Тестирование', thumbnailUrl: 'https://embed-ssl.wistia.com/deliveries/d5ae8190f0aa7dfbe0b01f336f29d44094b967b5.webp?image_crop_resized=1280x720' },
-  { id: 2, title: '1-on-1 Meeting Agenda', thumbnailUrl: 'https://embed-ssl.wistia.com/deliveries/d5ae8190f0aa7dfbe0b01f336f29d44094b967b5.webp?image_crop_resized=1280x720' },
-  { id: 3, title: 'Тестирование', thumbnailUrl: 'https://embed-ssl.wistia.com/deliveries/d5ae8190f0aa7dfbe0b01f336f29d44094b967b5.webp?image_crop_resized=1280x720' },
-])
-const filteredBoards = computed(() => {
-  const list = boards.value.filter(b => b.title.toLowerCase().includes(search.value.toLowerCase()))
-  if (sortOrder.value === 'alphabet') list.sort((a, b) => a.title.localeCompare(b.title))
-  return list
-})
+const boadrdPageViews = useAsyncState(useBoardPageViews(apiClient), null, { immediate: false })
+
+// const search = ref('')
+// const sortOrder = ref('recent')
+// const boards = ref<BoardPageView[]>([
+//   { id: 1, title: 'Тестирование', thumbnailUrl: defaultThumbnailHref },
+//   { id: 2, title: '1-on-1 Meeting Agenda', thumbnailUrl: defaultThumbnailHref },
+//   { id: 3, title: 'Тестирование', thumbnailUrl: defaultThumbnailHref },
+// ])
+// const filteredBoards = computed(() => {
+//   const list = boards.value.filter(b => b.title.toLowerCase().includes(search.value.toLowerCase()))
+//   if (sortOrder.value === 'alphabet') list.sort((a, b) => a.title.localeCompare(b.title))
+//   return list
+// })
+
+function startUp() {
+  const userId = _.parseInt(props.userId)
+  if (!userId) return
+  boadrdPageViews.execute(0, { userId })
+}
+
+startUp()
+
 const openBoard = (id: number) => router.push({ name: 'BoardDetail', params: { id } })
 const createBoard = () => router.push({ name: 'BoardCreate' })
+
 </script>
 
 <style scoped lang="scss">

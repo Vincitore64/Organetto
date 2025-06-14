@@ -21,7 +21,7 @@ namespace Organetto.Web.Controllers
         /// GET /api/boards – Retrieves all boards for the current user. (GET /api/boards – Получает все доски для текущего пользователя.)
         /// </summary>
         [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<BoardDto>>> GetAll(long userId)
+        public async Task<ActionResult<IEnumerable<BoardDto>>> GetAllOfUser(long userId)
         {
             // Assume we extract Firebase UID from JWT and then resolve internal userId.
             // Здесь предполагается, что из JWT мы получаем FirebaseUid и затем резолвим внутренний userId.
