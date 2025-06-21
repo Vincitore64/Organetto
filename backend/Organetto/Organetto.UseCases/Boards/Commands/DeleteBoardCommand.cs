@@ -1,5 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Organetto.Core.Boards.Services;
+using Organetto.Core.Shared.Databases;
+using Organetto.UseCases.Boards.Hubs;
+using Organetto.UseCases.Boards.Services;
 
 namespace Organetto.UseCases.Boards.Commands
 {
@@ -17,10 +21,14 @@ namespace Organetto.UseCases.Boards.Commands
     public class DeleteBoardCommandHandler : IRequestHandler<DeleteBoardCommand, Unit>
     {
         private readonly IBoardRepository _boardRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IHubContext<BoardHub, IBoardClient> _hub;
 
-        public DeleteBoardCommandHandler(IBoardRepository boardRepository)
+        public DeleteBoardCommandHandler(IBoardRepository boardRepository, IUnitOfWork unitOfWork, IHubContext<BoardHub, IBoardClient> hub)
         {
             _boardRepository = boardRepository;
+            this._unitOfWork = unitOfWork;
+            this._hub = hub;
         }
 
         public async Task<Unit> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
@@ -36,6 +44,8 @@ namespace Organetto.UseCases.Boards.Commands
 
             // 3. Perform delete (archive) operation.
             await _boardRepository.DeleteAsync(request.BoardId);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _hub.Clients.Group($"boards:{board.OwnerId}").BoardDeleted(request.BoardId);
 
             return Unit.Value;
         }
