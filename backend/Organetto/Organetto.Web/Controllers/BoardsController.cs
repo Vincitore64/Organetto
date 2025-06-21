@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Organetto.UseCases.Boards.Commands;
 using Organetto.UseCases.Boards.Data;
 using Organetto.UseCases.Boards.Queries;
 
@@ -23,22 +23,6 @@ namespace Organetto.Web.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<IEnumerable<BoardDto>>> GetAllOfUser(long userId)
         {
-            // Assume we extract Firebase UID from JWT and then resolve internal userId.
-            // Здесь предполагается, что из JWT мы получаем FirebaseUid и затем резолвим внутренний userId.
-            //var firebaseUid = User.FindFirst("uid")?.Value;
-            //if (string.IsNullOrEmpty(firebaseUid))
-            //{
-            //    return Unauthorized();
-            //}
-
-            // Resolve internal userId from Firebase UID – you need a lookup in Users table.
-            // (Резолвим внутренний userId по Firebase UID – нужен запрос в таблицу Users.)
-            // Example:
-            // var userId = await _userService.GetInternalUserId(firebaseUid);
-
-            // For demonstration, assume a helper method:
-            //long userId = await ResolveInternalUserIdAsync(firebaseUid);
-
             // Send the MediatR query
             var query = new GetAllUserBoardsQuery(userId);
             var boards = await _mediator.Send(query);
@@ -46,10 +30,27 @@ namespace Organetto.Web.Controllers
             return Ok(boards);
         }
 
-        private Task<long> ResolveInternalUserIdAsync(string firebaseUid)
+        /// <summary>
+        /// POST /api/boards
+        /// Creates a new board for the current user.
+        /// </summary>
+        [HttpPost]
+        public async Task<ActionResult<BoardDto>> Create([FromBody] CreateBoardCommand command)
         {
-            // TODO: implement lookup, e.g., via IUserRepository or a cached dictionary.
-            throw new NotImplementedException();
+            var created = await _mediator.Send(command);
+
+            return CreatedAtAction(
+                nameof(GetAllOfUser),
+                new { userId = created.OwnerId },
+                created
+            );
+        }
+
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> Delete(long id, [FromQuery] long userId)
+        {
+            await _mediator.Send(new DeleteBoardCommand(id, userId));
+            return NoContent();
         }
     }
 }
