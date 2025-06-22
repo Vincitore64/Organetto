@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.SignalR;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
+using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services;
+using Organetto.Infrastructure.Infrastructure.Outbox.Services;
 using Organetto.UseCases.Boards.Data;
 using Organetto.UseCases.Boards.Hubs;
+using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Boards.Services;
 
 namespace Organetto.UseCases.Boards.Commands
@@ -25,19 +28,20 @@ namespace Organetto.UseCases.Boards.Commands
     {
         private readonly IBoardRepository _boardRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHubContext<BoardHub, IBoardClient> _hub;
+        private readonly IOutboxService _outboxService;
         private readonly IMapper _mapper;
 
-        public CreateBoardCommandHandler(IBoardRepository boardRepository, IUnitOfWork unitOfWork, IHubContext<BoardHub, IBoardClient> hub, IMapper mapper)
+        public CreateBoardCommandHandler(IBoardRepository boardRepository, IUnitOfWork unitOfWork, IOutboxService outboxService, IMapper mapper)
         {
             _boardRepository = boardRepository;
             this._unitOfWork = unitOfWork;
-            this._hub = hub;
+            this._outboxService = outboxService;
             _mapper = mapper;
         }
 
         public async Task<BoardDto> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
         {
+            var dbTransaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             // Map command → domain entity
             var board = new Board
             {
@@ -53,9 +57,13 @@ namespace Organetto.UseCases.Boards.Commands
             var created = await _boardRepository.CreateAsync(board);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+            await _outboxService.AddAsync(new BoardCreatedIntegrationEvent(created.Id), cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await dbTransaction.CommitAsync(cancellationToken);
+
             // Map to DTO
             var dto = _mapper.Map<BoardDto>(created);
-            await _hub.Clients.Group($"boards:{board.OwnerId}").BoardCreated(dto);
             return dto;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
+using Organetto.Infrastructure.Infrastructure.Outbox.Services;
 
 namespace Organetto.Infrastructure.Infrastructure.Extensions
 {
@@ -9,6 +10,7 @@ namespace Organetto.Infrastructure.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddFirebaseAuthentication(configuration);
+            services.AddHostedService<OutboxProcessor>();
             return services;
         }
     }

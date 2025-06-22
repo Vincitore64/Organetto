@@ -34,7 +34,7 @@ namespace Organetto.UseCases.Boards.Commands
         public async Task<Unit> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
         {
             // 1. Load the board to verify existence and owner.
-            var board = await _boardRepository.GetByIdAsync(request.BoardId);
+            var board = await _boardRepository.GetByIdAsync(request.BoardId, cancellationToken);
             if (board == null)
                 throw new KeyNotFoundException($"Board with id {request.BoardId} not found.");
 

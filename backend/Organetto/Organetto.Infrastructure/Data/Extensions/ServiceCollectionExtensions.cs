@@ -6,8 +6,10 @@ using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
 using Organetto.Core.Users.Services;
 using Organetto.Infrastructure.Data.Boards.Services;
+using Organetto.Infrastructure.Data.Outbox;
 using Organetto.Infrastructure.Data.Shared;
 using Organetto.Infrastructure.Data.Users.Services;
+using Organetto.Infrastructure.Infrastructure.Outbox.Services;
 
 namespace Organetto.Infrastructure.Data.Extensions
 {
@@ -26,6 +28,7 @@ namespace Organetto.Infrastructure.Data.Extensions
 
             services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IOutboxService, OutboxService>();
 
             return services;
         }

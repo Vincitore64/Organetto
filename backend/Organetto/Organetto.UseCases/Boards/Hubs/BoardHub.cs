@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Organetto.UseCases.Boards.Services;
+using Organetto.UseCases.Shared.SignalR.Models;
 
 namespace Organetto.UseCases.Boards.Hubs
 {
@@ -10,7 +11,7 @@ namespace Organetto.UseCases.Boards.Hubs
         /// </summary>
         public Task Subscribe(long userId)
         {
-            var groupName = GetGroupName(userId);
+            var groupName = SignalRGroupNames.BoardsGroup(userId);
             return Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }
 
@@ -19,12 +20,9 @@ namespace Organetto.UseCases.Boards.Hubs
         /// </summary>
         public Task Unsubscribe(long userId)
         {
-            var groupName = GetGroupName(userId);
+            var groupName = SignalRGroupNames.BoardsGroup(userId);
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
-
-        private static string GetGroupName(long userId) =>
-            $"boards:{userId}";
 
         ///// userId приходит в query ?userId=42
         //public override async Task OnConnectedAsync()

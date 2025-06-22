@@ -10,7 +10,7 @@ namespace Organetto.Core.Boards.Services
         /// <summary>
         /// Retrieves a single Board by its surrogate key. (Получает одну доску по суррогатному ключу.)
         /// </summary>
-        Task<Board> GetByIdAsync(long boardId);
+        Task<Board> GetByIdAsync(long boardId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves all boards where the given user (by userId) is either owner or member. (Получает все доски, где указанный пользователь (по userId) является владельцем или участником.)

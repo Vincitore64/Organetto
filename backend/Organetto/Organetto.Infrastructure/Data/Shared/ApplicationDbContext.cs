@@ -5,6 +5,7 @@ using Organetto.Core.Shared.Databases;
 using Organetto.Core.Shared.Databases.Transactions;
 using Organetto.Core.Users.Data;
 using Organetto.Infrastructure.Data.Shared.Transactions;
+using Organetto.Infrastructure.Infrastructure.Outbox.Models;
 
 namespace Organetto.Infrastructure.Data.Shared
 {
@@ -28,6 +29,7 @@ namespace Organetto.Infrastructure.Data.Shared
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<DueDate> DueDates { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
         public Task<IDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
@@ -258,6 +260,32 @@ namespace Organetto.Infrastructure.Data.Shared
                       .WithMany(u => u.Notifications)
                       .HasForeignKey(n => n.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OutboxMessage>(b =>
+            {
+                b.ToTable("outbox_message");
+
+                b.HasKey(x => x.Id);
+                b.Property(x => x.OccurredOn)
+                 .IsRequired();
+
+                b.Property(x => x.Type)
+                 .IsRequired();
+
+                b.Property(x => x.Payload)
+                 .IsRequired();
+
+                b.Property(x => x.CorrelationId);
+
+                b.Property(x => x.RetryCount)
+                 .IsRequired()
+                 .HasDefaultValue(0);
+
+                b.Property(x => x.ProcessedOn);
+
+                b.Property(x => x.Error)
+                 .HasMaxLength(3000);
             });
         }
     }

@@ -22,7 +22,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Board> GetByIdAsync(long boardId)
+        public async Task<Board> GetByIdAsync(long boardId, CancellationToken cancellationToken)
         {
             // Возвращаем доску по её id, включая связанные списки и членов (если нужно)
             return await _dbContext.Boards
@@ -30,7 +30,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
                 .Include(b => b.Members)
                     .ThenInclude(m => m.User)
                 .Include(b => b.Lists)
-                .FirstOrDefaultAsync(b => b.Id == boardId) ?? throw new EntityNotFoundException(400, nameof(Board));
+                .FirstOrDefaultAsync(b => b.Id == boardId, cancellationToken) ?? throw new EntityNotFoundException(400, nameof(Board));
         }
 
         /// <inheritdoc/>
