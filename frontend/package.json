@@ -17,6 +17,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "@types/lodash": "^4.17.16",
     "@types/qs": "^6.9.18",
     "@vueuse/core": "^13.2.0",

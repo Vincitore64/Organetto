@@ -38,8 +38,8 @@ const { t } = useI18n()
 <style scoped lang="scss">
 .sidebar {
   height: 100%;
-  padding: 16px 0;
-  // background: var(--color-surface);
+  padding: 24px 0;
+  background: var(--color-surface) !important;
   // border-right: 1px solid var(--color-stroke);
   color: var(--color-text);
 
@@ -49,9 +49,10 @@ const { t } = useI18n()
     gap: 12px;
     align-items: center;
     grid-template-columns: 18px 1fr;
-    font-family: Sofia Sans Extra Condensed;
+    // font-family: Sofia Sans Extra Condensed;
+    font-family: Jost;
     font-size: 18px;
-    letter-spacing: 0.5px;
+    // letter-spacing: 0.5px;
 
     >span {
       padding-bottom: 2px;
@@ -68,16 +69,17 @@ const { t } = useI18n()
   display: flex;
   align-items: center;
   padding: 0 16px;
-  padding-bottom: 16px;
+  padding-bottom: 24px;
 }
 
 :deep(.ant-menu-item-selected) {
   background: rgb(255 255 255 / 69%) !important;
   color: var(--color-primary-500) !important;
+  background: rgba(241, 241, 241, 0.932) !important;
 }
 
 :deep(.ant-menu-item:active) {
-  background: rgb(255 255 255 / 69%) !important;
+  background: rgba(209, 209, 209, 0.69) !important;
   // color: var(--color-primary-500) !important;
 }
 </style>

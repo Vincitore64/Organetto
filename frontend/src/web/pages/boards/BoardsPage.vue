@@ -9,7 +9,7 @@
         <!-- <div class="brand">
           <h1>{{ t('boards.page.title') }}</h1>
         </div> -->
-        <h1 class="page-title">{{ t('boards.page.title') }}</h1>
+        <!-- <h1 class="page-title">{{ t('boards.page.title') }}</h1> -->
         <SearchBar v-model="boadrdPageViews.state.value.searchTerms.value" /><!-- style="width: max-content;"  -->
         <!-- <section class="sort-desktop"></section> -->
         <!-- <SortDropdown v-model:value="sortOrder" class="sort-desktop" /> -->
@@ -101,9 +101,10 @@ const createBoard = () => {
 .header {
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: 100px 1fr auto auto;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 48px;
+  padding-right: 24px;
   padding-top: 16px;
   height: 80px;
   gap: 16px;

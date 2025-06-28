@@ -1,0 +1,1 @@
+export { useBoardPageViews, useRealtimeBoardPageViews } from './useBoardPageViews'

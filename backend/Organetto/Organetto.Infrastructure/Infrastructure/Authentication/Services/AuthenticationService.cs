@@ -69,10 +69,13 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
 
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
+            var expiresInSeconds = int.Parse(doc.GetProperty("expiresIn").GetString()!);
+            var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds);
+            
             return new TokenResponse(
                 AccessToken: doc.GetProperty("idToken").GetString()!,
                 RefreshToken: doc.GetProperty("refreshToken").GetString()!,
-                ExpiresIn: int.Parse(doc.GetProperty("expiresIn").GetString()!),
+                ExpiresAt: expiresAt,
                 Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
             );
         }
@@ -90,10 +93,13 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             await response.EnsureAuthenticationSuccessStatusCodeAsync("Refresh token failed", "Refresh token on Google");
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
+            var expiresInSeconds = int.Parse(doc.GetProperty("expires_in").GetString()!);
+            var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds);
+            
             return new TokenResponse(
                 AccessToken: doc.GetProperty("id_token").GetString()!,
                 RefreshToken: doc.GetProperty("refresh_token").GetString()!,
-                ExpiresIn: int.Parse(doc.GetProperty("expires_in").GetString()!),
+                ExpiresAt: expiresAt,
                 Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
             );
         }

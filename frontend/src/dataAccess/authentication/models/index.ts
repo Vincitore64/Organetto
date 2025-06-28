@@ -5,8 +5,8 @@
 export interface AuthTokens {
   accessToken: string
   refreshToken: string
-  /** Lifetime in seconds (optional – remove if backend omits it). */
-  expiresIn?: number
+  /** Date and time when the token expires (ISO string format) */
+  expiresAt: string
   uuid: string
 }
 
