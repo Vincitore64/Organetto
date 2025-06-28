@@ -1,0 +1,109 @@
+# Organetto Specification (EN)
+
+## 1. Overview
+
+Organetto is a lightweight web‑based Kanban board for personal projects and small teams, inspired by Trello and Wekan.
+It supports real‑time collaboration, due‑date notifications, and data export.
+
+## 2. Actors
+
+* **Guest** – unauthenticated visitor
+* **Registered User** – authenticated user with personal boards
+* **Board Member** – user invited to a board
+* **Owner** – creator of a board
+* **Admin** – system administrator
+
+## 3. Use Case List
+
+| ID   | Use Case             | Primary Actor   | Goal                           |
+| ---- | -------------------- | --------------- | ------------------------------ |
+| UC01 | Register / Sign in   | Guest           | Create account or authenticate |
+| UC02 | Create Board         | Registered User | Start a new board              |
+| UC03 | Invite Members       | Owner           | Share board with others        |
+| UC04 | Create List          | Board Member    | Add a new column               |
+| UC05 | Create Card          | Board Member    | Add a task                     |
+| UC06 | Drag & Drop Card     | Board Member    | Reorder or move task           |
+| UC07 | Comment on Card      | Board Member    | Discuss task                   |
+| UC08 | Attach File          | Board Member    | Add attachment                 |
+| UC09 | Set Due Date         | Board Member    | Track deadlines                |
+| UC10 | Receive Notification | Board Member    | Be alerted about due items     |
+| UC11 | Export Board         | Board Member    | Download PDF/CSV               |
+| UC12 | Manage Users         | Admin           | Moderate system                |
+
+### 3.1 Use Case Diagram
+
+```mermaid
+usecaseDiagram
+actor Guest
+actor "Registered User" as RegUser
+actor "Board Member" as Member
+actor Owner
+actor Admin
+Guest --> (Register / Sign in)
+RegUser --> (Create Board)
+Owner --> (Invite Members)
+Member --> (Create List)
+Member --> (Create Card)
+Member --> (Drag & Drop Card)
+Member --> (Comment on Card)
+Member --> (Attach File)
+Member --> (Set Due Date)
+Member --> (Receive Notification)
+Member --> (Export Board)
+Admin --> (Manage Users)
+```
+
+## 4. Business Processes
+
+### 4.1 Card Lifecycle (BPMN)
+
+```mermaid
+flowchart TD
+    A[Create Card] --> B[Set Due Date]
+    B --> C{Due date reached?}
+    C -- No --> D[In Progress]
+    D --> C
+    C -- Yes --> E[Trigger Notification]
+    E --> F[Done / Archive]
+```
+
+### 4.2 Board Export
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant ExportService
+    User->>Frontend: Click "Export Board"
+    Frontend->>Backend: /boards/{id}/export
+    Backend->>ExportService: Generate PDF + CSV
+    ExportService-->>Backend: File URLs
+    Backend-->>Frontend: URLs
+    Frontend-->>User: Prompt download
+```
+
+### 4.3 User Registration
+
+```mermaid
+sequenceDiagram
+    participant Guest
+    participant Frontend
+    participant AuthService
+    participant Backend
+    Guest->>Frontend: Submit registration form
+    Frontend->>AuthService: createUserWithEmailPassword()
+    AuthService-->>Frontend: JWT / error
+    alt success
+        Frontend->>Backend: POST /users {token}
+        Backend-->>Frontend: 201 Created (profile)
+        Frontend-->>Guest: Signed‑in and redirected
+    else failure
+        Frontend-->>Guest: Display error
+    end
+```
+When writing code, follow these guidelines:
+Frontend:
+Use Ant Design Vue as a UI framework. Use html tags and CSS to position elements, not Ant Design Vue. Use css grid to layout elements. Try not to use css flex to layout elements. Use clear tags like: main, section, header, etc. Use script setup components with lang="ts", i.e. use Typescript in other words. Use SCSS. You can use: VueUse, lodash, dayjs, zod, pinia, vue-router, axios, qs, vue-i18n, TSyringe.
+Backend:
+Use C#, ASP .NET Core. You can use: FluentValidation, Automapper, Flurl, Flurl.Http, Newtonsoft.Json.
