@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
+using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Configuration.Extensions;
 using Organetto.Infrastructure.Infrastructure.Outbox.Services;
 
 namespace Organetto.Infrastructure.Infrastructure.Extensions
@@ -11,6 +12,7 @@ namespace Organetto.Infrastructure.Infrastructure.Extensions
         {
             services.AddFirebaseAuthentication(configuration);
             services.AddHostedService<OutboxProcessor>();
+            services.AddEventBus();
             return services;
         }
     }

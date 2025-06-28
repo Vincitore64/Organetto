@@ -1,6 +1,6 @@
-﻿using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
 
-namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services
+namespace Organetto.UseCases.Shared.IntegrationEvents.Services
 {
     /// <summary>
     /// Абстракция для публикации интеграционных событий.

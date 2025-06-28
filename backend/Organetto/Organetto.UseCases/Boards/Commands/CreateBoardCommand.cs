@@ -1,15 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.SignalR;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services;
-using Organetto.Infrastructure.Infrastructure.Outbox.Services;
 using Organetto.UseCases.Boards.Data;
-using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.IntegrationEvents;
-using Organetto.UseCases.Boards.Services;
+using Organetto.UseCases.Shared.Outbox.Services;
 
 namespace Organetto.UseCases.Boards.Commands
 {

@@ -1,10 +1,9 @@
-﻿using MassTransit;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services;
-using Organetto.Infrastructure.Infrastructure.MassTransit.Services;
 using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.Services;
+using Organetto.UseCases.Shared.MassTransit.Services;
 using System.Reflection;
 
 namespace Organetto.UseCases.Configuration.Extensions
@@ -83,8 +82,6 @@ namespace Organetto.UseCases.Configuration.Extensions
 
                 busConfigurator.UsingInMemory((context, configuration) => configuration.ConfigureEndpoints(context));
             });
-
-            services.AddTransient<IIntegrationEventBus, MassTransitIntegrationEventBus>();
         }
 
         public static void UseApplicationServices(this WebApplication app)

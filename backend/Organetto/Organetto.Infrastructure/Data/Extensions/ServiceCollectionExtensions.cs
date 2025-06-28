@@ -9,7 +9,7 @@ using Organetto.Infrastructure.Data.Boards.Services;
 using Organetto.Infrastructure.Data.Outbox;
 using Organetto.Infrastructure.Data.Shared;
 using Organetto.Infrastructure.Data.Users.Services;
-using Organetto.Infrastructure.Infrastructure.Outbox.Services;
+using Organetto.UseCases.Shared.Outbox.Services;
 
 namespace Organetto.Infrastructure.Data.Extensions
 {

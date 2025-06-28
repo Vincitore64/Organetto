@@ -4,8 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Organetto.Infrastructure.Data.Shared;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
+using Organetto.UseCases.Shared.IntegrationEvents.Services;
 
 namespace Organetto.Infrastructure.Infrastructure.Outbox.Services
 {

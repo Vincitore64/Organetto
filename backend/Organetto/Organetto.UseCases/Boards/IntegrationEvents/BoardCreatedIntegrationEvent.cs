@@ -1,14 +1,14 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Organetto.Core.Boards.Services;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models;
 using Organetto.UseCases.Boards.Data;
 using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.Hubs.Extensions;
 using Organetto.UseCases.Boards.Services;
 using Organetto.UseCases.Shared.SignalR.Models;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
 
 namespace Organetto.UseCases.Boards.IntegrationEvents
 {

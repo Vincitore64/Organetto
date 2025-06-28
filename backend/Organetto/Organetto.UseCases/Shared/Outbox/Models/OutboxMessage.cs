@@ -1,4 +1,4 @@
-﻿namespace Organetto.Infrastructure.Infrastructure.Outbox.Models
+namespace Organetto.UseCases.Shared.Outbox.Models
 {
     public class OutboxMessage
     {
@@ -25,18 +25,23 @@
         public Guid? CorrelationId { get; set; }
 
         /// <summary>
-        /// Сколько раз при публикации упало (retry logic).
-        /// </summary>
-        public int RetryCount { get; set; } = 0;
-
-        /// <summary>
-        /// Когда сообщение было успешно отправлено.
+        /// Когда событие было обработано (UTC).
         /// </summary>
         public DateTimeOffset? ProcessedOn { get; set; }
 
         /// <summary>
-        /// Текст последней ошибки (обрезается до 3000 символов).
+        /// Ошибка, если событие не удалось обработать.
         /// </summary>
         public string? Error { get; set; }
+
+        /// <summary>
+        /// Количество попыток обработки.
+        /// </summary>
+        public int RetryCount { get; set; }
+
+        /// <summary>
+        /// Когда была последняя попытка обработки (UTC).
+        /// </summary>
+        public DateTimeOffset? LastRetry { get; set; }
     }
 }

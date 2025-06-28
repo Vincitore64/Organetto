@@ -1,7 +1,8 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models;
-using Organetto.Infrastructure.Infrastructure.MassTransit.Services;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
+using Organetto.UseCases.Shared.IntegrationEvents.Services;
+using Organetto.UseCases.Shared.MassTransit.Services;
 
 namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services
 {

@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Organetto.Infrastructure\Organetto.Infrastructure.csproj" />
     <ProjectReference Include="..\Organetto.UseCases\Organetto.UseCases.csproj" />
   </ItemGroup>
 

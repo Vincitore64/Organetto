@@ -1,4 +1,4 @@
-﻿namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models
+namespace Organetto.UseCases.Shared.IntegrationEvents.Models
 {
     public interface IIntegrationEvent
     {

@@ -5,7 +5,7 @@ using Organetto.Core.Shared.Databases;
 using Organetto.Core.Shared.Databases.Transactions;
 using Organetto.Core.Users.Data;
 using Organetto.Infrastructure.Data.Shared.Transactions;
-using Organetto.Infrastructure.Infrastructure.Outbox.Models;
+using Organetto.UseCases.Shared.Outbox.Models;
 
 namespace Organetto.Infrastructure.Data.Shared
 {

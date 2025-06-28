@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Organetto.Infrastructure.Data.Shared;
-using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models;
-using Organetto.Infrastructure.Infrastructure.Outbox.Models;
-using Organetto.Infrastructure.Infrastructure.Outbox.Services;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
+using Organetto.UseCases.Shared.Outbox.Models;
+using Organetto.UseCases.Shared.Outbox.Services;
 
 namespace Organetto.Infrastructure.Data.Outbox
 {

@@ -1,6 +1,6 @@
-﻿using Organetto.Infrastructure.Infrastructure.IntegrationEvents.Models;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
 
-namespace Organetto.Infrastructure.Infrastructure.Outbox.Services
+namespace Organetto.UseCases.Shared.Outbox.Services
 {
     /// <summary>
     /// Сервис для добавления интеграционных событий в таблицу Outbox.

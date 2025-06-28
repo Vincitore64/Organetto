@@ -1,6 +1,6 @@
-﻿using MassTransit;
+using MassTransit;
 
-namespace Organetto.Infrastructure.Infrastructure.MassTransit.Services
+namespace Organetto.UseCases.Shared.MassTransit.Services
 {
     public interface IRabbitBus : IBus { }
     public interface IKafkaBus : IBus { }
