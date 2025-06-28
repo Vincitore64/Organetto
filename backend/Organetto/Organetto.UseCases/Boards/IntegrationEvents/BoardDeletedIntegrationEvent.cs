@@ -23,13 +23,13 @@ namespace Organetto.UseCases.Boards.IntegrationEvents
     /// loads the board to get OwnerId, 
     /// and notifies via SignalR.
     /// </summary>
-    public class BoardDeletedIntegrationEventConsumer :
+    public class SignalRBoardDeletedIntegrationEventConsumer :
         IConsumer<BoardDeletedIntegrationEvent>
     {
         private readonly IBoardRepository _boards;
         private readonly IHubContext<BoardHub, IBoardClient> _hub;
 
-        public BoardDeletedIntegrationEventConsumer(
+        public SignalRBoardDeletedIntegrationEventConsumer(
             IBoardRepository boards,
             IHubContext<BoardHub, IBoardClient> hub)
         {

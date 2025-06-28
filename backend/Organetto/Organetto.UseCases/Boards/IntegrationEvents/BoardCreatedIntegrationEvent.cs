@@ -23,19 +23,19 @@ namespace Organetto.UseCases.Boards.IntegrationEvents
     /// loads the Board entity, maps to BoardDto, 
     /// and notifies the owner’s SignalR group.
     /// </summary>
-    public class BoardCreatedIntegrationEventConsumer :
+    public class SignalRBoardCreatedIntegrationEventConsumer :
         IConsumer<BoardCreatedIntegrationEvent>
     {
         private readonly IBoardRepository _boards;
         private readonly IMapper _mapper;
         private readonly IHubContext<BoardHub, IBoardClient> _hub;
-        private readonly ILogger<BoardCreatedIntegrationEventConsumer> _logger;
+        private readonly ILogger<SignalRBoardCreatedIntegrationEventConsumer> _logger;
 
-        public BoardCreatedIntegrationEventConsumer(
+        public SignalRBoardCreatedIntegrationEventConsumer(
             IBoardRepository boards,
             IMapper mapper,
             IHubContext<BoardHub, IBoardClient> hub,
-            ILogger<BoardCreatedIntegrationEventConsumer> logger)
+            ILogger<SignalRBoardCreatedIntegrationEventConsumer> logger)
         {
             _boards = boards;
             _mapper = mapper;
