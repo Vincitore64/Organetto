@@ -1,10 +1,5 @@
 <template>
-  <a-card 
-    hoverable 
-    class="board-card"
-    :body-style="{ padding: '16px' }"
-    @click="$emit('open', board.id)"
-  >
+  <a-card hoverable class="board-card" :body-style="{ padding: '16px' }" @click="$emit('open', board.id)">
     <template #cover>
       <div class="card-cover">
         <img :src="board.thumbnailUrl" :alt="board.title" class="board-thumbnail" />
@@ -16,7 +11,7 @@
         </div>
       </div>
     </template>
-    
+
     <div class="card-content">
       <h3 class="board-title">{{ board.title }}</h3>
       <div class="board-meta">
@@ -36,12 +31,12 @@
 <script setup lang="ts">
 import { EyeOutlined, ClockCircleOutlined, UserOutlined } from '@ant-design/icons-vue'
 
-interface Board { 
+interface Board {
   id: number
   title: string
-  thumbnailUrl: string 
+  thumbnailUrl: string
 }
-
+// @eslint-disable-next-line
 const props = defineProps<{ board: Board }>()
 defineEmits<{
   open: [id: number]
@@ -57,21 +52,21 @@ defineEmits<{
   cursor: pointer;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     border-color: var(--color-primary-200, #bae7ff);
-    
+
     .overlay {
       opacity: 1;
     }
-    
+
     .board-thumbnail {
       transform: scale(1.05);
     }
   }
-  
+
   :deep(.ant-card-body) {
     padding: 16px;
   }
@@ -82,14 +77,14 @@ defineEmits<{
   height: 160px;
   overflow: hidden;
   background: linear-gradient(135deg, #f0f2f5, #e6f7ff);
-  
+
   .board-thumbnail {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .overlay {
     position: absolute;
     top: 0;
@@ -102,18 +97,18 @@ defineEmits<{
     justify-content: center;
     opacity: 0;
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     .overlay-content {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
       color: white;
-      
+
       .view-icon {
         font-size: 24px;
       }
-      
+
       .view-text {
         font-size: 14px;
         font-weight: 500;
@@ -133,21 +128,21 @@ defineEmits<{
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  
+
   .board-meta {
     display: flex;
     gap: 16px;
-    
+
     .meta-item {
       display: flex;
       align-items: center;
       gap: 4px;
-      
+
       .meta-icon {
         font-size: 12px;
         color: var(--color-text-weak, #8c8c8c);
       }
-      
+
       .meta-text {
         font-size: 12px;
         color: var(--color-text-weak, #8c8c8c);
