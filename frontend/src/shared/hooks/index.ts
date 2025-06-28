@@ -1,1 +1,1 @@
-export * from './useRealtimeCollection'
+export { useRealtimeCollection } from './useRealtimeCollection'
