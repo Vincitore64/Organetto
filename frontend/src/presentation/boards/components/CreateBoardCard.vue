@@ -176,7 +176,8 @@ const getFloatingIconStyle = (index: number) => {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-primary-500, #1890ff), var(--color-primary-600, #096dd9));
+    // background: linear-gradient(135deg, var(--color-primary-500, #1890ff), var(--color-primary-600, #096dd9));
+    background: var(--color-blue-gradient);
     margin-bottom: 16px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);

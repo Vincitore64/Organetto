@@ -12,8 +12,29 @@
             <h1 class="page-subtitle">Управляйте своими проектами эффективно</h1>
           </div>
 
-          <div class="search-section">
-            <SearchBar v-model="boadrdPageViews.state.value.searchTerms.value" class="enhanced-search" />
+          <!-- Фильтры и сортировка -->
+          <div class="filters-section">
+            <div class="filters-left">
+              <a-button-group>
+                <a-button type="primary" size="small">Все доски</a-button>
+                <a-button size="small">Недавние</a-button>
+                <a-button size="small">Избранные</a-button>
+                <a-button size="small">Архив</a-button>
+              </a-button-group>
+            </div>
+            <div class="filters-right">
+              <a-select size="small" style="width: 120px" placeholder="Сортировка">
+                <a-select-option value="recent">По дате</a-select-option>
+                <a-select-option value="name">По имени</a-select-option>
+                <a-select-option value="activity">По активности</a-select-option>
+              </a-select>
+              <a-button size="small" type="text">
+                <AppstoreOutlined />
+              </a-button>
+              <a-button size="small" type="text">
+                <UnorderedListOutlined />
+              </a-button>
+            </div>
           </div>
 
           <div class="user-section">
@@ -91,31 +112,6 @@
             </div>
           </div> -->
 
-          <!-- Фильтры и сортировка -->
-          <div class="filters-section">
-            <div class="filters-left">
-              <a-button-group>
-                <a-button type="primary" size="small">Все доски</a-button>
-                <a-button size="small">Недавние</a-button>
-                <a-button size="small">Избранные</a-button>
-                <a-button size="small">Архив</a-button>
-              </a-button-group>
-            </div>
-            <div class="filters-right">
-              <a-select size="small" style="width: 120px" placeholder="Сортировка">
-                <a-select-option value="recent">По дате</a-select-option>
-                <a-select-option value="name">По имени</a-select-option>
-                <a-select-option value="activity">По активности</a-select-option>
-              </a-select>
-              <a-button size="small" type="text">
-                <AppstoreOutlined />
-              </a-button>
-              <a-button size="small" type="text">
-                <UnorderedListOutlined />
-              </a-button>
-            </div>
-          </div>
-
           <div class="section-header">
             <h2 class="subtitle">
               <ClockCircleOutlined class="subtitle-icon" />
@@ -156,18 +152,21 @@
               </a-button>
             </div>
             <div class="templates-grid">
-              <div class="template-card" v-for="template in templates" :key="template.id">
-                <div class="template-preview">
-                  <component :is="template.icon" class="template-icon" />
-                </div>
-                <div class="template-info">
-                  <h4 class="template-title">{{ template.title }}</h4>
-                  <p class="template-description">{{ template.description }}</p>
-                  <a-button size="small" type="primary" ghost>
+              <a-card v-for="template in templates" :key="template.id" class="template-card" hoverable size="small">
+                <template #cover>
+                  <div class="template-preview">
+                    <component :is="template.icon" class="template-icon" />
+                  </div>
+                </template>
+
+                <a-card-meta :title="template.title" :description="template.description" />
+
+                <template #actions>
+                  <a-button size="small" type="primary" block>
                     Использовать
                   </a-button>
-                </div>
-              </div>
+                </template>
+              </a-card>
             </div>
           </div>
 
@@ -208,8 +207,6 @@
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Sidebar from '@/presentation/shared/components/SideBar.vue'
-import SearchBar from '@/presentation/shared/components/SearchBar.vue'
-// import SortDropdown from '@/components/SortDropdown.vue'
 import BoardCard from '@/presentation/boards/components/BoardCard.vue'
 import CreateBoardCard from '@/presentation/boards/components/CreateBoardCard.vue'
 import {
@@ -336,20 +333,16 @@ const templates = ref([
 // ])
 
 </script>
-
-<style scoped lang="scss">
+<style lang="scss">
 // Основные переменные
 :root {
   --header-height: 65px;
   --sidebar-width: 280px;
   --content-padding: 32px;
   --border-radius: 12px;
-  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.18);
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
+</style>
+<style scoped lang="scss">
 .board-page {
   height: 100vh;
   background: var(--color-bg-gradient);
@@ -366,6 +359,8 @@ const templates = ref([
 .main-layout {
   background: transparent;
   position: relative;
+  display: grid;
+  // gap: 16px;
 }
 
 .header {
@@ -379,8 +374,7 @@ const templates = ref([
   z-index: 100;
 
   .header-content {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
     height: 100%;
     padding: 0 var(--content-padding);
@@ -389,7 +383,7 @@ const templates = ref([
 }
 
 .welcome-section {
-  padding: 0 16px;
+  // padding: 0 16px;
 
   .page-title {
     font-size: 28px;
@@ -402,48 +396,13 @@ const templates = ref([
   }
 
   .page-subtitle {
-    font-size: 20px;
-    color: var(--color-text-weak);
+    font-size: 24px;
+    color: var(--color-text);
     margin: 0;
     font-family: 'Sofia Sans Extra Condensed', sans-serif;
-    letter-spacing: 1px;
+    letter-spacing: 0px;
     font-weight: 400;
-  }
-}
-
-.search-section {
-  display: flex;
-  justify-content: center;
-
-  .enhanced-search {
-    width: 400px;
-
-    :deep(.ant-input-search) {
-      border-radius: 24px;
-      box-shadow: var(--shadow-light);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-
-      .ant-input {
-        border-radius: 24px 0 0 24px;
-        border: none;
-        padding: 12px 16px;
-        font-size: 14px;
-
-        &:focus {
-          box-shadow: none;
-        }
-      }
-
-      .ant-btn {
-        border-radius: 0 24px 24px 0;
-        border: none;
-        background: var(--color-primary-500);
-
-        &:hover {
-          background: var(--color-primary-600);
-        }
-      }
-    }
+    // opacity: 1;
   }
 }
 
@@ -484,6 +443,7 @@ const templates = ref([
   overflow: auto;
   background: transparent;
   height: calc(100vh - var(--header-height));
+  padding: 0 16px;
 }
 
 .content-wrapper {
@@ -624,17 +584,31 @@ const templates = ref([
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: var(--border-radius);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  flex: 1;
+  margin: 0 24px;
+  padding: 0;
+  background: transparent;
 
   .filters-left {
     :deep(.ant-btn-group) {
       .ant-btn {
         border-radius: 6px;
+        // background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        // color: rgba(255, 255, 255, 0.85);
+        transition: all 0.3s ease;
+
+        &:hover {
+          // background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.3);
+          // color: white;
+        }
+
+        &.ant-btn-primary {
+          // background: rgba(215, 225, 255, 0.904);
+          border-color: rgba(255, 255, 255, 0.3);
+          color: white;
+        }
 
         &:not(:last-child) {
           margin-right: 8px;
@@ -647,13 +621,34 @@ const templates = ref([
     display: flex;
     align-items: center;
     gap: 8px;
+
+    :deep(.ant-select) {
+      .ant-select-selector {
+        // background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+
+    :deep(.ant-btn) {
+      // background: rgba(255, 255, 255, 0.1);
+      // border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(54, 54, 54, 0.85);
+
+      &:hover {
+        // background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+        // color: white;
+      }
+    }
   }
 }
 
 // Секции
 .section-header {
   .create-btn {
-    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+    // background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+    background: var(--color-blue-gradient);
     border: none;
     box-shadow: var(--shadow-light);
 
@@ -690,49 +685,58 @@ const templates = ref([
     gap: 20px;
     margin-top: 16px;
 
-    .template-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-radius: var(--border-radius);
-      border: 1px solid rgba(0, 0, 0, 0.06);
+    :deep(.template-card) {
+      background: var(--color-surface, #ffffff);
+      border-radius: 12px;
+      border: none;
       overflow: hidden;
-      transition: var(--transition-smooth);
-      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
       &:hover {
         transform: translateY(-4px);
-        box-shadow: var(--shadow-medium);
-        border-color: var(--color-primary-200);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        // background: linear-gradient(135deg, #ffffff, #f6ffed);
       }
 
-      .template-preview {
-        height: 120px;
-        background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .ant-card-cover {
+        .template-preview {
+          height: 120px;
+          background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-        .template-icon {
-          font-size: 32px;
-          color: var(--color-primary-500);
+          .template-icon {
+            font-size: 32px;
+            color: var(--color-primary-500);
+          }
         }
       }
 
-      .template-info {
-        padding: 20px;
-
-        .template-title {
+      .ant-card-meta {
+        .ant-card-meta-title {
           font-size: 16px;
           font-weight: 600;
           color: var(--color-text);
-          margin: 0 0 8px 0;
+          margin-bottom: 8px;
         }
 
-        .template-description {
+        .ant-card-meta-description {
           font-size: 14px;
           color: var(--color-text-weak);
-          margin: 0 0 16px 0;
           line-height: 1.4;
+        }
+      }
+
+      .ant-card-actions {
+        background: transparent;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        padding: 12px 16px;
+
+        li {
+          margin: 0;
+          width: 100%;
         }
       }
     }
@@ -805,11 +809,6 @@ const templates = ref([
     grid-template-columns: 1fr;
     gap: 16px;
     text-align: center;
-  }
-
-  .search-section .enhanced-search {
-    width: 100%;
-    max-width: 400px;
   }
 
   .user-section {

@@ -3,3 +3,14 @@
   background: rgba(255, 255, 255, 0.7) !important;
   // background-blend-mode: overlay !important;
 }
+.ant-btn-primary {
+  // backdrop-filter: blur(33px)!important;
+  background: var(--color-blue-gradient) !important;
+  border: none;
+  box-shadow: var(--shadow-light);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+  }
+}
