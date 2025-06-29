@@ -59,7 +59,9 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
             {
                 busConfigurator.SetKebabCaseEndpointNameFormatter();
 
-                busConfigurator.AddConsumers(Assembly.GetExecutingAssembly());        // Локальные задачи
+                //busConfigurator.AddConsumers(Assembly.GetExecutingAssembly());        // Локальные задачи
+                busConfigurator.AddConsumer<SignalRBoardCreatedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<SignalRBoardDeletedIntegrationEventConsumer>();
 
                 busConfigurator.UsingInMemory((context, configuration) =>
                 {

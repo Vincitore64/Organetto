@@ -9,24 +9,24 @@
         <div class="header-content">
           <div class="welcome-section">
             <!-- <h1 class="page-title">{{ t('boards.page.title') }}</h1> -->
-            <h1 class="page-subtitle one-line-text">Управляйте своими проектами эффективно</h1>
+            <h1 class="page-subtitle one-line-text">{{ t('boards.page.subtitle') }}</h1>
           </div>
 
           <!-- Фильтры и сортировка -->
           <div class="filters-section">
             <div class="filters-left">
               <a-button-group>
-                <a-button type="primary" size="small">Все доски</a-button>
-                <a-button size="small">Недавние</a-button>
-                <a-button size="small">Избранные</a-button>
-                <a-button size="small">Архив</a-button>
+                <a-button type="primary" size="small">{{ t('boards.page.allBoards') }}</a-button>
+                <a-button size="small">{{ t('boards.page.recent') }}</a-button>
+                <a-button size="small">{{ t('boards.page.favorites') }}</a-button>
+                <a-button size="small">{{ t('boards.page.archive') }}</a-button>
               </a-button-group>
             </div>
             <div class="filters-right">
-              <a-select size="small" style="width: 120px" placeholder="Сортировка">
-                <a-select-option value="recent">По дате</a-select-option>
-                <a-select-option value="name">По имени</a-select-option>
-                <a-select-option value="activity">По активности</a-select-option>
+              <a-select size="small" style="width: 120px" :placeholder="t('boards.sort.recent')">
+                <a-select-option value="recent">{{ t('boards.sort.recent') }}</a-select-option>
+                <a-select-option value="name">{{ t('boards.sort.name') }}</a-select-option>
+                <a-select-option value="activity">{{ t('boards.sort.activity') }}</a-select-option>
               </a-select>
               <a-button size="small" type="text">
                 <AppstoreOutlined />
@@ -38,7 +38,7 @@
           </div>
 
           <div class="user-section">
-            <a-tooltip title="Уведомления">
+            <a-tooltip :title="t('boards.notifications.tooltip')">
               <a-badge :count="3" size="small">
                 <bell-outlined class="bell" />
               </a-badge>
@@ -52,14 +52,14 @@
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="profile">
-                    <UserOutlined /> Профиль
+                    <UserOutlined /> {{ t('boards.user.profile') }}
                   </a-menu-item>
                   <a-menu-item key="settings">
-                    <SettingOutlined /> Настройки
+                    <SettingOutlined /> {{ t('boards.user.settings') }}
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="logout">
-                    <LogoutOutlined /> Выйти
+                    <LogoutOutlined /> {{ t('boards.user.logout') }}
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -118,14 +118,14 @@
               {{ t('boards.page.recentlyViewed') }}
             </h2>
             <div class="section-actions">
-              <a-tooltip title="Создать новую доску">
+              <a-tooltip :title="t('boards.page.create')">
                 <a-button type="primary" size="small" class="create-btn" @click="createBoard">
                   <PlusOutlined />
-                  Создать доску
+                  {{ t('boards.page.create') }}
                 </a-button>
               </a-tooltip>
               <a-button type="text" size="small" class="view-all-btn">
-                Показать все
+                {{ t('boards.page.showAll') }}
                 <ArrowRightOutlined />
               </a-button>
             </div>
@@ -145,10 +145,10 @@
             <div class="section-header">
               <h3 class="section-title">
                 <FileTextOutlined class="subtitle-icon" />
-                Шаблоны проектов
+                {{ t('boards.templates.title') }}
               </h3>
               <a-button type="text" size="small">
-                Все шаблоны
+                {{ t('boards.templates.allTemplates') }}
                 <ArrowRightOutlined />
               </a-button>
             </div>
@@ -164,7 +164,7 @@
 
                 <template #actions>
                   <a-button size="small" type="primary" block>
-                    Использовать
+                    {{ t('boards.templates.use') }}
                   </a-button>
                 </template>
               </a-card>
@@ -176,10 +176,10 @@
             <div class="section-header">
               <h3 class="section-title">
                 <HistoryOutlined class="subtitle-icon" />
-                Последняя активность
+                {{ t('boards.activity.title') }}
               </h3>
               <a-button type="text" size="small">
-                Вся активность
+                {{ t('boards.activity.viewAll') }}
                 <ArrowRightOutlined />
               </a-button>
             </div>

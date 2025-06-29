@@ -11,7 +11,7 @@ namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services
     /// </summary>
     public class MassTransitIntegrationEventBus : IIntegrationEventBus
     {
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IInMemoryBus _publishEndpoint;
         private readonly ILogger<MassTransitIntegrationEventBus> _logger;
 
         public MassTransitIntegrationEventBus(
@@ -30,7 +30,8 @@ namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services
         //    _logger = logger;
         //}
 
-        public async Task PublishAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
+        public async Task PublishAsync<T>(T integrationEvent, CancellationToken cancellationToken = default)
+            where T : IIntegrationEvent
         {
             if (integrationEvent == null)
                 throw new ArgumentNullException(nameof(integrationEvent));
@@ -50,6 +51,30 @@ namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services
                     "Failed to publish integration event: {EventType} (ID: {EventId})",
                     integrationEvent.GetType().Name,
                     integrationEvent.Id);
+                throw;
+            }
+        }
+
+        public async Task PublishAsync(object integrationEvent, Type type, CancellationToken cancellationToken = default)
+        {
+            if (integrationEvent == null)
+                throw new ArgumentNullException(nameof(integrationEvent));
+
+            try
+            {
+                await _publishEndpoint.Publish(integrationEvent, type, cancellationToken);
+                _logger.LogInformation(
+                    "Integration event published: {EventType} (ID: {EventId})",
+                    type.Name,
+                    type.GetProperty("Id")?.GetValue(integrationEvent));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Failed to publish integration event: {EventType} (ID: {EventId})",
+                    type.Name,
+                    type.GetProperty("Id")?.GetValue(integrationEvent));
                 throw;
             }
         }

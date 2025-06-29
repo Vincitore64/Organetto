@@ -32,7 +32,6 @@ const usersStore = tryInjectServices().resolve<UsersStore>(ProvidedService.Users
 const usersComposable = useUsersComposable(apiClient, usersStore)
 
 async function onSuccess() {
-  debugger
   const u = await usersComposable.getCurrentUser()
   router.push({ name: 'Boards', params: { userId: u.id } })
 }

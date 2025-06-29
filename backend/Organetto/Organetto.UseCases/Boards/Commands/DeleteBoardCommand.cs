@@ -1,9 +1,12 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
 using Organetto.UseCases.Boards.Hubs;
+using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Boards.Services;
+using Organetto.UseCases.Shared.Outbox.Services;
 
 namespace Organetto.UseCases.Boards.Commands
 {
@@ -22,17 +25,18 @@ namespace Organetto.UseCases.Boards.Commands
     {
         private readonly IBoardRepository _boardRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHubContext<BoardHub, IBoardClient> _hub;
+        private readonly IOutboxService _outboxService;
 
-        public DeleteBoardCommandHandler(IBoardRepository boardRepository, IUnitOfWork unitOfWork, IHubContext<BoardHub, IBoardClient> hub)
+        public DeleteBoardCommandHandler(IBoardRepository boardRepository, IUnitOfWork unitOfWork, IOutboxService outboxService)
         {
             _boardRepository = boardRepository;
             this._unitOfWork = unitOfWork;
-            this._hub = hub;
+            this._outboxService = outboxService;
         }
 
         public async Task<Unit> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
         {
+            var dbTransaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             // 1. Load the board to verify existence and owner.
             var board = await _boardRepository.GetByIdAsync(request.BoardId, cancellationToken);
             if (board == null)
@@ -45,7 +49,11 @@ namespace Organetto.UseCases.Boards.Commands
             // 3. Perform delete (archive) operation.
             await _boardRepository.DeleteAsync(request.BoardId);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            await _hub.Clients.Group($"boards:{board.OwnerId}").BoardDeleted(request.BoardId);
+
+            await _outboxService.AddAsync(new BoardDeletedIntegrationEvent(request.BoardId), cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await dbTransaction.CommitAsync(cancellationToken);
 
             return Unit.Value;
         }

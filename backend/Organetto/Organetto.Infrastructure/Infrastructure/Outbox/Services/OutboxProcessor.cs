@@ -32,9 +32,10 @@ namespace Organetto.Infrastructure.Infrastructure.Outbox.Services
             {
                 try
                 {
+                    
                     using var scope = _serviceProvider.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var eventBus = scope.ServiceProvider.GetRequiredService<IIntegrationEventBus>();
+                    var eventBus = _serviceProvider.GetRequiredService<IIntegrationEventBus>();
 
                     var messages = await dbContext.OutboxMessages
                         .Where(x => x.ProcessedOn == null)
@@ -50,7 +51,7 @@ namespace Organetto.Infrastructure.Infrastructure.Outbox.Services
                             var type = Type.GetType(assemblyQualifiedName, throwOnError: true)!;
                             var integrationEvent = (IIntegrationEvent)JsonConvert.DeserializeObject(message.Payload, type)!;
 
-                            await eventBus.PublishAsync(integrationEvent, stoppingToken);
+                            await eventBus.PublishAsync(integrationEvent, type, stoppingToken);
                             message.ProcessedOn = DateTimeOffset.UtcNow;
                         }
                         catch (Exception ex)

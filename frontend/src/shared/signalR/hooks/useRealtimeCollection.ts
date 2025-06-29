@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue'
+import { type Ref } from 'vue'
 import { useSignalRClient } from './useSignalRClient'
 import { SignalRHubType } from '../models'
 import { isString, isNumber, isObject, findIndex, cloneDeep, merge, get } from 'lodash'
@@ -72,10 +72,10 @@ export interface RealtimeCollectionOptions<T, K> {
  * ```
  */
 export function useRealtimeCollection<T, K = number | string>(
-  initialItems: T[],
+  items: Ref<T[]>,
   options: RealtimeCollectionOptions<T, K>,
 ) {
-  const items = ref<T[]>([...initialItems]) as Ref<T[]>
+  // const items = ref<T[]>([...initialItems]) as Ref<T[]>
 
   const {
     connect: connectSignalR,
@@ -248,7 +248,6 @@ export function useRealtimeCollection<T, K = number | string>(
 
     if (options.events.deleted) {
       on(options.events.deleted, (d: unknown) => {
-        debugger
         if (!d) return
 
         let id: K | null = null

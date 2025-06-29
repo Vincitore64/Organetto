@@ -1,11 +1,36 @@
 {
   "page": {
     "title": "Boards",
+    "subtitle": "Manage your projects efficiently",
     "recentlyViewed": "Recently viewed",
-    "create": "Create board"
+    "create": "Create board",
+    "showAll": "Show all",
+    "allBoards": "All boards",
+    "recent": "Recent",
+    "favorites": "Favorites",
+    "archive": "Archive"
   },
   "sort": {
-    "recent": "Recently viewed",
+    "recent": "By date",
+    "name": "By name",
+    "activity": "By activity",
     "alphabet": "Alphabetically"
+  },
+  "templates": {
+    "title": "Project templates",
+    "allTemplates": "All templates",
+    "use": "Use"
+  },
+  "notifications": {
+    "tooltip": "Notifications"
+  },
+  "user": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "activity": {
+    "title": "Recent Activity",
+    "viewAll": "View All Activity"
   }
 }

@@ -31,7 +31,6 @@ export const useAuthStore = (apiClient: ApiClient) =>
     }
 
     async function getToken() {
-      debugger
       if (!tokens.value) throw new Error('No tokens')
       if (!tokens.value.expiresAt) throw new Error('No expiresAt')
       // Проверяем, истекает ли токен в ближайшие 10 минут

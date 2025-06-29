@@ -90,9 +90,8 @@ export function useRealtimeBoardPageViews(apiClient: ApiClient) {
     error: Ref<Error | null>
   }> {
     const result = await baseFetch(payload)
-    debugger
     const { items, isConnected, connect, disconnect, error } = useRealtimeCollection(
-      result.allViews.value,
+      result.allViews,
       {
         hubType: SignalRHubType.Boards,
         getItemId: (item) => item.id,

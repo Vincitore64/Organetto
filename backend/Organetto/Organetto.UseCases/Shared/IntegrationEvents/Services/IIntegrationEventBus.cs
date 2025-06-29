@@ -10,6 +10,7 @@ namespace Organetto.UseCases.Shared.IntegrationEvents.Services
         /// <summary>
         /// Публикует интеграционное событие во внешнюю шину.
         /// </summary>
-        Task PublishAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken = default);
+        Task PublishAsync<T>(T integrationEvent, CancellationToken cancellationToken = default) where T: IIntegrationEvent;
+        Task PublishAsync(object integrationEvent, Type type, CancellationToken cancellationToken = default);
     }
 }
