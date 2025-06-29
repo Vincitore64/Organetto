@@ -1,6 +1,6 @@
 import { ref, type Ref } from 'vue'
-import { useSignalRClient } from '@/application/shared'
-import { SignalRHubType } from '@/shared/env'
+import { useSignalRClient } from './useSignalRClient'
+import { SignalRHubType } from '../models'
 import { isString, isNumber, isObject, findIndex, cloneDeep, merge, get } from 'lodash'
 import { z, type ZodSchema } from 'zod'
 
@@ -233,6 +233,7 @@ export function useRealtimeCollection<T, K = number | string>(
 
     if (options.events.created) {
       on(options.events.created, async (d: unknown) => {
+        debugger
         const item = await ensureItem(d)
         if (item) addOrUpdate(item)
       })
@@ -247,6 +248,7 @@ export function useRealtimeCollection<T, K = number | string>(
 
     if (options.events.deleted) {
       on(options.events.deleted, (d: unknown) => {
+        debugger
         if (!d) return
 
         let id: K | null = null

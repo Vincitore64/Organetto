@@ -1,11 +1,8 @@
-using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.UseCases.Boards.Hubs;
-using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Boards.Services;
 using Organetto.UseCases.Shared.MassTransit.Configuration.Extensions;
-using Organetto.UseCases.Shared.MassTransit.Services;
 using System.Reflection;
 
 namespace Organetto.UseCases.Configuration.Extensions
@@ -30,7 +27,7 @@ namespace Organetto.UseCases.Configuration.Extensions
             return services;
         }
 
-        public static void UseApplicationServices(this WebApplication app)
+        public static void UseApplicationHubs(this WebApplication app)
         {
             app.MapHub<BoardHub>("/hubs/boards");
         }

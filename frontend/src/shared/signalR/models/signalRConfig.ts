@@ -19,7 +19,7 @@ export enum SignalRHubType {
  * @returns URL для подключения к хабу
  */
 export function getSignalRHubUrl(hubType: SignalRHubType): string {
-  return getApiUrl(`hub/${hubType}`)
+  return getApiUrl(`hubs/${hubType}`)
 }
 
 /**

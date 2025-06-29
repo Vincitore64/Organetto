@@ -24,27 +24,27 @@ namespace Organetto.UseCases.Boards.Hubs
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
 
-        ///// userId приходит в query ?userId=42
-        //public override async Task OnConnectedAsync()
-        //{
-        //    var userId = Context.GetHttpContext()!.Request.Query["userId"];
-        //    if (!long.TryParse(userId, out var id) || id <= 0)
-        //    {
-        //        Context.Abort(); // защищаем хаб
-        //        return;
-        //    }
+        /// userId приходит в query ?userId=42
+        public override async Task OnConnectedAsync()
+        {
+            var userIdParam = Context.GetHttpContext()!.Request.Query["userId"];
+            if (!long.TryParse(userIdParam, out var userId) || userId <= 0)
+            {
+                Context.Abort(); // защищаем хаб
+                return;
+            }
 
-        //    await Groups.AddToGroupAsync(Context.ConnectionId, $"boards:{id}");
-        //    await base.OnConnectedAsync();
-        //}
+            await Subscribe(userId);
+            await base.OnConnectedAsync();
+        }
 
-        //public override async Task OnDisconnectedAsync(Exception? ex)
-        //{
-        //    var userId = Context.GetHttpContext()!.Request.Query["userId"];
-        //    if (long.TryParse(userId, out var id) && id > 0)
-        //        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"boards:{id}");
+        public override async Task OnDisconnectedAsync(Exception? ex)
+        {
+            var userIdParam = Context.GetHttpContext()!.Request.Query["userId"];
+            if (long.TryParse(userIdParam, out var userId) && userId > 0)
+                await Unsubscribe(userId);
 
-        //    await base.OnDisconnectedAsync(ex);
-        //}
+            await base.OnDisconnectedAsync(ex);
+        }
     }
 }

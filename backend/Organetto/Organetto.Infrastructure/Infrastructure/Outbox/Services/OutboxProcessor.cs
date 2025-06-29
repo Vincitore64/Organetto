@@ -18,6 +18,7 @@ namespace Organetto.Infrastructure.Infrastructure.Outbox.Services
         private readonly ILogger<OutboxProcessor> _logger;
         private const int BatchSize = 20;
         private static readonly TimeSpan Delay = TimeSpan.FromSeconds(30);
+        private const string IntegrationEventsAssemblyName = "Organetto.UseCases";
 
         public OutboxProcessor(IServiceProvider serviceProvider, ILogger<OutboxProcessor> logger)
         {
@@ -45,7 +46,8 @@ namespace Organetto.Infrastructure.Infrastructure.Outbox.Services
                     {
                         try
                         {
-                            var type = Type.GetType(message.Type, throwOnError: true)!;
+                            var assemblyQualifiedName = $"{message.Type}, {IntegrationEventsAssemblyName}";
+                            var type = Type.GetType(assemblyQualifiedName, throwOnError: true)!;
                             var integrationEvent = (IIntegrationEvent)JsonConvert.DeserializeObject(message.Payload, type)!;
 
                             await eventBus.PublishAsync(integrationEvent, stoppingToken);

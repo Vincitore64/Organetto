@@ -1,1 +1,1 @@
-export * from './signalR'
+export * from './entities'

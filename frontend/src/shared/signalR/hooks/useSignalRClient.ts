@@ -1,10 +1,12 @@
-import { SignalRClient } from '@/dataAccess/shared/signalR'
-import { getSignalRHubUrl, SignalRHubType } from '@/shared/env'
-import { tryInjectServices } from '@/shared'
+import { container } from 'tsyringe'
+import { SignalRClient, type Handler } from '../services'
+import { getSignalRHubUrl, SignalRHubType } from '@/shared'
 import { ref, onUnmounted } from 'vue'
-import type { Handler } from '@/dataAccess/shared/signalR/services/SignalRClient'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 import { useAuthStore } from '@/application/authentication/stores/authStore'
+import qs from 'qs'
+import { useUsersComposable } from '@/application/users/hooks/useUsers'
+import { useUsersStore } from '@/application/users/stores/usersStore'
 
 /**
  * Хук для работы с SignalR клиентом
@@ -13,9 +15,10 @@ import { useAuthStore } from '@/application/authentication/stores/authStore'
  * @returns Объект с методами для работы с SignalR
  */
 export function useSignalRClient(hubType: SignalRHubType) {
-  const container = tryInjectServices()
+  // const container = tryInjectServices()
   const apiClient = container.resolve(ApiClient)
   const authStore = useAuthStore(apiClient)
+  const users = useUsersComposable(apiClient, useUsersStore())
 
   const client = ref<SignalRClient | null>(null)
   const isConnected = ref(false)
@@ -29,8 +32,8 @@ export function useSignalRClient(hubType: SignalRHubType) {
       if (client.value) {
         await disconnect()
       }
-
-      const hubUrl = getSignalRHubUrl(hubType)
+      const currentUser = await users.getCurrentUser()
+      const hubUrl = getSignalRHubUrl(hubType) + '?' + qs.stringify({ userId: currentUser.id })
 
       client.value = SignalRClient.create({
         url: hubUrl,

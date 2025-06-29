@@ -36,8 +36,8 @@ interface Board {
   title: string
   thumbnailUrl: string
 }
-// @eslint-disable-next-line
-const props = defineProps<{ board: Board }>()
+
+defineProps<{ board: Board }>()
 defineEmits<{
   open: [id: number]
 }>()
@@ -45,6 +45,8 @@ defineEmits<{
 
 <style scoped lang="scss">
 .board-card {
+  display: grid;
+  grid-template-rows: 1fr auto;
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.06);
   background: var(--color-surface, #ffffff);
@@ -74,7 +76,7 @@ defineEmits<{
 
 .card-cover {
   position: relative;
-  height: 160px;
+  height: 100%;
   overflow: hidden;
   background: linear-gradient(135deg, #f0f2f5, #e6f7ff);
 
@@ -119,7 +121,7 @@ defineEmits<{
 
 .card-content {
   .board-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--color-text, #262626);
     margin: 0 0 12px 0;
@@ -139,12 +141,12 @@ defineEmits<{
       gap: 4px;
 
       .meta-icon {
-        font-size: 12px;
+        font-size: 14px;
         color: var(--color-text-weak, #8c8c8c);
       }
 
       .meta-text {
-        font-size: 12px;
+        font-size: 14px;
         color: var(--color-text-weak, #8c8c8c);
         font-weight: 400;
       }

@@ -4,9 +4,10 @@ import { defaultThumbnailHref } from '../models'
 import _ from 'lodash'
 import { computed, ref, type Ref } from 'vue'
 import { createAdvancedSorter, ObjectSearch, type SortOrder } from '@/shared'
-import { useSignalRClient } from '@/application/shared'
-import { SignalRHubType } from '@/shared/env'
+import { SignalRHubType } from '@/shared'
 import type { BoardDto } from '@/dataAccess/boards/models'
+import { useRealtimeCollection } from '@/shared'
+import { boardCreated, boardDeleted } from '@/application'
 
 /**
  * Higher-order composable for fetching BoardPageView data.
@@ -84,66 +85,48 @@ export function useRealtimeBoardPageViews(apiClient: ApiClient) {
     sortDirection: Ref<SortOrder>
     views: Ref<BoardPageView[]>
     isConnected: Ref<boolean>
+    connect: () => Promise<void>
+    disconnect: () => Promise<void>
     error: Ref<Error | null>
   }> {
-    // Получаем базовый результат
     const result = await baseFetch(payload)
+    debugger
+    const { items, isConnected, connect, disconnect, error } = useRealtimeCollection(
+      result.allViews.value,
+      {
+        hubType: SignalRHubType.Boards,
+        getItemId: (item) => item.id,
+        events: {
+          created: boardCreated.type,
+          deleted: boardDeleted.type,
+        },
+        mapEventData: (data: unknown) => {
+          const board = data as BoardDto
+          return {
+            id: board.id,
+            title: board.title ?? '',
+            description: board.description ?? '',
+            thumbnailUrl: defaultThumbnailHref,
+            createdAt: board.createdAt,
+            updatedAt: board.updatedAt,
+            isArchived: board.isArchived,
+          }
+        },
+        shouldAddItem: (item) => {
+          // This is a workaround to get ownerId from the event payload
+          // as BoardPageView does not have it.
+          const board = item as unknown as BoardDto
+          return board.ownerId === payload.userId
+        },
+      },
+    )
 
-    // Инициализируем SignalR клиент для хаба досок
-    const { connect, on, isConnected, error } = useSignalRClient(SignalRHubType.Boards)
-
-    // Подключаемся к хабу
-    await connect()
-
-    // Обработчик создания новой доски
-    on<BoardDto>('BoardCreated', (board) => {
-      if (board.ownerId === payload.userId) {
-        const newBoard: BoardPageView = {
-          id: board.id,
-          title: board.title ?? '',
-          thumbnailUrl: defaultThumbnailHref,
-        }
-        result.allViews.value = [...result.allViews.value, newBoard]
-      }
-    })
-
-    // Обработчик обновления доски
-    on<BoardDto>('BoardUpdated', (board) => {
-      const index = result.allViews.value.findIndex((b) => b.id === board.id)
-      if (index !== -1) {
-        const updatedBoard: BoardPageView = {
-          id: board.id,
-          title: board.title ?? '',
-          thumbnailUrl: result.allViews.value[index].thumbnailUrl,
-        }
-        result.allViews.value = [
-          ...result.allViews.value.slice(0, index),
-          updatedBoard,
-          ...result.allViews.value.slice(index + 1),
-        ]
-      }
-    })
-
-    // Обработчик удаления доски
-    on<number>('BoardDeleted', (boardId) => {
-      result.allViews.value = result.allViews.value.filter((b) => b.id !== boardId)
-    })
-
-    // Обработчик архивации доски
-    on<BoardDto>('BoardArchived', (board) => {
-      const index = result.allViews.value.findIndex((b) => b.id === board.id)
-      if (index !== -1) {
-        const archivedBoard = { ...result.allViews.value[index], isArchived: true }
-        result.allViews.value = [
-          ...result.allViews.value.slice(0, index),
-          archivedBoard,
-          ...result.allViews.value.slice(index + 1),
-        ]
-      }
-    })
+    result.allViews = items
 
     return {
       ...result,
+      connect,
+      disconnect,
       isConnected,
       error,
     }

@@ -29,10 +29,13 @@ app.UseSwaggerUI();
 app.UseInfrastructureServices();
 
 //app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
+
+
 app.MapControllers();
+app.UseApplicationHubs();
+
 
 app.UseAppCors();
 

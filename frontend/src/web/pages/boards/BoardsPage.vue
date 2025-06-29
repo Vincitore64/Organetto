@@ -9,7 +9,7 @@
         <div class="header-content">
           <div class="welcome-section">
             <!-- <h1 class="page-title">{{ t('boards.page.title') }}</h1> -->
-            <h1 class="page-subtitle">Управляйте своими проектами эффективно</h1>
+            <h1 class="page-subtitle one-line-text">Управляйте своими проектами эффективно</h1>
           </div>
 
           <!-- Фильтры и сортировка -->
@@ -132,6 +132,7 @@
           </div>
 
           <div class="boards-container">
+            {{ boadrdPageViews.state.value.isConnected.value }}
             <transition-group name="board-list" tag="div" class="boards-grid">
               <BoardCard v-for="board in boadrdPageViews.state.value.views.value" :key="board.id" :board="board"
                 @open="openBoard" class="board-item" />
@@ -230,7 +231,7 @@ import {
   // RocketOutlined,
   // CalendarOutlined
 } from '@ant-design/icons-vue'
-import { useBoardPageViews } from '@/presentation/boards/hooks/useBoardPageViews'
+import { useRealtimeBoardPageViews } from '@/presentation/boards/hooks/useBoardPageViews'
 import { useAsyncState } from '@vueuse/core'
 import { tryInjectServices } from '@/shared'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
@@ -244,8 +245,7 @@ const props = defineProps<{
 const { t } = useI18n()
 const apiClient = tryInjectServices().resolve(ApiClient)
 const router = useRouter()
-const boadrdPageViews = useAsyncState(useBoardPageViews(apiClient), null, { immediate: false })
-
+const boadrdPageViews = useAsyncState(useRealtimeBoardPageViews(apiClient), null, { immediate: false })
 // const search = ref('')
 // const sortOrder = ref('recent')
 // const boards = ref<BoardPageView[]>([
@@ -263,6 +263,11 @@ function startUp() {
   const userId = _.parseInt(props.userId)
   if (!userId) return
   boadrdPageViews.execute(0, { userId })
+    .then(r => {
+      if (r) {
+        return r.connect()
+      }
+    })
 }
 
 startUp()

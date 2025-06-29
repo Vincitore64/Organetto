@@ -9,7 +9,7 @@ import {
  * Options for configuring the SignalR connection.
  */
 export interface ConnectionOptions {
-  /** The absolute URL of the hub, e.g., `https://api.organetto.com/hub/boards` */
+  /** The absolute URL of the hub, e.g., `https://api.organetto.com/hubs/boards` */
   url: string
   /**
    * An optional function that returns an access token. This is used for authentication.

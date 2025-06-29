@@ -63,8 +63,8 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
 
                 busConfigurator.UsingInMemory((context, configuration) =>
                 {
-                    configuration.ConfigureEndpoints(context);
-                    configuration.ReceiveEndpoint("signalR-endpoints", (endpontCfg) =>
+                    //configuration.ConfigureEndpoints(context);
+                    configuration.ReceiveEndpoint("signalr-endpoints", (endpontCfg) =>
                     {
                         endpontCfg.ConfigureConsumer<SignalRBoardCreatedIntegrationEventConsumer>(context);
                         endpontCfg.ConfigureConsumer<SignalRBoardDeletedIntegrationEventConsumer>(context);

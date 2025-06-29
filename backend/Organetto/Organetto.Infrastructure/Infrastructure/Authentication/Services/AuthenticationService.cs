@@ -95,12 +95,17 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
             var doc = JsonDocument.Parse(json).RootElement;
             var expiresInSeconds = int.Parse(doc.GetProperty("expires_in").GetString()!);
             var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds);
+            var uuid = doc.TryGetProperty("user_id", out var userIdProp)
+                ? userIdProp.GetString().ThrowIfNull()
+                : doc.TryGetProperty("localId", out var localIdProp)
+                    ? localIdProp.GetString().ThrowIfNull()
+                    : throw new AuthenticationException(500, "Refresh token failed", "USER_UUID_NOT_FOUND", "User ID not found in response");
             
             return new TokenResponse(
                 AccessToken: doc.GetProperty("id_token").GetString()!,
                 RefreshToken: doc.GetProperty("refresh_token").GetString()!,
                 ExpiresAt: expiresAt,
-                Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
+                Uuid: uuid
             );
         }
 
