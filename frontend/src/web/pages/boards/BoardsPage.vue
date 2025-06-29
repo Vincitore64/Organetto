@@ -1,6 +1,6 @@
 <template>
   <a-layout class="board-page" v-if="boadrdPageViews.state.value">
-    <a-layout-sider width="280" class="sider glass">
+    <a-layout-sider width="240"><!-- class="sider glass" -->
       <Sidebar />
     </a-layout-sider>
 
@@ -132,7 +132,7 @@
           </div>
 
           <div class="boards-container">
-            {{ boadrdPageViews.state.value.isConnected.value }}
+            <!-- {{ boadrdPageViews.state.value.isConnected.value }} -->
             <transition-group name="board-list" tag="div" class="boards-grid">
               <BoardCard v-for="board in boadrdPageViews.state.value.views.value" :key="board.id" :board="board"
                 @open="openBoard" class="board-item" />
@@ -707,7 +707,11 @@ const templates = ref([
       .ant-card-cover {
         .template-preview {
           height: 120px;
-          background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
+          // background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
+          background-image: url(https://colorlib.com/etc/bootstrap-sidebar/sidebar-09/images/bg_1.jpg);
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center center;
           display: flex;
           align-items: center;
           justify-content: center;

@@ -1,6 +1,6 @@
 <template>
   <a-card hoverable class="create-card"
-    :body-style="{ height: 'max-content', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px' }"
+    :body-style="{ height: 'max-content', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '16px 12px 0px 12px' }"
     @click="$emit('create')">
     <template #cover>
       <div class="create-cover">
@@ -178,7 +178,7 @@ const getFloatingIconStyle = (index: number) => {
     border-radius: 50%;
     // background: linear-gradient(135deg, var(--color-primary-500, #1890ff), var(--color-primary-600, #096dd9));
     background: var(--color-blue-gradient);
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
 
@@ -189,18 +189,18 @@ const getFloatingIconStyle = (index: number) => {
   }
 
   .create-title {
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 600;
     color: var(--color-text, #262626);
     margin: 0 0 8px 0;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .create-description {
-    font-size: 14px;
+    font-size: 16px;
     color: var(--color-text-weak, #8c8c8c);
-    margin: 0 0 16px 0;
-    line-height: 1.5;
+    margin: 0 0 12px 0;
+    line-height: 1;
   }
 
   .create-features {
@@ -212,11 +212,11 @@ const getFloatingIconStyle = (index: number) => {
       display: flex;
       align-items: center;
       gap: 4px;
-      font-size: 12px;
+      font-size: 14px;
       color: var(--color-success, #52c41a);
 
       .feature-icon {
-        font-size: 12px;
+        font-size: 14px;
       }
     }
   }
