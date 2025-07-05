@@ -32,5 +32,16 @@
   "activity": {
     "title": "Последняя активность",
     "viewAll": "Вся активность"
+  },
+  "createModal": {
+    "title": "Создать новую доску"
+  },
+  "createForm": {
+    "nameLabel": "Название доски",
+    "nameRequired": "Пожалуйста, введите название доски",
+    "namePlaceholder": "например, Мой замечательный проект",
+    "descriptionLabel": "Описание (необязательно)",
+    "descriptionPlaceholder": "Добавьте краткое описание вашей доски",
+    "submit": "Создать доску"
   }
 }

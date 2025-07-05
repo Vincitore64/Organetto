@@ -32,5 +32,16 @@
   "activity": {
     "title": "Recent Activity",
     "viewAll": "View All Activity"
+  },
+  "createModal": {
+    "title": "Create a new board"
+  },
+  "createForm": {
+    "nameLabel": "Board name",
+    "nameRequired": "Please enter a board name",
+    "namePlaceholder": "e.g. My Awesome Project",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Add a short description about your board",
+    "submit": "Create Board"
   }
 }

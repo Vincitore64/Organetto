@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="board-page" v-if="boadrdPageViews.state.value">
+  <a-layout class="board-page" v-if="boardPageViews.state.value">
     <a-layout-sider width="240"><!-- class="sider glass" -->
       <Sidebar />
     </a-layout-sider>
@@ -119,7 +119,7 @@
             </h2>
             <div class="section-actions">
               <a-tooltip :title="t('boards.page.create')">
-                <a-button type="primary" size="small" class="create-btn" @click="createBoard">
+                <a-button type="primary" size="small" class="create-btn" @click="showCreateBoardModal">
                   <PlusOutlined />
                   {{ t('boards.page.create') }}
                 </a-button>
@@ -134,9 +134,9 @@
           <div class="boards-container">
             <!-- {{ boadrdPageViews.state.value.isConnected.value }} -->
             <transition-group name="board-list" tag="div" class="boards-grid">
-              <BoardCard v-for="board in boadrdPageViews.state.value.views.value" :key="board.id" :board="board"
+              <BoardCard v-for="board in boardPageViews.state.value.views.value" :key="board.id" :board="board"
                 @open="openBoard" class="board-item" />
-              <CreateBoardCard @create="createBoard" class="board-item create-item" />
+              <CreateBoardCard @create="showCreateBoardModal" class="board-item create-item" />
             </transition-group>
           </div>
 
@@ -201,6 +201,9 @@
         </div>
       </a-layout-content>
     </a-layout>
+    <a-modal v-model:open="isCreateBoardModalVisible" :title="t('boards.createModal.title')" :footer="null">
+      <CreateBoardForm @submit="createBoard" :loading="isCreatingBoard" />
+    </a-modal>
   </a-layout>
 </template>
 
@@ -210,6 +213,7 @@ import { useI18n } from 'vue-i18n'
 import Sidebar from '@/presentation/shared/components/SideBar.vue'
 import BoardCard from '@/presentation/boards/components/BoardCard.vue'
 import CreateBoardCard from '@/presentation/boards/components/CreateBoardCard.vue'
+import CreateBoardForm from '@/presentation/boards/components/CreateBoardForm.vue'
 import {
   BellOutlined,
   UserOutlined,
@@ -233,10 +237,13 @@ import {
 } from '@ant-design/icons-vue'
 import { useRealtimeBoardPageViews } from '@/presentation/boards/hooks/useBoardPageViews'
 import { useAsyncState } from '@vueuse/core'
-import { tryInjectServices } from '@/shared'
+import { tryInjectServices, useConditionalComputed } from '@/shared'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 import _ from 'lodash'
 import { ref } from 'vue'
+import { useCreateBoard } from '@/application/boards/hooks/useCreateBoard'
+import type { CreateBoardState } from '@/application'
+import { mapToBoardPageView } from '@/presentation/boards'
 
 const props = defineProps<{
   userId: string,
@@ -245,7 +252,38 @@ const props = defineProps<{
 const { t } = useI18n()
 const apiClient = tryInjectServices().resolve(ApiClient)
 const router = useRouter()
-const boadrdPageViews = useAsyncState(useRealtimeBoardPageViews(apiClient), null, { immediate: false })
+const boardPageViews = useAsyncState(useRealtimeBoardPageViews(apiClient), null, { immediate: false })
+const { isLoading: isCreatingBoard, execute: executeBoardCreation } = useCreateBoard(apiClient)
+
+const isCreateBoardModalVisibleState = ref(false)
+
+const isCreateBoardModalVisible = useConditionalComputed(
+  () => isCreateBoardModalVisibleState.value,
+  (v) => isCreateBoardModalVisibleState.value = v,
+  () => !isCreatingBoard.value
+)
+
+function showCreateBoardModal() {
+  isCreateBoardModalVisible.value = true
+}
+
+async function createBoard(state: CreateBoardState) {
+  console.log('Creating board with:', state)
+  const created = await executeBoardCreation(0, state)
+  if (!created) {
+    console.warn('Board has not been create')
+    return
+  }
+  if (!boardPageViews.state.value?.allViews.value) {
+    console.warn('boardPageViews is empty')
+    return
+  }
+  boardPageViews.state.value.allViews.value = [
+    ...boardPageViews.state.value.allViews.value,
+    mapToBoardPageView(created)
+  ]
+  isCreateBoardModalVisible.value = false
+}
 // const search = ref('')
 // const sortOrder = ref('recent')
 // const boards = ref<BoardPageView[]>([
@@ -262,7 +300,7 @@ const boadrdPageViews = useAsyncState(useRealtimeBoardPageViews(apiClient), null
 function startUp() {
   const userId = _.parseInt(props.userId)
   if (!userId) return
-  boadrdPageViews.execute(0, { userId })
+  boardPageViews.execute(0, { userId })
     .then(r => {
       if (r) {
         return r.connect()
@@ -273,9 +311,6 @@ function startUp() {
 startUp()
 
 const openBoard = (id: number) => router.push({ name: 'Board', params: { id, userId: props.userId } })
-const createBoard = () => {
-  // router.push({ name: 'BoardCreate' })
-}
 
 // Данные для шаблонов
 const templates = ref([

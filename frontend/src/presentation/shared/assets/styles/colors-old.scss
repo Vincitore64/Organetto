@@ -1,0 +1,121 @@
+// =============================================================================
+//
+// Organetto - Color Palette
+//
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+//
+// Core Palette
+//
+// -----------------------------------------------------------------------------
+
+//
+// Primary Colors (Blue)
+// Used for main actions, links, and highlights.
+//
+$primary-color-100: #e6f7ff; // Lightest blue for backgrounds
+$primary-color-200: #bae7ff; // Light blue for hover states
+$primary-color-300: #91d5ff; // Soft blue for borders and secondary elements
+$primary-color-400: #69c0ff; // Standard blue for icons
+$primary-color-500: #1890ff; // Main primary color for buttons and links
+$primary-color-600: #096dd9; // Darker blue for active states
+
+//
+// Neutral Colors (Grays)
+// Used for text, backgrounds, and borders.
+//
+$neutral-color-100: #ffffff; // White for backgrounds and surfaces
+$neutral-color-200: #f0f2f5; // Off-white for subtle backgrounds
+$neutral-color-300: #d9d9d9; // Light gray for borders
+$neutral-color-400: #8c8c8c; // Medium gray for secondary text and icons
+$neutral-color-500: #595959; // Dark gray for primary text
+$neutral-color-600: #262626; // Darkest gray for headings
+
+//
+// Accent & Status Colors
+// Used for notifications, status indicators, and accents.
+//
+$accent-success-color: #52c41a; // Green for success states
+$accent-warning-color: #faad14; // Yellow for warnings
+$accent-error-color: #f5222d; // Red for errors
+$accent-info-color: #1890ff; // Blue for informational messages
+
+// -----------------------------------------------------------------------------
+//
+// Semantic Color Variables
+//
+// These variables assign semantic meaning to the core palette, making it
+// easier to maintain a consistent UI.
+// -----------------------------------------------------------------------------
+
+//
+// Text Colors
+//
+$text-color-primary: $neutral-color-600;
+$text-color-secondary: $neutral-color-500;
+$text-color-weak: $neutral-color-400;
+$text-color-link: $primary-color-500;
+$text-color-inverse: $neutral-color-100;
+
+//
+// Background Colors
+//
+$background-color-base: $neutral-color-200; // Main background for the app
+$background-color-surface: $neutral-color-100; // For cards, modals, etc.
+$background-color-hover: #f6ffed; // Subtle hover effect
+
+//
+// Border Colors
+//
+$border-color-base: $neutral-color-300;
+$border-color-primary: $primary-color-200;
+$border-color-dashed: $primary-color-300;
+
+//
+// Gradients & Effects
+//
+$gradient-primary: linear-gradient(135deg, $primary-color-500, $primary-color-600);
+$gradient-background: linear-gradient(135deg, $neutral-color-200, $primary-color-100);
+$gradient-create-card-hover: linear-gradient(
+  135deg,
+  rgba(24, 144, 255, 0.1),
+  rgba(82, 196, 26, 0.1),
+  rgba(250, 173, 20, 0.1)
+);
+
+//
+// Glassmorphism Effect
+//
+$glass-background-color: rgba(255, 255, 255, 0.7);
+$glass-backdrop-filter: blur(10px);
+$glass-border: 1px solid rgba(255, 255, 255, 0.2);
+
+// -----------------------------------------------------------------------------
+//
+// CSS Custom Properties (Variables)
+//
+// Exposing the color palette as CSS variables for dynamic use in Vue components.
+// -----------------------------------------------------------------------------
+
+:root {
+  // Primary
+  --color-primary-100: #{$primary-color-100};
+  --color-primary-200: #{$primary-color-200};
+  --color-primary-300: #{$primary-color-300};
+  --color-primary-400: #{$primary-color-400};
+  --color-primary-500: #{$primary-color-500};
+  --color-primary-600: #{$primary-color-600};
+
+  // Text
+  --color-text: #{$text-color-primary};
+  --color-text-secondary: #{$text-color-secondary};
+  --color-text-weak: #{$text-color-weak};
+
+  // Backgrounds
+  --color-surface: #{$background-color-surface};
+  --color-background: #{$background-color-base};
+
+  // Gradients
+  --color-blue-gradient: #{$gradient-primary};
+}

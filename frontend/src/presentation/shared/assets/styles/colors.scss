@@ -22,6 +22,12 @@
   //   rgba(251, 230, 197, 1) 100%
   // );
   --color-bg-gradient: linear-gradient(20deg, #eaf2ff 40%, rgb(255 255 255) 60%, #fdf5e5 100%);
+  --color-bg-gradient-2: linear-gradient(
+    180deg,
+    rgba(234, 242, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(253, 245, 229, 1) 100%
+  );
   --color-surface: #ffffff;
   --color-stroke: #d0d7de;
   --color-text: #1c2331;

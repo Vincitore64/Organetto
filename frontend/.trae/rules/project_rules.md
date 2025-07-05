@@ -101,3 +101,9 @@ npm run lint
 - **Pull Requests**: All new code must be submitted through a pull request and reviewed before merging.
 
 By following these rules, we can maintain a high-quality, organized, and collaborative development environment.
+
+When writing code, follow these guidelines:
+Frontend:
+Use Ant Design Vue as a UI framework. Use html tags and CSS to position elements, not Ant Design Vue. Use css grid to layout elements. Try not to use css flex to layout elements. Use clear tags like: main, section, header, etc. Use script setup components with lang="ts", i.e. use Typescript in other words. Use SCSS. You can use: VueUse, lodash, dayjs, zod, pinia, vue-router, axios, qs, vue-i18n, TSyringe.
+Backend:
+Use C#, ASP .NET Core. You can use: FluentValidation, Automapper, Flurl, Flurl.Http, Newtonsoft.Json.

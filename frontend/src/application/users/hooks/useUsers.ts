@@ -1,6 +1,6 @@
 import type { ApiClient } from '@/dataAccess/services/ApiClient'
 import type { UserDto } from '@/dataAccess/users/models'
-import { type UsersStore } from '../stores/usersStore'
+import { useUsersStore, type UsersStore } from '../stores/usersStore'
 import { useAuthStore } from '@/application/authentication/stores/authStore'
 
 /**
@@ -8,7 +8,7 @@ import { useAuthStore } from '@/application/authentication/stores/authStore'
  * @param apiClient - injected ApiClient containing UsersClient
  * @returns an object with API methods bound to store
  */
-export function useUsersComposable(apiClient: ApiClient, userStore: UsersStore) {
+export function useUsersComposable(apiClient: ApiClient, userStore: UsersStore = useUsersStore()) {
   const authStore = useAuthStore(apiClient)
   /**
    * Fetch all users from the backend and populate the store.

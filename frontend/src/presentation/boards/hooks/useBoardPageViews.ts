@@ -1,6 +1,5 @@
 import type { ApiClient } from '@/dataAccess/services/ApiClient'
 import type { BoardPageView } from '../models'
-import { defaultThumbnailHref } from '../models'
 import _ from 'lodash'
 import { computed, ref, type Ref } from 'vue'
 import { createAdvancedSorter, ObjectSearch, type SortOrder } from '@/shared'
@@ -8,6 +7,7 @@ import { SignalRHubType } from '@/shared'
 import type { BoardDto } from '@/dataAccess/boards/models'
 import { useRealtimeCollection } from '@/shared'
 import { boardCreated, boardDeleted } from '@/application'
+import { mapToBoardPageView } from '../models/mapBoard'
 
 /**
  * Higher-order composable for fetching BoardPageView data.
@@ -28,19 +28,18 @@ export function useBoardPageViews(apiClient: ApiClient) {
     sortDirection: Ref<SortOrder>
     views: Ref<BoardPageView[]>
   }> {
-    const rawBoards = await apiClient.boards.getBoards(payload.userId)
+    const rawBoards = await apiClient.boards.getAll(payload.userId)
 
-    const allViewsList = _(rawBoards)
-      .map((b) => ({
-        id: b.id,
-        title: b.title ?? '',
-        description: b.description ?? '',
-        thumbnailUrl: defaultThumbnailHref,
-        createdAt: b.createdAt,
-        updatedAt: b.updatedAt,
-        isArchived: b.isArchived,
-      }))
-      .value()
+    const allViewsList = _(rawBoards).map(mapToBoardPageView).value()
+    // .map((b) => ({
+    //     id: b.id,
+    //     title: b.title ?? '',
+    //     description: b.description ?? '',
+    //     thumbnailUrl: defaultThumbnailHref,
+    //     createdAt: b.createdAt,
+    //     updatedAt: b.updatedAt,
+    //     isArchived: b.isArchived,
+    //   }))
     const allViews = ref(allViewsList)
     const searchTerms = ref<string>('')
     const sortBy = ref<string>('title')
@@ -99,18 +98,19 @@ export function useRealtimeBoardPageViews(apiClient: ApiClient) {
           created: boardCreated.type,
           deleted: boardDeleted.type,
         },
-        mapEventData: (data: unknown) => {
-          const board = data as BoardDto
-          return {
-            id: board.id,
-            title: board.title ?? '',
-            description: board.description ?? '',
-            thumbnailUrl: defaultThumbnailHref,
-            createdAt: board.createdAt,
-            updatedAt: board.updatedAt,
-            isArchived: board.isArchived,
-          }
-        },
+        mapEventData: (data: unknown) => mapToBoardPageView(data as BoardDto),
+        // mapEventData: (data: unknown) => {
+        //   const board = data as BoardDto
+        //   return {
+        //     id: board.id,
+        //     title: board.title ?? '',
+        //     description: board.description ?? '',
+        //     thumbnailUrl: defaultThumbnailHref,
+        //     createdAt: board.createdAt,
+        //     updatedAt: board.updatedAt,
+        //     isArchived: board.isArchived,
+        //   }
+        // },
         shouldAddItem: (item) => {
           // This is a workaround to get ownerId from the event payload
           // as BoardPageView does not have it.

@@ -1,5 +1,5 @@
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { BoardDto } from '../models'
+import type { BoardDto, CreateBoardCommand } from '../models'
 import type { ApiException } from '@/dataAccess/shared/models/ApiException'
 
 /**
@@ -21,9 +21,26 @@ export class BoardsClient {
    * Retrieves all boards where the given user is owner or member.
    * @param userId - Internal user ID (int64).
    */
-  public async getBoards(userId: number): Promise<BoardDto[]> {
+  public async getAll(userId: number): Promise<BoardDto[]> {
     try {
       const response = await this.http.get<BoardDto[]>(`/api/Boards/${userId}`)
+      return response.data
+    } catch (err) {
+      const error = err as AxiosError<ApiException>
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data.message || `API Error: ${error.response.status}`)
+      }
+      throw err
+    }
+  }
+
+  /**
+   * POST /api/Boards
+   * Creates a new board.
+   */
+  public async create(board: CreateBoardCommand): Promise<BoardDto> {
+    try {
+      const response = await this.http.post<BoardDto>(`/api/Boards`, board)
       return response.data
     } catch (err) {
       const error = err as AxiosError<ApiException>

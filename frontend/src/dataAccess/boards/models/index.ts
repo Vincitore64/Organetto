@@ -8,3 +8,9 @@ export interface BoardDto {
   updatedAt: string // ISO 8601 date-time string
   isArchived: boolean // boolean
 }
+
+export interface CreateBoardCommand {
+  ownerId: number
+  title: string
+  description?: string
+}

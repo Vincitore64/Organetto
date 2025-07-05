@@ -4,11 +4,12 @@
 </template>
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
-import { defineProps, defineEmits, } from 'vue'
+import { defineProps } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 const { t } = useI18n()
 const props = defineProps<{ modelValue: string }>()
-// const emit = defineEmits<['update:modelValue', 'search']>()
 const emit = defineEmits<{ (e: 'search', value: string): void, (e: 'update:modelValue', value: string): void }>()
+
 const vModel = useVModel(props, 'modelValue', emit)
 </script>

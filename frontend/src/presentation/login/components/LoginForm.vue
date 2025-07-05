@@ -51,8 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, defineEmits } from 'vue'
-// import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
 import { useLogin } from '@/application/authentication/hooks/useAuth'
 import { message } from 'ant-design-vue'
 import { GithubOutlined, GoogleOutlined, WindowsOutlined } from '@ant-design/icons-vue'

@@ -1,37 +1,43 @@
 <template>
-  <a-card hoverable class="create-card"
-    :body-style="{ height: 'max-content', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '16px 12px 0px 12px' }"
-    @click="$emit('create')">
-    <template #cover>
-      <div class="create-cover">
-        <div class="gradient-bg">
-          <div class="floating-icons">
-            <div class="floating-icon" v-for="n in 6" :key="n" :style="getFloatingIconStyle(n)">
-              <component :is="getRandomIcon()" />
+  <div>
+    <a-card hoverable class="create-card" :body-style="{
+      height: 'max-content',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      padding: '16px 12px 0px 12px'
+    }" @click="$emit('create')">
+      <template #cover>
+        <div class="create-cover">
+          <div class="gradient-bg">
+            <div class="floating-icons">
+              <div class="floating-icon" v-for="n in 6" :key="n" :style="getFloatingIconStyle(n)">
+                <component :is="getRandomIcon()" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <div class="create-body">
-      <div class="main-icon">
-        <plus-outlined class="plus-icon" />
-      </div>
-      <h3 class="create-title">{{ t('boards.page.create') }}</h3>
-      <p class="create-description">Создайте новую доску для вашего проекта</p>
-      <div class="create-features">
-        <div class="feature">
-          <CheckOutlined class="feature-icon" />
-          <span>Шаблоны</span>
+      <div class="create-body">
+        <div class="main-icon">
+          <plus-outlined class="plus-icon" />
         </div>
-        <div class="feature">
-          <CheckOutlined class="feature-icon" />
-          <span>Совместная работа</span>
+        <h3 class="create-title">{{ t('boards.page.create') }}</h3>
+        <p class="create-description">Создайте новую доску для вашего проекта</p>
+        <div class="create-features">
+          <div class="feature">
+            <CheckOutlined class="feature-icon" />
+            <span>Шаблоны</span>
+          </div>
+          <div class="feature">
+            <CheckOutlined class="feature-icon" />
+            <span>Совместная работа</span>
+          </div>
         </div>
       </div>
-    </div>
-  </a-card>
+    </a-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -49,9 +55,7 @@ import {
 
 const { t } = useI18n()
 
-defineEmits<{
-  create: []
-}>()
+defineEmits<{ (e: 'create'): void }>()
 
 const icons = [
   BulbOutlined,
