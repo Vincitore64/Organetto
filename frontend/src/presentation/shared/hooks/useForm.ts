@@ -1,10 +1,11 @@
-import { reactive, computed, type ComputedRef } from 'vue'
+import { reactive, ref, type Ref } from 'vue'
 import { merge, cloneDeep, debounce, assign } from 'lodash'
 import { Form } from 'ant-design-vue'
 // import type { FormInstance } from 'ant-design-vue'
 import type { Rule as FormRule } from 'ant-design-vue/lib/form/interface'
+import { computedAsync } from '@vueuse/core'
 
-type FormInstance = ReturnType<typeof Form.useForm>
+export type FormInstance = ReturnType<typeof Form.useForm>
 
 /**
  * Universal form hook with Ant Design Vue integration:
@@ -19,8 +20,8 @@ export interface UseFormOptions<
 > {
   initialValues: TParams
   action: (params: TActionParams) => Promise<TReturn>
-  validate?: (values: TParams) => boolean
-  transform?: (values: TParams) => TActionParams
+  validate?: ((values: TParams) => Promise<boolean>) | ((values: TParams) => boolean)
+  transform?: ((values: TParams) => Promise<TActionParams>) | ((values: TParams) => TActionParams)
   debounceMs?: number
   /** Ant Design Vue form validation rules */
   rules?: Record<keyof TParams, FormRule[]>
@@ -33,8 +34,8 @@ export interface UseFormOptions<
 }
 
 export interface UseFormReturn<TParams extends object, TReturn> {
-  form: TParams
-  isValid: ComputedRef<boolean>
+  form: Ref<TParams>
+  isValid: Ref<boolean>
   reset: () => void
   submit: (overrideValues?: Partial<TParams>) => Promise<TReturn>
   /** Ant Design Vue Form instance, if useAntd is true */
@@ -61,7 +62,8 @@ export function useForm<TParams extends object, TReturn = unknown>(
   } = options
 
   // Reactive form state
-  const form = reactive(cloneDeep(initialValues)) as TParams
+  const formParams = reactive(cloneDeep(initialValues)) as TParams
+  const form = ref(formParams)
   let merged = cloneDeep(initialValues)
 
   // Optional Ant Design Vue Form instance
@@ -71,11 +73,11 @@ export function useForm<TParams extends object, TReturn = unknown>(
     antdForm = formInstance
   }
 
-  const isValid = computed(() => (validate ? validate(form) : true))
+  const isValid = computedAsync(() => (validate ? validate(form.value) : true), true)
 
   const reset = () => {
     const fresh = cloneDeep(initialValues)
-    assign(form, fresh)
+    form.value = assign(form.value, fresh)
     merged = fresh
     if (useAntd && antdForm) {
       antdForm.resetFields()
@@ -85,7 +87,7 @@ export function useForm<TParams extends object, TReturn = unknown>(
   // Debounced state updates
   const updateForm = debounce((values: Partial<TParams>) => {
     merged = merge({}, merged, values) as TParams
-    assign(form, merged)
+    form.value = assign(form.value, merged)
     // if (useAntd && antdForm) {
     //   antdForm.setFieldsValue(merged)
     // }
@@ -96,7 +98,7 @@ export function useForm<TParams extends object, TReturn = unknown>(
       if (debounceMs) updateForm(overrideValues)
       else {
         merged = merge({}, merged, overrideValues) as TParams
-        assign(form, merged)
+        form.value = assign(form.value, merged)
       }
       // if (useAntd && antdForm) {
       //   antdForm.setFieldsValue(merged)
@@ -108,25 +110,30 @@ export function useForm<TParams extends object, TReturn = unknown>(
     }
 
     try {
-      onBefore?.(form)
-      const params = transform ? transform(debounceMs ? merged : form) : debounceMs ? merged : form
+      onBefore?.(form.value)
+      const params = transform
+        ? await transform(debounceMs ? merged : form.value)
+        : debounceMs
+          ? merged
+          : form.value
       if (useAntd && antdForm) {
         // Run Ant Design Vue validation
         await antdForm.validate()
       }
       const response = await action(params)
-      onSuccess?.(response, form)
+      onSuccess?.(response, form.value)
+
       return response
     } catch (error) {
-      onError?.(error, form)
+      onError?.(error, form.value)
       throw error
     } finally {
-      onFinally?.(form)
+      onFinally?.(form.value)
     }
   }
 
   return {
-    form,
+    form: form as Ref<TParams>,
     isValid,
     reset,
     submit,

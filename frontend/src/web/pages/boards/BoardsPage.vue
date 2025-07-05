@@ -201,8 +201,10 @@
         </div>
       </a-layout-content>
     </a-layout>
-    <a-modal v-model:open="isCreateBoardModalVisible" :title="t('boards.createModal.title')" :footer="null">
-      <CreateBoardForm @submit="createBoard" :loading="isCreatingBoard" />
+    <a-modal v-model:open="isCreateBoardModalVisible" :title="t('boards.createModal.title')" :footer="null"
+      @cancel="reset()">
+      <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="createBoard"
+        :loading="isCreatingBoard" />
     </a-modal>
   </a-layout>
 </template>
@@ -244,6 +246,7 @@ import { ref } from 'vue'
 import { useCreateBoard } from '@/application/boards/hooks/useCreateBoard'
 import type { CreateBoardState } from '@/application'
 import { mapToBoardPageView } from '@/presentation/boards'
+import { useForm } from '@/presentation/shared'
 
 const props = defineProps<{
   userId: string,
@@ -263,11 +266,22 @@ const isCreateBoardModalVisible = useConditionalComputed(
   () => !isCreatingBoard.value
 )
 
+const { form, antdForm, reset } = useForm({
+  initialValues: { name: '', description: '' },
+  action: createBoard,
+  rules: {
+    name: [{ required: true, message: 'Name is required' }],
+    description: [{ required: false, }],
+  },
+  useAntd: true,
+})
+
 function showCreateBoardModal() {
   isCreateBoardModalVisible.value = true
 }
 
 async function createBoard(state: CreateBoardState) {
+  debugger
   console.log('Creating board with:', state)
   const created = await executeBoardCreation(0, state)
   if (!created) {

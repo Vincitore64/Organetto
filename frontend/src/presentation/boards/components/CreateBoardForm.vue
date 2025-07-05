@@ -1,12 +1,11 @@
 <template>
-  <a-form :model="formState" layout="vertical" @finish="onFinish">
+  <a-form :model="modelValue" layout="vertical" @finish="onFinish">
     <a-form-item :label="t('boards.createForm.nameLabel')" name="name"
       :rules="[{ required: true, message: t('boards.createForm.nameRequired') }]">
-      <a-input v-model:value="formState.name" :placeholder="t('boards.createForm.namePlaceholder')" />
+      <a-input v-model:value="name" :placeholder="t('boards.createForm.namePlaceholder')" />
     </a-form-item>
     <a-form-item :label="t('boards.createForm.descriptionLabel')" name="description">
-      <a-textarea v-model:value="formState.description" :placeholder="t('boards.createForm.descriptionPlaceholder')"
-        :rows="4" />
+      <a-textarea v-model:value="description" :placeholder="t('boards.createForm.descriptionPlaceholder')" :rows="4" />
     </a-form-item>
     <a-form-item>
       <a-button type="primary" html-type="submit" :loading="loading" block>
@@ -18,20 +17,24 @@
 
 <script setup lang="ts">
 import type { CreateBoardState } from '@/application'
-import { reactive } from 'vue'
+// import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { FormInstance } from '@/presentation/shared'
+import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
 
 
-defineProps<{ loading?: boolean }>()
+const props = defineProps<{ modelValue: CreateBoardState, formInstance: FormInstance, loading?: boolean }>()
 
-const emit = defineEmits<{ (e: 'submit', values: CreateBoardState): void }>()
+const emit = defineEmits<{ (e: 'submit', values: CreateBoardState): void, (e: 'update:modelValue', value: CreateBoardState): void }>()
 
 const { t } = useI18n()
 
-const formState = reactive<CreateBoardState>({
-  name: '',
-  description: '',
-})
+const { name, description } = useVModelFields(props, emit)
+
+// const formState = reactive<CreateBoardState>({
+//   name: '',
+//   description: '',
+// })
 
 const onFinish = (values: unknown) => {
   emit('submit', values as CreateBoardState)
