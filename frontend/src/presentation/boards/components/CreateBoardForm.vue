@@ -1,14 +1,14 @@
 <template>
-  <a-form :model="modelValue" layout="vertical" @finish="onFinish">
-    <a-form-item :label="t('boards.createForm.nameLabel')" name="name"
-      :rules="[{ required: true, message: t('boards.createForm.nameRequired') }]">
+  <a-form layout="vertical"><!-- :rules="formInstance.rulesRef" @finish="onFinish" -->
+    <a-form-item :label="t('boards.createForm.nameLabel')" name="name" v-bind="formInstance.validateInfos.name">
       <a-input v-model:value="name" :placeholder="t('boards.createForm.namePlaceholder')" />
     </a-form-item>
-    <a-form-item :label="t('boards.createForm.descriptionLabel')" name="description">
+    <a-form-item :label="t('boards.createForm.descriptionLabel')" name="description"
+      v-bind="formInstance.validateInfos.description">
       <a-textarea v-model:value="description" :placeholder="t('boards.createForm.descriptionPlaceholder')" :rows="4" />
     </a-form-item>
     <a-form-item>
-      <a-button type="primary" html-type="submit" :loading="loading" block>
+      <a-button type="primary" :loading="loading" block @click.prevent="onFinish"><!-- html-type="submit"  -->
         {{ t('boards.createForm.submit') }}
       </a-button>
     </a-form-item>
@@ -30,11 +30,6 @@ const emit = defineEmits<{ (e: 'submit', values: CreateBoardState): void, (e: 'u
 const { t } = useI18n()
 
 const { name, description } = useVModelFields(props, emit)
-
-// const formState = reactive<CreateBoardState>({
-//   name: '',
-//   description: '',
-// })
 
 const onFinish = (values: unknown) => {
   emit('submit', values as CreateBoardState)

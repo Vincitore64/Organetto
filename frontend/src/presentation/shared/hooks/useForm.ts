@@ -41,7 +41,7 @@ export interface UseFormReturn<TParams extends object, TReturn> {
   /** Ant Design Vue Form instance, if useAntd is true */
   antdForm?: FormInstance
   /** Pass these rules into <a-form-model> */
-  rules?: Record<keyof TParams, FormRule[]>
+  rules?: Ref<Record<keyof TParams, FormRule[]>>
 }
 
 export function useForm<TParams extends object, TReturn = unknown>(
@@ -64,12 +64,15 @@ export function useForm<TParams extends object, TReturn = unknown>(
   // Reactive form state
   const formParams = reactive(cloneDeep(initialValues)) as TParams
   const form = ref(formParams)
+  const reactiveRules = rules
+    ? ref(reactive(rules) as Record<keyof TParams, FormRule[]>)
+    : undefined
   let merged = cloneDeep(initialValues)
 
   // Optional Ant Design Vue Form instance
   let antdForm: FormInstance | undefined
   if (useAntd) {
-    const formInstance = Form.useForm(form)
+    const formInstance = Form.useForm(form, reactiveRules)
     antdForm = formInstance
   }
 
@@ -81,6 +84,7 @@ export function useForm<TParams extends object, TReturn = unknown>(
     merged = fresh
     if (useAntd && antdForm) {
       antdForm.resetFields()
+      antdForm.clearValidate()
     }
   }
 
@@ -94,6 +98,7 @@ export function useForm<TParams extends object, TReturn = unknown>(
   }, debounceMs ?? 0)
 
   const submit = async (overrideValues?: Partial<TParams>): Promise<TReturn> => {
+    debugger
     if (overrideValues) {
       if (debounceMs) updateForm(overrideValues)
       else {
@@ -138,6 +143,6 @@ export function useForm<TParams extends object, TReturn = unknown>(
     reset,
     submit,
     antdForm,
-    rules,
+    rules: reactiveRules as Ref<Record<keyof TParams, FormRule[]>>,
   }
 }

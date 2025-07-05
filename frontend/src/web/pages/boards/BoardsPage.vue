@@ -203,7 +203,7 @@
     </a-layout>
     <a-modal v-model:open="isCreateBoardModalVisible" :title="t('boards.createModal.title')" :footer="null"
       @cancel="reset()">
-      <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="createBoard"
+      <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="submit"
         :loading="isCreatingBoard" />
     </a-modal>
   </a-layout>
@@ -266,14 +266,17 @@ const isCreateBoardModalVisible = useConditionalComputed(
   () => !isCreatingBoard.value
 )
 
-const { form, antdForm, reset } = useForm({
+const { form, antdForm, reset, submit } = useForm({
   initialValues: { name: '', description: '' },
   action: createBoard,
   rules: {
-    name: [{ required: true, message: 'Name is required' }],
+    name: [{ required: true, message: t('boards.createForm.nameRequired') }],
     description: [{ required: false, }],
   },
   useAntd: true,
+  onError(error, values) {
+    console.error(error, values)
+  },
 })
 
 function showCreateBoardModal() {
