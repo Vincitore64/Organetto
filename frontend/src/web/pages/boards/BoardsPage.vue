@@ -201,10 +201,22 @@
         </div>
       </a-layout-content>
     </a-layout>
-    <a-modal v-model:open="isCreateBoardModalVisible" :title="t('boards.createModal.title')" :footer="null"
-      @cancel="reset()">
+    <a-modal v-model:open="isCreateBoardModalVisible" :footer="null" @cancel="reset()" width="450px"
+      wrapClassName="create-item-modal">
+      <template #title>
+        <header class="create-item-title">
+          {{ t('boards.createModal.title') }}
+          <a-divider class="create-item-title-divider"></a-divider>
+          <div class="create-item-title-icon">
+            <img src="https://trello.com/assets/14cda5dc635d1f13bc48.svg" alt="">
+          </div>
+        </header>
+      </template>
       <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="submit"
         :loading="isCreatingBoard" />
+      <section class="create-item-description">
+        {{ t('boards.createModal.description') }}
+      </section>
     </a-modal>
   </a-layout>
 </template>
@@ -274,9 +286,9 @@ const { form, antdForm, reset, submit } = useForm({
     description: [{ required: false, }],
   },
   useAntd: true,
-  onError(error, values) {
-    console.error(error, values)
-  },
+  onSuccess() {
+    isCreateBoardModalVisible.value = false
+  }
 })
 
 function showCreateBoardModal() {
@@ -299,7 +311,6 @@ async function createBoard(state: CreateBoardState) {
     ...boardPageViews.state.value.allViews.value,
     mapToBoardPageView(created)
   ]
-  isCreateBoardModalVisible.value = false
 }
 // const search = ref('')
 // const sortOrder = ref('recent')

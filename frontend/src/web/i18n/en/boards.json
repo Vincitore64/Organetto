@@ -34,7 +34,8 @@
     "viewAll": "View All Activity"
   },
   "createModal": {
-    "title": "Create a new board"
+    "title": "Create a new board",
+    "description": "You can always edit the board name and description later in the board settings. Boards are private by default — you can invite teammates once it’s created. After creating, start by adding lists and cards to organize your work."
   },
   "createForm": {
     "nameLabel": "Board name",

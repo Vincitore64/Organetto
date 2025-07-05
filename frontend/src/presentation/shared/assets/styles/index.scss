@@ -3,6 +3,7 @@
 @use './ant-design-override.scss';
 @use './vars.scss';
 @use './utilities.scss';
+@use './modal.scss';
 
 .glass {
   backdrop-filter: blur(33px);

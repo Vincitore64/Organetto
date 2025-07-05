@@ -3,6 +3,7 @@ import type { AntTheme } from './types'
 const sharedTheme: AntTheme = {
   token: {
     fontFamily: 'Jost, Sofia Sans Extra Condensed, sans-serif',
+    colorPrimary: 'var(--color-blue-gradient)',
     // colorTextLabel: 'var(--text-header)',
     // colorTextHeading: 'var(--text-header)',
     // colorTextBase: 'var(--text-primary)',
