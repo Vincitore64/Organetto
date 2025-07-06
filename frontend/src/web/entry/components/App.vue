@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import StyleProvider from '@/presentation/shared/components/StyleProvider.vue'
 </script>
 
 <template>
@@ -15,8 +16,9 @@ import { RouterView } from 'vue-router'
       </nav>
     </div>
   </header> -->
-
-  <RouterView />
+  <StyleProvider>
+    <RouterView />
+  </StyleProvider>
 </template>
 
 <style scoped>

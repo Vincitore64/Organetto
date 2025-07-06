@@ -1,14 +1,22 @@
 <template>
-  <main class="registration-page__wrapper">
+  <main class="registration-page__wrapper image-bg">
     <SidebarBanner />
     <section class="registration-page__form-wrapper">
-      <RegistrationForm class="registration-page__form" />
+      <RegistrationForm class="registration-page__form" @success="onSuccess" />
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
 import { SidebarBanner, RegistrationForm } from '@/presentation'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function onSuccess() {
+  router.push({ name: 'Login' })
+}
+
 </script>
 
 <style scoped>
@@ -16,7 +24,8 @@ import { SidebarBanner, RegistrationForm } from '@/presentation'
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
-  background: linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fbe6c5 100%);
+  background-position: center 10%;
+  /* background: linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fbe6c5 100%); */
 }
 
 .registration-page__form-wrapper {

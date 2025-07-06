@@ -72,6 +72,7 @@ import { useRegister } from '@/application/authentication/hooks/useAuth'
 import { tryInjectServices } from '@/shared'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 
+const emit = defineEmits<{ (e: 'success'): void }>()
 const { t } = useI18n()
 
 const apiClient = tryInjectServices().resolve(ApiClient)
@@ -135,7 +136,7 @@ async function onSubmit() {
   }).then((success) => {
     if (success) {
       resetFields()
-      // TODO: redirect to login page
+      emit('success')
     }
   })
 }
@@ -154,8 +155,9 @@ async function onSubmit() {
 
 .registration-form-wrapper h2 {
   margin: 0 0 1rem;
-  font-size: 1.75rem;
+  font-size: 2.5rem;
   text-align: center;
+  font-family: Sofia Sans Extra Condensed;
 }
 
 .note {

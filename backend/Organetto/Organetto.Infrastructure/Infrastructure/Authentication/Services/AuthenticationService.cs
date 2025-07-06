@@ -4,7 +4,10 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Organetto.Core.Authentication.Ports.Data;
 using Organetto.Core.Authentication.Ports.Services;
+using Organetto.Infrastructure.Infrastructure.Authentication.Exceptions;
+using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
 using Organetto.Infrastructure.Infrastructure.Firebase.Data;
+using Organetto.Infrastructure.Infrastructure.Shared.Extensions;
 using System.Text;
 using System.Text.Json;
 
@@ -34,8 +37,20 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
                 Disabled = false
             };
 
-            var user = await _auth.CreateUserAsync(args, ct);
-            return user.Uid; // we return Firebase UID so domain can map profile if needed
+            try
+            {
+                var user = await _auth.CreateUserAsync(args, ct);
+                return user.Uid; // we return Firebase UID so domain can map profile if needed
+            }
+            catch (FirebaseAuthException ex)
+            {
+                throw new AuthenticationException(
+                    (int)(ex.HttpResponse?.StatusCode ?? System.Net.HttpStatusCode.InternalServerError),
+                    "Register failed",
+                    ex.AuthErrorCode.HasValue ? ex.AuthErrorCode.Value.ToString() : "UNKNOWN",
+                    "Register failed on Google"
+                );
+            }
         }
 
         public async Task<TokenResponse> LoginUserAsync(string email, string password)
@@ -49,14 +64,19 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
 
             var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_settings.ApiKey}";
             using var response = await _http.PostAsync(url, new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
-            response.EnsureSuccessStatusCode();
+
+            await response.EnsureAuthenticationSuccessStatusCodeAsync("Login failed", "Login failed on Google");
 
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
+            var expiresInSeconds = int.Parse(doc.GetProperty("expiresIn").GetString()!);
+            var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds);
+            
             return new TokenResponse(
-                IdToken: doc.GetProperty("idToken").GetString()!,
+                AccessToken: doc.GetProperty("idToken").GetString()!,
                 RefreshToken: doc.GetProperty("refreshToken").GetString()!,
-                ExpiresIn: int.Parse(doc.GetProperty("expiresIn").GetString()!)
+                ExpiresAt: expiresAt,
+                Uuid: doc.GetProperty("localId").GetString().ThrowIfNull()
             );
         }
 
@@ -70,13 +90,22 @@ namespace Organetto.Infrastructure.Infrastructure.Authentication.Services
 
             var url = $"https://securetoken.googleapis.com/v1/token?key={_settings.ApiKey}";
             using var response = await _http.PostAsync(url, new FormUrlEncodedContent(body));
-            response.EnsureSuccessStatusCode();
+            await response.EnsureAuthenticationSuccessStatusCodeAsync("Refresh token failed", "Refresh token on Google");
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json).RootElement;
+            var expiresInSeconds = int.Parse(doc.GetProperty("expires_in").GetString()!);
+            var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds);
+            var uuid = doc.TryGetProperty("user_id", out var userIdProp)
+                ? userIdProp.GetString().ThrowIfNull()
+                : doc.TryGetProperty("localId", out var localIdProp)
+                    ? localIdProp.GetString().ThrowIfNull()
+                    : throw new AuthenticationException(500, "Refresh token failed", "USER_UUID_NOT_FOUND", "User ID not found in response");
+            
             return new TokenResponse(
-                IdToken: doc.GetProperty("id_token").GetString()!,
+                AccessToken: doc.GetProperty("id_token").GetString()!,
                 RefreshToken: doc.GetProperty("refresh_token").GetString()!,
-                ExpiresIn: int.Parse(doc.GetProperty("expires_in").GetString()!)
+                ExpiresAt: expiresAt,
+                Uuid: uuid
             );
         }
 

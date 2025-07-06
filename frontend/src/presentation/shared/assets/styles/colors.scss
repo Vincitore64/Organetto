@@ -3,15 +3,35 @@
   --color-primary-50: #eef4ff;
   --color-primary-100: #d8ecff;
   --color-primary-500: #315bff;
+  --color-primary-600: #3968ff;
   --color-primary-700: #2542cc;
+  --color-primary-rgb: 49, 91, 255;
   --color-accent: #9b4dff;
-
+  // --color-blue-gradient: linear-gradient(
+  //   135deg,
+  //   var(--color-primary-500, #1890ff),
+  //   var(--color-primary-600, #096dd9)
+  // );
+  --color-blue-gradient: linear-gradient(135deg, #1890ff, #096dd9);
   /* neutrals – light theme */
   --color-bg: #f6f8fa;
+  // --color-bg-gradient: linear-gradient(
+  //   20deg,
+  //   rgba(171, 210, 247, 1) 0%,
+  //   rgba(245, 250, 255, 1) 40%,
+  //   rgba(251, 230, 197, 1) 100%
+  // );
+  --color-bg-gradient: linear-gradient(20deg, #eaf2ff 40%, rgb(255 255 255) 60%, #fdf5e5 100%);
+  --color-bg-gradient-2: linear-gradient(
+    180deg,
+    rgba(234, 242, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(253, 245, 229, 1) 100%
+  );
   --color-surface: #ffffff;
   --color-stroke: #d0d7de;
   --color-text: #1c2331;
-  --color-text-weak: #5a667a;
+  --color-text-weak: rgb(43 43 44);
 
   /* status */
   --color-success: #2dbe7f;
@@ -28,7 +48,9 @@
   --color-primary-50: #0b1633;
   --color-primary-100: #13245c;
   --color-primary-500: #3b78ff; /* slightly lighter for dark */
+  --color-primary-600: #4882ff;
   --color-primary-700: #5c8fff;
+  --color-primary-rgb: 59, 120, 255;
   --color-accent: #b87dff;
 
   --color-bg: #121219;

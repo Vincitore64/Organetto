@@ -1,0 +1,38 @@
+.ant-input {
+  // backdrop-filter: blur(33px) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  // background-blend-mode: overlay !important;
+}
+.ant-btn-primary {
+  // backdrop-filter: blur(33px)!important;
+  background: var(--color-blue-gradient) !important;
+  border: none;
+  box-shadow: var(--shadow-light);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  &:active,
+  &.ant-btn-active {
+    transform: translateY(1px) !important;
+    box-shadow: var(--shadow-small) !important;
+    background: var(--color-blue-gradient) !important;
+    filter: brightness(0.9) !important;
+  }
+}
+
+.ant-btn:disabled,
+.ant-btn[disabled] {
+  background: rgba(0, 0, 0, 0.04) !important;
+  // border-color: #d9d9d9 !important;
+  color: rgba(0, 0, 0, 0.25) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+
+  &:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}

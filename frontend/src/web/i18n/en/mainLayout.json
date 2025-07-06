@@ -1,0 +1,10 @@
+{
+  "brand": "Organetto",
+  "search": "Search",
+  "sidebar": {
+    "boards": "Boards",
+    "settings": "Settings",
+    "actions": "Actions",
+    "cards": "Cards"
+  }
+}

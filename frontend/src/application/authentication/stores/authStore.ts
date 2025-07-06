@@ -1,32 +1,32 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 import type { AuthTokens, LoginRequest, RefreshRequest } from '@/dataAccess/authentication/models'
 import type { ApiClient } from '@/dataAccess/services/ApiClient'
+import { useAuthToken } from '../hooks/useAuthToken'
 
 export const useAuthStore = (apiClient: ApiClient) =>
   defineStore('auth', () => {
-    const tokens = ref<AuthTokens | null>(
-      localStorage.getItem('accessToken') && localStorage.getItem('refreshToken')
-        ? {
-            accessToken: localStorage.getItem('accessToken')!,
-            refreshToken: localStorage.getItem('refreshToken')!,
-          }
-        : null,
-    )
+    const tokenWrapper = useAuthToken()
+    // const tokenWrapper.token = ref<AuthTokens | null>(
+    //   localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth') ?? 'null') : null,
+    // )
 
-    /** Derived helper – anywhere in the app you can do: `auth.isAuthenticated` */
-    const isAuthenticated = computed(() => !!tokens.value?.accessToken)
+    // /** Derived helper – anywhere in the app you can do: `auth.isAuthenticated` */
+    // const isAuthenticated = computed(() => !!tokenWrapper.token.value?.accessToken && !isExpired(tokenWrapper.token.value))
 
-    function persist(t: AuthTokens) {
-      tokens.value = t
-      localStorage.setItem('accessToken', t.accessToken)
-      localStorage.setItem('refreshToken', t.refreshToken)
+    // function isExpired(t: AuthTokens) {
+    //   return dayjs().add(10, 'minutes').isAfter(dayjs(t.expiresAt))
+    // }
+
+    function persist(t?: AuthTokens) {
+      if (t) {
+        tokenWrapper.token.value = t
+        localStorage.setItem('auth', JSON.stringify(t))
+      }
     }
 
     function clear() {
-      tokens.value = null
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      tokenWrapper.token.value = null
+      localStorage.removeItem('auth')
     }
 
     async function login(payload: LoginRequest) {
@@ -34,9 +34,17 @@ export const useAuthStore = (apiClient: ApiClient) =>
       persist(data)
     }
 
+    async function getToken() {
+      if (!tokenWrapper.token.value) throw new Error('No tokenWrapper.token')
+      if (!tokenWrapper.token.value.expiresAt) throw new Error('No expiresAt')
+      // Проверяем, истекает ли токен в ближайшие 10 минут
+      if (tokenWrapper.isExpired.value) await refresh()
+      return tokenWrapper.token.value.accessToken
+    }
+
     async function refresh() {
-      if (!tokens.value) return
-      const refreshPayload: RefreshRequest = { refreshToken: tokens.value.refreshToken }
+      if (!tokenWrapper.token.value) return
+      const refreshPayload: RefreshRequest = { refreshToken: tokenWrapper.token.value.refreshToken }
       const { data } = await apiClient.auth.refresh(refreshPayload)
       persist(data)
     }
@@ -45,5 +53,12 @@ export const useAuthStore = (apiClient: ApiClient) =>
       clear()
     }
 
-    return { tokens, isAuthenticated, login, refresh, logout }
+    return {
+      tokens: tokenWrapper.token,
+      isAuthenticated: tokenWrapper.isAuthenticated,
+      login,
+      refresh,
+      logout,
+      getToken,
+    }
   })()

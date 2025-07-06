@@ -51,8 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, defineEmits } from 'vue'
-// import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
 import { useLogin } from '@/application/authentication/hooks/useAuth'
 import { message } from 'ant-design-vue'
 import { GithubOutlined, GoogleOutlined, WindowsOutlined } from '@ant-design/icons-vue'
@@ -102,6 +101,9 @@ function oauth(provider: 'github' | 'google' | 'microsoft') {
 
 .panel__title {
   text-align: center;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
   margin-bottom: 1rem;
   color: var(--color-text);
 }
@@ -132,7 +134,8 @@ function oauth(provider: 'github' | 'google' | 'microsoft') {
 .footer {
   margin-top: 1.25rem;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  letter-spacing: 0.2px;
   color: var(--color-text-weak);
 
   a {

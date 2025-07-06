@@ -1,4 +1,4 @@
-﻿namespace Organetto.Core.Authentication.Ports.Data
+namespace Organetto.Core.Authentication.Ports.Data
 {
-    public record TokenResponse(string IdToken, string RefreshToken, int ExpiresIn);
+    public record TokenResponse(string AccessToken, string RefreshToken, DateTimeOffset ExpiresAt, string Uuid);
 }

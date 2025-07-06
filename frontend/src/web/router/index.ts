@@ -7,6 +7,7 @@ import RegisterPage from '@/web/pages/auth/RegistrationPage.vue'
 import BoardsPage from '@/web/pages/boards/BoardsPage.vue'
 import BoardPage from '@/web/pages/boards/BoardPage.vue'
 import NotFoundPage from '@/web/pages/NotFoundPage.vue'
+import { useAuthToken } from '@/application/authentication/hooks/useAuthToken'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,13 +27,14 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterPage,
   },
   {
-    path: '/boards',
+    path: '/boards/:userId',
     name: 'Boards',
     component: BoardsPage,
+    props: true,
     meta: { requiresAuth: true },
   },
   {
-    path: '/boards/:id',
+    path: '/boards/:userId/:id',
     name: 'Board',
     component: BoardPage,
     props: true,
@@ -52,9 +54,9 @@ const router = createRouter({
 
 // Global navigation guard to enforce authentication on protected routes
 router.beforeEach((to, from, next) => {
-  // const isAuthenticated = Boolean(localStorage.getItem('authToken'))
-  const isAuthenticated = true
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  const tokenWrapper = useAuthToken()
+  // const isAuthenticated = true
+  if (to.meta.requiresAuth && !tokenWrapper.isAuthenticated.value) {
     next({ name: 'Login' })
   } else {
     next()

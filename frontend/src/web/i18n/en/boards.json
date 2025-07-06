@@ -1,0 +1,57 @@
+{
+  "page": {
+    "title": "Boards",
+    "subtitle": "Manage your projects efficiently",
+    "recentlyViewed": "Recently viewed",
+    "create": "Create board",
+    "showAll": "Show all",
+    "allBoards": "All boards",
+    "recent": "Recent",
+    "favorites": "Favorites",
+    "archive": "Archive"
+  },
+  "sort": {
+    "recent": "By date",
+    "name": "By name",
+    "activity": "By activity",
+    "alphabet": "Alphabetically"
+  },
+  "templates": {
+    "title": "Project templates",
+    "allTemplates": "All templates",
+    "use": "Use"
+  },
+  "notifications": {
+    "tooltip": "Notifications"
+  },
+  "user": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "activity": {
+    "title": "Recent Activity",
+    "viewAll": "View All Activity"
+  },
+  "createModal": {
+    "title": "Create a new board",
+    "description": "You can always edit the board name and description later in the board settings. Boards are private by default — you can invite teammates once it’s created. After creating, start by adding lists and cards to organize your work."
+  },
+  "createForm": {
+    "nameLabel": "Board name",
+    "nameRequired": "Please enter a board name",
+    "namePlaceholder": "e.g. My Awesome Project",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Add a short description about your board",
+    "submit": "Create Board"
+  },
+  "card": {
+    "openBoard": "Open board",
+    "personal": "Personal"
+  },
+  "createCard": {
+    "description": "Create a new board for your project",
+    "templates": "Templates",
+    "collaboration": "Collaboration"
+  }
+}
