@@ -1,4 +1,4 @@
-.create-item-modal {
+.item-modal-wrap {
   .ant-modal-content {
     background: var(--color-bg-gradient);
   }
@@ -6,10 +6,10 @@
     background: transparent;
   }
 }
-.create-item-title-divider {
+.item-modal-title-divider {
   margin-top: 0;
 }
-.create-item-title-icon {
+.item-modal-title-icon {
   border-radius: 3px;
   background: none;
   background-position: center center;
@@ -22,7 +22,7 @@
   background-image: url('https://embed-ssl.wistia.com/deliveries/d5ae8190f0aa7dfbe0b01f336f29d44094b967b5.webp?image_crop_resized=1280x720');
 }
 
-.create-item-title {
+.item-modal-title {
   text-align: center;
   // margin-bottom: 1rem;
   background: transparent;
@@ -30,7 +30,7 @@
   font-weight: 300;
   font-family: 'Sofia Sans Extra Condensed', sans-serif;
 }
-.create-item-description {
+.item-modal-description {
   font-family: 'Sofia Sans Extra Condensed', sans-serif;
   font-size: 15px;
   letter-spacing: 0.3px;

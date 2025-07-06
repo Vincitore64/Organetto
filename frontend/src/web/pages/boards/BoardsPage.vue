@@ -201,23 +201,12 @@
         </div>
       </a-layout-content>
     </a-layout>
-    <a-modal v-model:open="isCreateBoardModalVisible" :footer="null" @cancel="reset()" width="450px"
-      wrapClassName="create-item-modal">
-      <template #title>
-        <header class="create-item-title">
-          {{ t('boards.createModal.title') }}
-          <a-divider class="create-item-title-divider"></a-divider>
-          <div class="create-item-title-icon">
-            <img src="https://trello.com/assets/14cda5dc635d1f13bc48.svg" alt="">
-          </div>
-        </header>
-      </template>
+    <ModalContainer :open="isCreateBoardModalVisible" :title="t('boards.createModal.title')"
+      :description="t('boards.createModal.description')" iconUrl="https://trello.com/assets/14cda5dc635d1f13bc48.svg"
+      width="450px" @close="isCreateBoardModalVisible = false">
       <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="submit"
         :loading="isCreatingBoard" />
-      <section class="create-item-description">
-        {{ t('boards.createModal.description') }}
-      </section>
-    </a-modal>
+    </ModalContainer>
   </a-layout>
 </template>
 
@@ -228,6 +217,7 @@ import Sidebar from '@/presentation/shared/components/SideBar.vue'
 import BoardCard from '@/presentation/boards/components/BoardCard.vue'
 import CreateBoardCard from '@/presentation/boards/components/CreateBoardCard.vue'
 import CreateBoardForm from '@/presentation/boards/components/CreateBoardForm.vue'
+import ModalContainer from '@/presentation/shared/components/ModalContainer.vue'
 import {
   BellOutlined,
   UserOutlined,
@@ -274,7 +264,12 @@ const isCreateBoardModalVisibleState = ref(false)
 
 const isCreateBoardModalVisible = useConditionalComputed(
   () => isCreateBoardModalVisibleState.value,
-  (v) => isCreateBoardModalVisibleState.value = v,
+  (v) => {
+    isCreateBoardModalVisibleState.value = v
+    if (!v) {
+      reset()
+    }
+  },
   () => !isCreatingBoard.value
 )
 
