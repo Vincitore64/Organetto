@@ -17,7 +17,9 @@
       <div class="board-meta">
         <div class="meta-item">
           <ClockCircleOutlined class="meta-icon" />
-          <span class="meta-text">Недавно</span>
+          <a-tooltip :title="board.updatedAt">
+            <span class="meta-text">{{ board.updatedText }}</span>
+          </a-tooltip>
         </div>
         <div class="meta-item">
           <UserOutlined class="meta-icon" />
@@ -133,7 +135,7 @@ defineEmits<{
     .meta-item {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
 
       .meta-icon {
         font-size: 14px;

@@ -8,6 +8,7 @@ import { attachAuthInterceptor, createAxios } from '@/dataAccess/shared/http'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 import { useAuthStore } from '@/application/authentication/stores/authStore'
 import { useUsersStore } from '@/application/users/stores/usersStore'
+import { useDayJs } from './useDayJs'
 
 /**
  * Initializes app with pinia and router
@@ -15,6 +16,7 @@ import { useUsersStore } from '@/application/users/stores/usersStore'
  */
 
 export function useServices(app: App) {
+  useDayJs()
   app.use(createPinia())
   app.use(router)
   const localization = createLocalization()
