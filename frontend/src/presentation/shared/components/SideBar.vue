@@ -121,18 +121,18 @@ const menu: MenuItem[] = [
     </div>
 
     <!-- Loading state for user profile -->
-     <div class="user user--loading" v-else>
-       <div class="user__avatar user__avatar--loading">
-         <Spin size="small" />
-       </div>
-       <div class="user__info">
-         <p class="user__name user__name--loading"></p>
-         <p class="user__email user__email--loading"></p>
-       </div>
-       <section class="user__menu">
-         <MoreOutlined />
-       </section>
-     </div>
+    <div class="user user--loading" v-else>
+      <div class="user__avatar user__avatar--loading">
+        <Spin size="small" />
+      </div>
+      <div class="user__info">
+        <p class="user__name user__name--loading"></p>
+        <p class="user__email user__email--loading"></p>
+      </div>
+      <section class="user__menu">
+        <MoreOutlined />
+      </section>
+    </div>
 
     <!-- Footer -->
     <footer class="sidebar__footer">
@@ -212,10 +212,11 @@ $sidebar-width: 240px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg,
-        rgba(234, 242, 255, 0.6) 0%,
-        rgba(255, 255, 255, 0.8) 50%,
-        rgba(253, 245, 229, 1) 100%);
+    // background: linear-gradient(180deg,
+    //     rgba(234, 242, 255, 0.6) 0%,
+    //     rgba(255, 255, 255, 0.8) 50%,
+    //     rgba(253, 245, 229, 1) 100%);
+    background: var(--color-bg-gradient-2);
     z-index: -1;
   }
 }
@@ -460,9 +461,12 @@ $sidebar-width: 240px;
 
 // ---- animations ----
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }

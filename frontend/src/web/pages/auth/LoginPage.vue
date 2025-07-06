@@ -1,5 +1,5 @@
 <template>
-  <main class="login-page">
+  <main class="login-page image-bg">
     <!-- Brand / marketing side -->
     <section class="splash">
       <!-- <OrganettoLogo class="logo" /> -->
@@ -44,8 +44,8 @@ async function onSuccess() {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
+  background-position: center 10%;
   // background: var(--gradient-hero, linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fef6e9 100%));
-  background: var(--gradient-hero, linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fbe6c5 100%));
 
   @media (max-width: 960px) {
     grid-template-columns: 1fr;

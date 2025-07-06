@@ -14,3 +14,23 @@ body {
   font-family: Jost, 'Sofia Sans Extra Condensed', sans-serif !important;
   font-weight: 300;
 }
+
+.image-bg {
+  background-image: url(https://colorlib.com/etc/bootstrap-sidebar/sidebar-06/images/bg_1.jpg);
+  // background: rgba(255, 255, 255, 0.95);
+  background-position: center center;
+  background-size: cover;
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--color-stroke);
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-bg-gradient-2);
+    z-index: -1;
+  }
+}
