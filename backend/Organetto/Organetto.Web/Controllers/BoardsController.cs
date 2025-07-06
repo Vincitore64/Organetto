@@ -18,10 +18,25 @@ namespace Organetto.Web.Controllers
         }
 
         /// <summary>
+        /// Gets a board with its columns and cards by ID.
+        /// </summary>
+        [HttpGet("{boardId}")]
+        [ProducesResponseType(typeof(BoardDetailDto), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<BoardDetailDto>> GetBoard(
+            [FromRoute] long boardId,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetBoardQuery(boardId);
+            var board = await _mediator.Send(query, cancellationToken);
+            return Ok(board);
+        }
+
+        /// <summary>
         /// GET /api/boards – Retrieves all boards for the current user. (GET /api/boards – Получает все доски для текущего пользователя.)
         /// </summary>
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<BoardDto>>> GetAllOfUser(long userId)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BoardDto>>> GetAllOfUser([FromQuery] long userId)
         {
             // Send the MediatR query
             var query = new GetAllUserBoardsQuery(userId);

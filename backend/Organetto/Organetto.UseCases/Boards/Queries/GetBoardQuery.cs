@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.UseCases.Boards.Data;
 
@@ -24,7 +25,7 @@ namespace Organetto.UseCases.Boards.Queries
         public async Task<BoardDetailDto> Handle(GetBoardQuery request, CancellationToken cancellationToken)
         {
             // Fetch board including its columns and cards
-            var board = await _boardRepository.GetByIdAsync(request.BoardId, cancellationToken);
+            Board board = await _boardRepository.GetByIdAsync(request.BoardId, cancellationToken);
 
             // Map domain entity to DTO
             var dto = _mapper.Map<BoardDetailDto>(board);

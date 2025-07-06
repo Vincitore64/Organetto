@@ -1,6 +1,7 @@
 import type { AxiosError, AxiosInstance } from 'axios'
 import type { BoardDto, CreateBoardCommand } from '../models'
 import type { ApiException } from '@/dataAccess/shared/models/ApiException'
+import qs from 'qs'
 
 /**
  * Client for Boards-related endpoints.
@@ -23,7 +24,9 @@ export class BoardsClient {
    */
   public async getAll(userId: number): Promise<BoardDto[]> {
     try {
-      const response = await this.http.get<BoardDto[]>(`/api/Boards/${userId}`)
+      const response = await this.http.get<BoardDto[]>(
+        `/api/Boards?${qs.stringify({ userId: userId })}`,
+      )
       return response.data
     } catch (err) {
       const error = err as AxiosError<ApiException>
