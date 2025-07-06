@@ -30,14 +30,9 @@
 
 <script setup lang="ts">
 import { EyeOutlined, ClockCircleOutlined, UserOutlined } from '@ant-design/icons-vue'
+import type { BoardPageView } from '../models'
 
-interface Board {
-  id: number
-  title: string
-  thumbnailUrl: string
-}
-
-defineProps<{ board: Board }>()
+defineProps<{ board: BoardPageView }>()
 defineEmits<{
   open: [id: number]
 }>()

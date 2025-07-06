@@ -1,5 +1,5 @@
 <template>
-  <main class="registration-page__wrapper">
+  <main class="registration-page__wrapper image-bg">
     <SidebarBanner />
     <section class="registration-page__form-wrapper">
       <RegistrationForm class="registration-page__form" @success="onSuccess" />
@@ -24,7 +24,8 @@ function onSuccess() {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
-  background: linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fbe6c5 100%);
+  background-position: center 10%;
+  /* background: linear-gradient(120deg, #d8ecff 0%, #f5faff 40%, #fbe6c5 100%); */
 }
 
 .registration-page__form-wrapper {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <a-card hoverable class="create-card" :body-style="{
       height: 'max-content',
       display: 'flex',
@@ -37,7 +37,7 @@
         </div>
       </div>
     </a-card>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">

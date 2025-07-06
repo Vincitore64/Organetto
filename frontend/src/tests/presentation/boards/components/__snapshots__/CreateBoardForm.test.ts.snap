@@ -1,0 +1,73 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CreateBoardForm.vue > Snapshot > matches snapshot for create board form 1`] = `
+"<form data-v-f9431234="" class="ant-form ant-form-vertical">
+  <!-- :rules="formInstance.rulesRef" @finish="onFinish" -->
+  <div data-v-f9431234="" class="ant-form-item"><label class="ant-form-item-label">Название доски</label>
+    <div class="ant-form-item-control"><input data-v-f9431234="" class="ant-input" placeholder="Введите название доски" value="">
+      <!--v-if-->
+    </div>
+  </div>
+  <div data-v-f9431234="" class="ant-form-item"><label class="ant-form-item-label">Описание</label>
+    <div class="ant-form-item-control"><textarea data-v-f9431234="" class="ant-input" placeholder="Введите описание доски" rows="4" value=""></textarea>
+      <!--v-if-->
+    </div>
+  </div>
+  <div data-v-f9431234="" class="ant-form-item">
+    <!--v-if-->
+    <div class="ant-form-item-control"><button data-v-f9431234="" class="ant-btn ant-btn-primary">
+        <!-- html-type="submit"  --> Создать доску
+      </button>
+      <!--v-if-->
+    </div>
+  </div>
+</form>"
+`;
+
+exports[`CreateBoardForm.vue > Snapshot > matches snapshot with loading state 1`] = `
+"<form data-v-f9431234="" class="ant-form ant-form-vertical">
+  <!-- :rules="formInstance.rulesRef" @finish="onFinish" -->
+  <div data-v-f9431234="" class="ant-form-item"><label class="ant-form-item-label">Название доски</label>
+    <div class="ant-form-item-control"><input data-v-f9431234="" class="ant-input" placeholder="Введите название доски" value="">
+      <!--v-if-->
+    </div>
+  </div>
+  <div data-v-f9431234="" class="ant-form-item"><label class="ant-form-item-label">Описание</label>
+    <div class="ant-form-item-control"><textarea data-v-f9431234="" class="ant-input" placeholder="Введите описание доски" rows="4" value=""></textarea>
+      <!--v-if-->
+    </div>
+  </div>
+  <div data-v-f9431234="" class="ant-form-item">
+    <!--v-if-->
+    <div class="ant-form-item-control"><button data-v-f9431234="" class="ant-btn ant-btn-primary ant-btn-loading">
+        <!-- html-type="submit"  --> Создать доску
+      </button>
+      <!--v-if-->
+    </div>
+  </div>
+</form>"
+`;
+
+exports[`CreateBoardForm.vue > Snapshot > matches snapshot with validation errors 1`] = `
+"<form data-v-f9431234="" class="ant-form ant-form-vertical">
+  <!-- :rules="formInstance.rulesRef" @finish="onFinish" -->
+  <div data-v-f9431234="" class="ant-form-item ant-form-item-has-error"><label class="ant-form-item-label">Название доски</label>
+    <div class="ant-form-item-control"><input data-v-f9431234="" class="ant-input" placeholder="Введите название доски" value="">
+      <div class="ant-form-item-explain">Name is required</div>
+    </div>
+  </div>
+  <div data-v-f9431234="" class="ant-form-item"><label class="ant-form-item-label">Описание</label>
+    <div class="ant-form-item-control"><textarea data-v-f9431234="" class="ant-input" placeholder="Введите описание доски" rows="4" value=""></textarea>
+      <!--v-if-->
+    </div>
+  </div>
+  <div data-v-f9431234="" class="ant-form-item">
+    <!--v-if-->
+    <div class="ant-form-item-control"><button data-v-f9431234="" class="ant-btn ant-btn-primary">
+        <!-- html-type="submit"  --> Создать доску
+      </button>
+      <!--v-if-->
+    </div>
+  </div>
+</form>"
+`;
