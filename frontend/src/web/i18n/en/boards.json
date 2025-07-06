@@ -44,5 +44,14 @@
     "descriptionLabel": "Description (optional)",
     "descriptionPlaceholder": "Add a short description about your board",
     "submit": "Create Board"
+  },
+  "card": {
+    "openBoard": "Open board",
+    "personal": "Personal"
+  },
+  "createCard": {
+    "description": "Create a new board for your project",
+    "templates": "Templates",
+    "collaboration": "Collaboration"
   }
 }

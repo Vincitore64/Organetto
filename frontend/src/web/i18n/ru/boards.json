@@ -44,5 +44,14 @@
     "descriptionLabel": "Описание (необязательно)",
     "descriptionPlaceholder": "Добавьте краткое описание вашей доски",
     "submit": "Создать доску"
+  },
+  "card": {
+    "openBoard": "Открыть доску",
+    "personal": "Личная"
+  },
+  "createCard": {
+    "description": "Создайте новую доску для вашего проекта",
+    "templates": "Шаблоны",
+    "collaboration": "Совместная работа"
   }
 }

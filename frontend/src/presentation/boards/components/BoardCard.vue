@@ -6,7 +6,7 @@
         <div class="overlay">
           <div class="overlay-content">
             <EyeOutlined class="view-icon" />
-            <span class="view-text">Открыть доску</span>
+            <span class="view-text">{{ t('boards.card.openBoard') }}</span>
           </div>
         </div>
       </div>
@@ -23,7 +23,7 @@
         </div>
         <div class="meta-item">
           <UserOutlined class="meta-icon" />
-          <span class="meta-text">Личная</span>
+          <span class="meta-text">{{ t('boards.card.personal') }}</span>
         </div>
       </div>
     </div>
@@ -32,14 +32,16 @@
 
 <script setup lang="ts">
 import { EyeOutlined, ClockCircleOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
 import type { BoardPageView } from '../models'
+
+const { t } = useI18n()
 
 defineProps<{ board: BoardPageView }>()
 defineEmits<{
   open: [id: number]
 }>()
 </script>
-
 <style scoped lang="scss">
 .board-card {
   display: grid;

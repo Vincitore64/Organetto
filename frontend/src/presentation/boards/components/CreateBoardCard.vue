@@ -24,15 +24,15 @@
           <plus-outlined class="plus-icon" />
         </div>
         <h3 class="create-title">{{ t('boards.page.create') }}</h3>
-        <p class="create-description">Создайте новую доску для вашего проекта</p>
+        <p class="create-description">{{ t('boards.createCard.description') }}</p>
         <div class="create-features">
           <div class="feature">
             <CheckOutlined class="feature-icon" />
-            <span>Шаблоны</span>
+            <span>{{ t('boards.createCard.templates') }}</span>
           </div>
           <div class="feature">
             <CheckOutlined class="feature-icon" />
-            <span>Совместная работа</span>
+            <span>{{ t('boards.createCard.collaboration') }}</span>
           </div>
         </div>
       </div>
