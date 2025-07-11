@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.Services;
@@ -27,9 +28,15 @@ namespace Organetto.UseCases.Configuration.Extensions
             return services;
         }
 
-        public static void UseApplicationHubs(this WebApplication app)
+        public static void UseApplicationEndpoints(this IEndpointRouteBuilder app)
+        {
+            app.UseApplicationHubs();
+        }
+
+        public static void UseApplicationHubs(this IEndpointRouteBuilder app)
         {
             app.MapHub<BoardHub>("/hubs/boards");
+            app.MapControllers();
         }
     }
 

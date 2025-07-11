@@ -1,4 +1,8 @@
-﻿namespace Organetto.Web.Configuration.Extensions
+﻿using Microsoft.AspNetCore.Http.Features;
+using Organetto.Web.Configuration.Http.Extensions;
+using Organetto.Web.Configuration.Swagger.Extensions;
+
+namespace Organetto.Web.Configuration.Extensions
 {
     public static class ServiceCollectionExtensions
     {
@@ -23,12 +27,35 @@
             return AddConfigurationFile(builder, "appsettings-server", environmentName);
         }
 
-        public static void UseAppCors(this WebApplication app)
+        public static void UseAppCors(this IApplicationBuilder app)
         {
             app.UseCors(options => options
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
+        }
+
+
+        public static void AddWebLayerServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddHttpClient();
+            services.ConfigureHttpClientDefaults(b =>
+            {
+                b.AddRetryPolicy();
+            });
+            //services.Configure<FormOptions>(options =>
+            //{
+            //    options.MultipartBodyLengthLimit = 1073741824; // в байтах
+            //});
+            services.AddAppSwagger();
+        }
+
+        public static void UseWebLayerPipelines(this IApplicationBuilder app)
+        {
+            app.UseAppSwagger();
+            app.UseAppCors();
+            app.UseAuthorization();
         }
     }
 }
