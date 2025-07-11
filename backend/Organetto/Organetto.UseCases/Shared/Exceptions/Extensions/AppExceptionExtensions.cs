@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Models;
+using Organetto.UseCases.Shared.Exceptions.Models;
 
-namespace Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Extensions
+namespace Organetto.UseCases.Shared.Exceptions.Extensions
 {
-    public static class ApiExceptionExtensions
+    public static class AppExceptionExtensions
     {
-        public static ProblemDetails ToProblemDetails(this ApiException ex, HttpContext httpContext)
+        public static ProblemDetails ToProblemDetails(this AppException ex, HttpContext httpContext)
         {
             var problem = new ProblemDetails
             {
                 Status = ex.Status,
                 Title = ex.Title,
                 Type = ex.Type,
-                Detail = ex.Message,
+                Detail = ex.FullMessage(),
                 Instance = ex.Instance ?? httpContext.Request.Path
             };
 

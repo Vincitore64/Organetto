@@ -1,8 +1,8 @@
+using Organetto.Infrastructure.Data.Extensions;
 using Organetto.Infrastructure.Infrastructure.Extensions;
 using Organetto.UseCases.Configuration.Extensions;
+using Organetto.UseCases.Shared.Extensions;
 using Organetto.Web.Configuration.Extensions;
-using Organetto.Infrastructure.Data.Extensions;
-using Organetto.Infrastructure.Infrastructure.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +17,9 @@ builder.Services.AddWebLayerServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseInfrastructurePipelines(builder.Environment);
-app.UseWebLayerPipelines();
+app.UseApplication();
+app.UseInfrastructure(builder.Environment);
+app.UseWebLayer();
 
 
 

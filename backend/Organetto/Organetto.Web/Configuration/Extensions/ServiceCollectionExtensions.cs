@@ -51,7 +51,7 @@ namespace Organetto.Web.Configuration.Extensions
             services.AddAppSwagger();
         }
 
-        public static void UseWebLayerPipelines(this IApplicationBuilder app)
+        public static void UseWebLayer(this IApplicationBuilder app)
         {
             app.UseAppSwagger();
             app.UseAppCors();

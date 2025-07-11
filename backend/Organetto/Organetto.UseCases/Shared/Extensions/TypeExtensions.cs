@@ -1,4 +1,4 @@
-﻿namespace Organetto.Infrastructure.Infrastructure.Shared.Extensions
+﻿namespace Organetto.UseCases.Shared.Extensions
 {
     public static class TypeExtensions
     {

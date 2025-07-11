@@ -2,18 +2,29 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Models;
+using Organetto.UseCases.Shared.Exceptions.Middleware;
+using Organetto.UseCases.Shared.Exceptions.Models;
 
-namespace Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Extensions
+namespace Organetto.UseCases.Shared.Exceptions.Extensions
 {
     public static class WebApplicationExtensions
     {
-        public static void UseApiExceptionHandler(this WebApplication app)
+        public static void UseAppExceptionHandler(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<AppExceptionHandler>();
+        }
+
+        public static void UseApiExceptionHandler(this IApplicationBuilder app)
         {
             app.UseExceptionHandler(errApp =>
             {
                 errApp.Run(async context =>
                 {
+                    // 1) Очищаем всё, что могло настрогать до этого
+                    context.Response.Clear();
+                    // 2) Указываем правильный Content-Type
+                    context.Response.ContentType = "application/problem+json";
+
                     var ex = context.Features.Get<IExceptionHandlerFeature>()?.Error;
                     if (ex is FluentValidation.ValidationException fv)
                     {
@@ -30,7 +41,7 @@ namespace Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Extensions
                             Type = "https://docs.myapi.com/problems/ValidationError",
                             Detail = "Validation failed.",
                             Instance = context.Request.Path,
-                            Extensions = 
+                            Extensions =
                             {
                                 ["errors"] = errors,
                                 ["code"] = "ERR_VALIDATION"
@@ -40,7 +51,7 @@ namespace Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Extensions
                         await context.Response.WriteAsJsonAsync(fluentValidationProblemDetails);
                         return;
                     }
-                    if (ex is ApiException apiEx)
+                    if (ex is AppException apiEx)
                     {
                         context.Response.StatusCode = apiEx.Status;
                         await context.Response.WriteAsJsonAsync(apiEx.ToProblemDetails(context));

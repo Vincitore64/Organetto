@@ -1,7 +1,7 @@
-﻿namespace Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Models
+﻿namespace Organetto.UseCases.Shared.Exceptions.Models
 {
     // abstract base exception carrying all ProblemDetails properties
-    public abstract class ApiException : Exception, IHasErrorCode
+    public abstract class AppException : Exception, IHasErrorCode
     {
         public int Status { get; }
         public string Title { get; }
@@ -10,7 +10,7 @@
         public string? Instance { get; }
         public IDictionary<string, string[]>? Errors { get; }
 
-        protected ApiException(
+        protected AppException(
             int status,
             string title,
             string code,
@@ -24,6 +24,18 @@
             Code = code;
             Errors = errors ?? new Dictionary<string, string[]>();
             Instance = instance;
+        }
+
+        protected AppException(
+            int status,
+            string title,
+            AppErrorCode code,
+            string message,
+            IDictionary<string, string[]>? errors = null,
+            string? instance = null
+        ) : this(status, title, code.ToString(), message, errors, instance)
+        {
+
         }
     }
 

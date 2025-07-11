@@ -7,7 +7,7 @@ using Organetto.Core.Authentication.Ports.Services;
 using Organetto.Infrastructure.Infrastructure.Authentication.Exceptions;
 using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
 using Organetto.Infrastructure.Infrastructure.Firebase.Data;
-using Organetto.Infrastructure.Infrastructure.Shared.Extensions;
+using Organetto.UseCases.Shared.Extensions;
 using System.Text;
 using System.Text.Json;
 

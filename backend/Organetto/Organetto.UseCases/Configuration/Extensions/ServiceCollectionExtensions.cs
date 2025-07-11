@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.Services;
+using Organetto.UseCases.Shared.Exceptions.Extensions;
 using Organetto.UseCases.Shared.MassTransit.Configuration.Extensions;
 using System.Reflection;
 
@@ -28,15 +29,20 @@ namespace Organetto.UseCases.Configuration.Extensions
             return services;
         }
 
+        public static void UseApplication(this IApplicationBuilder app)
+        {
+            app.UseAppExceptionHandler();
+        }
+
         public static void UseApplicationEndpoints(this IEndpointRouteBuilder app)
         {
             app.UseApplicationHubs();
+            app.MapControllers();
         }
 
         public static void UseApplicationHubs(this IEndpointRouteBuilder app)
         {
             app.MapHub<BoardHub>("/hubs/boards");
-            app.MapControllers();
         }
     }
 
