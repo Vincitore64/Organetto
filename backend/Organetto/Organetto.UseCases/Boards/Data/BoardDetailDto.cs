@@ -1,4 +1,6 @@
-﻿namespace Organetto.UseCases.Boards.Data
+﻿using Organetto.UseCases.Boards.Columns.Data;
+
+namespace Organetto.UseCases.Boards.Data
 {
     public class BoardDetailDto
     {

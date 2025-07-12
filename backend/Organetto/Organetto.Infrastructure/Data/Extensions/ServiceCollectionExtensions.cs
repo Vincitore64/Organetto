@@ -27,6 +27,7 @@ namespace Organetto.Infrastructure.Data.Extensions
             services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
 
             services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IColumnRepository, ColumnRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IOutboxService, OutboxService>();
 

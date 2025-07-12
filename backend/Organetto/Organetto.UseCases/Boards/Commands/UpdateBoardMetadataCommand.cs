@@ -1,8 +1,10 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
 using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Shared.Outbox.Services;
+using Organetto.UseCases.Shared.Validation.Extensions;
 
 namespace Organetto.UseCases.Boards.Commands
 {
@@ -19,16 +21,24 @@ namespace Organetto.UseCases.Boards.Commands
         private readonly IBoardRepository _boardRepository;
         private readonly IOutboxService _outboxService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IValidator<UpdateBoardMetadataCommand> _validator;
 
-        public UpdateBoardMetadataCommandHandler(IBoardRepository boardRepository, IOutboxService outboxService, IUnitOfWork unitOfWork)
+        public UpdateBoardMetadataCommandHandler(
+            IBoardRepository boardRepository,
+            IOutboxService outboxService,
+            IUnitOfWork unitOfWork,
+            IValidator<UpdateBoardMetadataCommand> validator)
         {
             _boardRepository = boardRepository ?? throw new ArgumentNullException(nameof(boardRepository));
             this._outboxService = outboxService;
             this._unitOfWork = unitOfWork;
+            this._validator = validator;
         }
 
         public async Task<Unit> Handle(UpdateBoardMetadataCommand request, CancellationToken cancellationToken)
         {
+            _validator.TryValidate(request);
+
             var dbTransaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
             var board = await _boardRepository.GetByIdAsync(request.BoardId, cancellationToken);

@@ -1,4 +1,6 @@
-﻿namespace Organetto.UseCases.Boards.Data
+﻿using Organetto.UseCases.Boards.Data;
+
+namespace Organetto.UseCases.Boards.Columns.Data
 {
     /// <param name="Id"></param>
     /// <param name="Title"></param>

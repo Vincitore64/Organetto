@@ -3,6 +3,7 @@ using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.UseCases.Boards.Data;
 using System.Linq;
+using Organetto.UseCases.Boards.Columns.Data;
 
 namespace Organetto.UseCases.Boards.Services
 {
