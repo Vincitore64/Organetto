@@ -1,17 +1,13 @@
 ﻿using Organetto.Core.Boards.Data;
+using Organetto.Core.Shared.Services;
 
 namespace Organetto.Core.Boards.Services
 {
     /// <summary>
     /// Defines data‐access operations for Board entities. (Определяет операции доступа к данным для сущностей Board.)
     /// </summary>
-    public interface IBoardRepository
+    public interface IBoardRepository : IReadByIdRepository<Board, long>
     {
-        /// <summary>
-        /// Retrieves a single Board by its surrogate key. (Получает одну доску по суррогатному ключу.)
-        /// </summary>
-        Task<Board> GetByIdAsync(long boardId, CancellationToken cancellationToken);
-
         /// <summary>
         /// Retrieves all boards where the given user (by userId) is either owner or member. (Получает все доски, где указанный пользователь (по userId) является владельцем или участником.)
         /// </summary>
