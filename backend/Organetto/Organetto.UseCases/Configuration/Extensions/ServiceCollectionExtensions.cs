@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Organetto.UseCases.Boards.Columns.Hubs;
 using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.Services;
 using Organetto.UseCases.Shared.Exceptions.Extensions;
@@ -44,6 +45,7 @@ namespace Organetto.UseCases.Configuration.Extensions
         public static void UseApplicationHubs(this IEndpointRouteBuilder app)
         {
             app.MapHub<BoardHub>("/hubs/boards");
+            app.MapHub<ColumnHub>("/hubs/columns");
         }
     }
 

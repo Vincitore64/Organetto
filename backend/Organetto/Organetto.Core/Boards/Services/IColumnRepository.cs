@@ -6,7 +6,7 @@ namespace Organetto.Core.Boards.Services
     /// <summary>
     /// Defines data‐access operations for Column (list) entities.
     /// </summary>
-    public interface IColumnRepository : IReadByIdRepository<BoardList, long>
+    public interface IColumnRepository : IReadByIdRepository<BoardList, long>, IReadByIdAndUpdateRepository<BoardList, long>
     {
         ///// <summary>
         ///// Retrieves a single Column by its surrogate key.

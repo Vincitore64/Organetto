@@ -51,7 +51,10 @@ namespace Organetto.UseCases.Boards.Commands
             await _boardRepository.UpdateAsync(board, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _outboxService.AddAsync(new BoardMetadataUpdatedIntegrationEvent(board.Id), cancellationToken);
+            await _outboxService.AddAsync(
+                new BoardMetadataUpdatedIntegrationEvent(board.Id, board.OwnerId, board.Members.Select(m => m.Id).ToArray()),
+                cancellationToken
+            );
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await dbTransaction.CommitAsync(cancellationToken);

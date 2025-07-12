@@ -3,8 +3,9 @@
     /// <summary>
     /// Marker interface for integration events carrying an entity ID.
     /// </summary>
-    public interface IEntityIntegrationEvent<TKey>
+    public interface IEntityIntegrationEvent<TEntityId>
     {
-        TKey EntityId { get; }
+        TEntityId EntityId { get; }
+
     }
 }
