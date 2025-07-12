@@ -22,7 +22,7 @@ namespace Organetto.Web.Controllers
         /// </summary>
         [HttpGet("{boardId}")]
         [ProducesResponseType(typeof(BoardDetailDto), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(ProblemDetails), 404)]
         public async Task<ActionResult<BoardDetailDto>> GetBoard(
             [FromRoute] long boardId,
             CancellationToken cancellationToken)
@@ -36,11 +36,11 @@ namespace Organetto.Web.Controllers
         /// GET /api/boards – Retrieves all boards for the current user. (GET /api/boards – Получает все доски для текущего пользователя.)
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BoardDto>>> GetAllOfUser([FromQuery] long userId)
+        public async Task<ActionResult<IEnumerable<BoardDto>>> GetAllOfUser([FromQuery] long userId, CancellationToken cancellationToken)
         {
             // Send the MediatR query
             var query = new GetAllUserBoardsQuery(userId);
-            var boards = await _mediator.Send(query);
+            var boards = await _mediator.Send(query, cancellationToken);
 
             return Ok(boards);
         }
@@ -50,9 +50,9 @@ namespace Organetto.Web.Controllers
         /// Creates a new board for the current user.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BoardDto>> Create([FromBody] CreateBoardCommand command)
+        public async Task<ActionResult<BoardDto>> Create([FromBody] CreateBoardCommand command, CancellationToken cancellationToken)
         {
-            var created = await _mediator.Send(command);
+            var created = await _mediator.Send(command, cancellationToken);
 
             return CreatedAtAction(
                 nameof(GetAllOfUser),
@@ -61,10 +61,17 @@ namespace Organetto.Web.Controllers
             );
         }
 
-        [HttpDelete("{id:long}")]
-        public async Task<IActionResult> Delete(long id, [FromQuery] long userId)
+        [HttpPatch]
+        public async Task<IActionResult> Update([FromBody] UpdateBoardMetadataCommand command, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteBoardCommand(id, userId));
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
+
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> Delete(long id, [FromQuery] long userId, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(new DeleteBoardCommand(id, userId), cancellationToken);
             return NoContent();
         }
     }

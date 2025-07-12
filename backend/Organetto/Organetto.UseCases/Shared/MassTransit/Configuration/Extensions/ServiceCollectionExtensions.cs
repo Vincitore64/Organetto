@@ -59,9 +59,10 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
             {
                 busConfigurator.SetKebabCaseEndpointNameFormatter();
 
-                //busConfigurator.AddConsumers(Assembly.GetExecutingAssembly());        // Локальные задачи
+                //busConfigurator.AddConsumers(Assembly.GetExecutingAssembly());        // Локальные задачи. It's not work. I don't know why
                 busConfigurator.AddConsumer<SignalRBoardCreatedIntegrationEventConsumer>();
                 busConfigurator.AddConsumer<SignalRBoardDeletedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<SignalRBoardMetadataUpdatedIntegrationEventConsumer>();
 
                 busConfigurator.UsingInMemory((context, configuration) =>
                 {
@@ -70,6 +71,7 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
                     {
                         endpontCfg.ConfigureConsumer<SignalRBoardCreatedIntegrationEventConsumer>(context);
                         endpontCfg.ConfigureConsumer<SignalRBoardDeletedIntegrationEventConsumer>(context);
+                        endpontCfg.ConfigureConsumer<SignalRBoardMetadataUpdatedIntegrationEventConsumer>(context);
 
                     });
                 });

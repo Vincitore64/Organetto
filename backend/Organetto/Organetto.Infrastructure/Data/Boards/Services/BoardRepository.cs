@@ -34,13 +34,13 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Board>> GetAllForUserAsync(long userId)
+        public async Task<IEnumerable<Board>> GetAllForUserAsync(long userId, CancellationToken cancellationToken)
         {
             // Получаем доски, где пользователь является владельцем.
             var ownerBoards = await _dbContext.Boards
                 .Where(b => b.OwnerId == userId)
                 .Include(b => b.Members).ThenInclude(m => m.User).Include(b => b.Lists)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             // Получаем доски, где пользователь – участник.
             var memberBoards = (await _dbContext.BoardMembers
@@ -57,7 +57,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public Task<Board> CreateAsync(Board board)
+        public Task<Board> CreateAsync(Board board, CancellationToken cancellationToken)
         {
             if (board == null)
                 throw new ArgumentNullException(nameof(board));
@@ -69,13 +69,13 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Board board)
+        public async Task UpdateAsync(Board board, CancellationToken cancellationToken)
         {
             if (board == null)
                 throw new ArgumentNullException(nameof(board));
 
             // Обновляем только поля, которые можно менять.
-            var existing = await _dbContext.Boards.FindAsync(board.Id);
+            var existing = await _dbContext.Boards.FindAsync(board.Id, cancellationToken);
             if (existing == null)
                 throw new KeyNotFoundException($"Board with id {board.Id} not found.");
 
@@ -88,7 +88,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public async Task DeleteAsync(long boardId)
+        public async Task DeleteAsync(long boardId, CancellationToken cancellationToken)
         {
             var board = await _dbContext.Boards.FindAsync(boardId);
             if (board == null)

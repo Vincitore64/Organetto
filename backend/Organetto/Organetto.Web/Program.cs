@@ -6,7 +6,7 @@ using Organetto.Web.Configuration.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddAppSettingsServerConfigurationFile();
+builder.AddWebLayer();
 
 // Add services to the container.
 
@@ -17,9 +17,9 @@ builder.Services.AddWebLayerServices(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseWebLayer();
 app.UseApplication();
 app.UseInfrastructure(builder.Environment);
-app.UseWebLayer();
 
 
 

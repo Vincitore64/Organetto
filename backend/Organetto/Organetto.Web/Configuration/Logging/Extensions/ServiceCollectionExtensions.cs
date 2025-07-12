@@ -69,7 +69,7 @@ namespace Organetto.Web.Configuration.Logging.Extensions
             return services.AddRequestResponseLogging(DefaultRequestResponseLoggingOptionsConfigure);
         }
 
-        public static void UseRequestResponseLogging(this WebApplication app)
+        public static void UseRequestResponseLogging(this IApplicationBuilder app)
         {
             app.UseSerilogRequestLogging(options =>
             {

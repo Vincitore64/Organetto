@@ -47,7 +47,7 @@ namespace Organetto.UseCases.Boards.Commands
                 throw new UnauthorizedAccessException("Only the board owner can delete the board.");
 
             // 3. Perform delete (archive) operation.
-            await _boardRepository.DeleteAsync(request.BoardId);
+            await _boardRepository.DeleteAsync(request.BoardId, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _outboxService.AddAsync(new BoardDeletedIntegrationEvent(request.BoardId), cancellationToken);

@@ -50,7 +50,7 @@ namespace Organetto.UseCases.Boards.Commands
             };
 
             // Persist
-            var created = await _boardRepository.CreateAsync(board);
+            var created = await _boardRepository.CreateAsync(board, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _outboxService.AddAsync(new BoardCreatedIntegrationEvent(created.Id), cancellationToken);

@@ -31,7 +31,7 @@ namespace Organetto.UseCases.Boards.Queries
         public async Task<IEnumerable<BoardDto>> Handle(GetAllUserBoardsQuery request, CancellationToken cancellationToken)
         {
             // Fetch all boards for the user. (Получаем все доски для пользователя.)
-            var boards = await _boardRepository.GetAllForUserAsync(request.UserId);
+            var boards = await _boardRepository.GetAllForUserAsync(request.UserId, cancellationToken);
 
             // Map EF entities to DTOs. (Маппим EF-сущности в DTO.)
             var boardDtos = boards

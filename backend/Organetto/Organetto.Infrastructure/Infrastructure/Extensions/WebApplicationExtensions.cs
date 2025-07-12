@@ -7,7 +7,7 @@ namespace Organetto.Infrastructure.Infrastructure.Extensions
 {
     public static class WebApplicationExtensions
     {
-        public static void UseInfrastructure(this WebApplication app, IWebHostEnvironment webHostEnvironment)
+        public static void UseInfrastructure(this IApplicationBuilder app, IWebHostEnvironment webHostEnvironment)
         {
             if (!webHostEnvironment.IsDevelopment())
             {
