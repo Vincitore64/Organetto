@@ -1,11 +1,12 @@
-﻿using Organetto.Core.Users.Data;
+﻿using Organetto.Core.Shared.Models;
+using Organetto.Core.Users.Data;
 
 namespace Organetto.Core.Boards.Data
 {
     /// <summary>
     /// Represents a Kanban board.
     /// </summary>
-    public class Board
+    public class Board : BaseEntity
     {
         public Board()
         {
@@ -15,7 +16,6 @@ namespace Organetto.Core.Boards.Data
             Description = string.Empty;
         }
 
-        public long Id { get; set; }                                    // Surrogate PK (суррогатный первичный ключ)
         public string Title { get; set; }                               // Board title (название доски)
         public string Description { get; set; }                         // Board description (описание доски)
         public long OwnerId { get; set; }                               // FK to User (внешний ключ к User)

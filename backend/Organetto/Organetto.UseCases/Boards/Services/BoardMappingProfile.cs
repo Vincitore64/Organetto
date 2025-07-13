@@ -4,6 +4,9 @@ using Organetto.Core.Boards.Cards.Data;
 using Organetto.UseCases.Boards.Data;
 using System.Linq;
 using Organetto.UseCases.Boards.Columns.Data;
+using Organetto.UseCases.Boards.IntegrationEvents;
+using Organetto.Core.Boards.Events;
+using Organetto.UseCases.Shared.IntegrationEvents.Models;
 
 namespace Organetto.UseCases.Boards.Services
 {
@@ -14,6 +17,9 @@ namespace Organetto.UseCases.Boards.Services
     {
         public BoardMappingProfile()
         {
+            //CreateMap<BoardCreatedDomainEvent, IIntegrationEvent>()
+            //    .ConstructUsing(src => new BoardCreatedIntegrationEvent(src.BoardId));
+
             // Map Board entity → BoardDto. (Маппим Board → BoardDto.)
             CreateMap<Board, BoardDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

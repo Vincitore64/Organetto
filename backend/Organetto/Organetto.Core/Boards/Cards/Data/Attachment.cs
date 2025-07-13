@@ -1,11 +1,12 @@
-﻿using Organetto.Core.Users.Data;
+﻿using Organetto.Core.Shared.Models;
+using Organetto.Core.Users.Data;
 
 namespace Organetto.Core.Boards.Cards.Data
 {
     /// <summary>
     /// Represents an uploaded attachment for a card.
     /// </summary>
-    public class Attachment
+    public class Attachment : BaseEntity
     {
         public Attachment()
         {
@@ -13,7 +14,6 @@ namespace Organetto.Core.Boards.Cards.Data
             Filename = string.Empty;
         }
 
-        public long Id { get; set; }                                    // Surrogate PK (суррогатный первичный ключ)
         public long CardId { get; set; }                                // FK to Card (внешний ключ к Card)
         public long UploaderId { get; set; }                             // FK to User (внешний ключ к User)
         public string FileUrl { get; set; }                              // URL or path to file (ссылка на файл)

@@ -1,13 +1,14 @@
 ﻿
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Data;
+using Organetto.Core.Shared.Models;
 
 namespace Organetto.Core.Users.Data
 {
     /// <summary>
     /// Represents an application user with only Firebase authentication information.
     /// </summary>
-    public class User
+    public class User : BaseEntity
     {
         public User()
         {
@@ -21,7 +22,6 @@ namespace Organetto.Core.Users.Data
             Name = string.Empty;
         }
 
-        public long Id { get; set; }                                    // Surrogate PK (суррогатный первичный ключ)
         public string FirebaseUid { get; set; }                         // CHAR(36) unique, from Firebase (уникальный, получен из Firebase)
         public string Email { get; set; }                               // User email (электронная почта пользователя)
         public string Name { get; set; }                                // User display name (имя пользователя)

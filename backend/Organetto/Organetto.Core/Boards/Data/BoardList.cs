@@ -1,11 +1,12 @@
 ﻿using Organetto.Core.Boards.Cards.Data;
+using Organetto.Core.Shared.Models;
 
 namespace Organetto.Core.Boards.Data
 {
     /// <summary>
     /// Represents a list (column) within a board.
     /// </summary>
-    public class BoardList
+    public class BoardList : BaseEntity
     {
         public BoardList()
         {
@@ -13,7 +14,6 @@ namespace Organetto.Core.Boards.Data
             Title = string.Empty;
         }
 
-        public long Id { get; set; }                                    // Surrogate PK (суррогатный первичный ключ)
         public long BoardId { get; set; }                               // FK to Board (внешний ключ к Board)
         public string Title { get; set; }                               // List title (название списка)
         public int Position { get; set; }                                // Order index (позиция)
