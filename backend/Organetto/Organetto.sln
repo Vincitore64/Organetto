@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Web", "Organetto.Web\Organetto.Web.csproj", "{C6BBE60D-50D7-435F-A56D-5CF05EEF09E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organetto.Web", "Organetto.Web\Organetto.Web.csproj", "{C6BBE60D-50D7-435F-A56D-5CF05EEF09E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Core", "Organetto.Core\Organetto.Core.csproj", "{99C1347D-7E48-45D8-846A-1693398512A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organetto.Core", "Organetto.Core\Organetto.Core.csproj", "{99C1347D-7E48-45D8-846A-1693398512A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Infrastructure", "Organetto.Infrastructure\Organetto.Infrastructure.csproj", "{749EF254-1B1B-4BBB-894F-CDFADBC18763}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organetto.Infrastructure", "Organetto.Infrastructure\Organetto.Infrastructure.csproj", "{749EF254-1B1B-4BBB-894F-CDFADBC18763}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.UseCases", "Organetto.UseCases\Organetto.UseCases.csproj", "{D07101A0-683A-4267-A339-73B6CA7E9249}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organetto.UseCases", "Organetto.UseCases\Organetto.UseCases.csproj", "{D07101A0-683A-4267-A339-73B6CA7E9249}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6BCBB0D-5BBF-432D-B414-383999F4D180}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
