@@ -23,10 +23,10 @@ namespace Organetto.Core.Boards.Services
         /// </summary>
         Task<BoardList> CreateAsync(BoardList column, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Updates an existing Column.
-        /// </summary>
-        Task UpdateAsync(BoardList column, CancellationToken cancellationToken);
+        ///// <summary>
+        ///// Updates an existing Column.
+        ///// </summary>
+        //Task UpdateAsync(BoardList column, CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes a Column by its id.
