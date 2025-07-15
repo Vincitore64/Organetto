@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.UseCases.Boards.Columns.Hubs;
 using Organetto.UseCases.Boards.Hubs;
-using Organetto.UseCases.Boards.Services;
 using Organetto.UseCases.Shared.Exceptions.Extensions;
+using Organetto.UseCases.Shared.IntegrationEvents.Services.Mappers.Configuration.Extensions;
 using Organetto.UseCases.Shared.MassTransit.Configuration.Extensions;
 using System.Reflection;
 
@@ -18,7 +18,8 @@ namespace Organetto.UseCases.Configuration.Extensions
         {
 
             services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddAutoMapper(typeof(BoardMappingProfile).Assembly);
+            //services.AddAutoMapper(typeof(BoardMappingProfile).Assembly);
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddSignalR(o =>
             {
                 o.EnableDetailedErrors = true;
@@ -26,6 +27,7 @@ namespace Organetto.UseCases.Configuration.Extensions
             });
             services.AddMassTransitEventSourcing();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddEventsMapper();
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>));
 
             return services;

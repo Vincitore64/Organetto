@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Organetto.Core.Shared.Models;
-using Organetto.UseCases.Shared.IntegrationEvents.Models;
+using Organetto.UseCases.Shared.IntegrationEvents.Services.Mappers;
 using Organetto.UseCases.Shared.Outbox.Services;
 
 namespace Organetto.Infrastructure.Data.Interceptors
@@ -10,12 +9,12 @@ namespace Organetto.Infrastructure.Data.Interceptors
     public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
     {
         private readonly IOutboxService _outboxService;
-        private readonly IMapper _mapper;
+        private readonly IEventsMapper _eventsMapper;
 
-        public DispatchDomainEventsInterceptor(IOutboxService outboxService, IMapper mapper)
+        public DispatchDomainEventsInterceptor(IOutboxService outboxService, IEventsMapper eventsMapper)
         {
             this._outboxService = outboxService;
-            this._mapper = mapper;
+            this._eventsMapper = eventsMapper;
         }
 
         public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
@@ -38,13 +37,11 @@ namespace Organetto.Infrastructure.Data.Interceptors
 
             entities.ToList().ForEach(e => e.Events.Clear());
 
-            foreach (var domainEvent in domainEvents)
+            var integrationEvents = _eventsMapper.Map(domainEvents).ToArray();
+
+            foreach (var integrationEvent in integrationEvents)
             {
-                var integrationEvent = _mapper.Map<IIntegrationEvent>(domainEvent);
-                if (integrationEvent != null)
-                {
-                    await _outboxService.AddAsync(integrationEvent);
-                }
+                await _outboxService.AddAsync(integrationEvent);
             }
         }
     }
