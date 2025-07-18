@@ -4,15 +4,22 @@ namespace Organetto.Core.Shared.Models
 {
     public abstract class BaseEntity<TId> : IEntity<TId>
     {
+        private readonly List<IDomainEvent> _events;
+
         protected BaseEntity(TId id)
         {
             Id = id;
-            Events = new List<IDomainEvent>();
+            _events = new List<IDomainEvent>();
         }
 
         public TId Id { get; set; }
 
-        public List<IDomainEvent> Events { get; }
+        public IReadOnlyList<IDomainEvent> Events => _events;
+
+        protected void Raise(IDomainEvent e)
+        {
+            _events.Add(e);
+        }
 
     }
 
