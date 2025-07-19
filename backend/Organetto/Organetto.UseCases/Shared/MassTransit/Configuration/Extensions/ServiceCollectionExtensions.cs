@@ -66,6 +66,7 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
                 busConfigurator.AddConsumer<SignalRBoardMetadataUpdatedIntegrationEventConsumer>();
                 busConfigurator.AddConsumer<SignalRColumnCreatedIntegrationEventConsumer>();
                 busConfigurator.AddConsumer<SignalRColumnUpdatedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<SignalRColumnDeletedIntegrationEventConsumer>();
 
                 busConfigurator.UsingInMemory((context, configuration) =>
                 {
@@ -78,6 +79,7 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
 
                         endpontCfg.ConfigureConsumer<SignalRColumnCreatedIntegrationEventConsumer>(context);
                         endpontCfg.ConfigureConsumer<SignalRColumnUpdatedIntegrationEventConsumer>(context);
+                        endpontCfg.ConfigureConsumer<SignalRColumnDeletedIntegrationEventConsumer>(context);
 
                     });
                 });

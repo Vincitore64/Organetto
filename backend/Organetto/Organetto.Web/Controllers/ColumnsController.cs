@@ -51,7 +51,7 @@ namespace Organetto.Web.Controllers
         /// <summary>
         /// Rename or reorder an existing column.
         /// </summary>
-        [HttpPatch("{columnId:long}")]
+        [HttpPatch]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateColumn(
@@ -66,20 +66,20 @@ namespace Organetto.Web.Controllers
             return NoContent();
         }
 
-        ///// <summary>
-        ///// Delete a column from the board.
-        ///// </summary>
-        //[HttpDelete("{columnId:long}")]
-        //[ProducesResponseType(204)]
-        //[ProducesResponseType(404)]
-        //public async Task<IActionResult> DeleteColumn(
-        //    [FromRoute] long boardId,
-        //    [FromRoute] long columnId,
-        //    CancellationToken cancellationToken)
-        //{
-        //    var command = new DeleteColumnCommand(boardId, columnId);
-        //    await _mediator.Send(command, cancellationToken);
-        //    return NoContent();
-        //}
+        /// <summary>
+        /// Delete a column from the board.
+        /// </summary>
+        [HttpDelete("{columnId:long}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteColumn(
+            [FromRoute] long boardId,
+            [FromRoute] long columnId,
+            CancellationToken cancellationToken)
+        {
+            var command = new DeleteColumnCommand(boardId, columnId);
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
     }
 }

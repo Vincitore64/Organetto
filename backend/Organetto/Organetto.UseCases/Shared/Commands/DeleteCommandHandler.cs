@@ -14,7 +14,7 @@ namespace Organetto.UseCases.Shared.Commands
     {
         private readonly IReadByIdAndDeleteRepository<TEntity, TKey> _repository;
 
-        protected DeleteCommandHandler(
+        public DeleteCommandHandler(
             IReadByIdAndDeleteRepository<TEntity, TKey> repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));

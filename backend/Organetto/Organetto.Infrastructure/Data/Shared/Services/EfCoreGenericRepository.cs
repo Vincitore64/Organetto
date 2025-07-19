@@ -60,7 +60,7 @@ namespace Organetto.Infrastructure.Data.Shared.Services
         public virtual async Task DeleteAsync(TKey id, CancellationToken cancellationToken)
         {
             var lambda = GetByIdExpression(id);
-            var item = await _db.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(lambda, cancellationToken);
+            var item = await _db.Set<TEntity>().FirstOrDefaultAsync(lambda, cancellationToken);
             if (item == null) return;
 
             _db.Set<TEntity>().Remove(item);

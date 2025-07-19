@@ -6,7 +6,6 @@ using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
 using Organetto.Core.Shared.Models;
-using Organetto.UseCases.Boards.Columns.Data;
 using Organetto.UseCases.Shared.Commands;
 using Organetto.UseCases.Shared.Outbox.Services;
 using Organetto.UseCases.Shared.Validation.Extensions;
@@ -14,35 +13,27 @@ using Organetto.UseCases.Shared.Validation.Extensions;
 namespace Organetto.UseCases.Boards.Columns.Commands
 {
     /// <summary>
-    /// Command to update an existing column's metadata (title and position).
+    /// Command to delete a column (BoardList) from a board.
     /// </summary>
-    public record UpdateColumnMetadataCommand(
-        long BoardId,
-        long Id,
-        string Title,
-        int Position
-    ) : IRequest<BoardListDto>, IHasId<long>;
+    public record DeleteColumnCommand(long BoardId, long Id) : IRequest<Unit>, IHasId<long>;
 
     /// <summary>
-    /// Handler that updates a column's Title and Position.
-    /// Wrapped by TransactionDecorator and OutboxIntegrationEventDecorator.
+    /// Handles the deletion of a column by delegating to the Board aggregate.
     /// </summary>
-    public class UpdateColumnMetadataCommandHandler
-        : IRequestHandler<UpdateColumnMetadataCommand, BoardListDto>
+    public class DeleteColumnCommandHandler : IRequestHandler<DeleteColumnCommand, Unit>
     {
         private readonly IColumnRepository _repository;
         private readonly IMapper _mapper;
         private readonly IOutboxService _outboxService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IValidator<UpdateColumnMetadataCommand> _validator;
+        private readonly IValidator<DeleteColumnCommand> _validator;
         private readonly ILoggerFactory _loggerFactory;
 
-        public UpdateColumnMetadataCommandHandler(
-            IColumnRepository repository,
+        public DeleteColumnCommandHandler(IColumnRepository repository,
             IMapper mapper,
             IOutboxService outboxService,
             IUnitOfWork unitOfWork,
-            IValidator<UpdateColumnMetadataCommand> validator,
+            IValidator<DeleteColumnCommand> validator,
             ILoggerFactory loggerFactory)
         {
             this._repository = repository;
@@ -53,23 +44,22 @@ namespace Organetto.UseCases.Boards.Columns.Commands
             this._loggerFactory = loggerFactory;
         }
 
-        public async Task<BoardListDto> Handle(
-            UpdateColumnMetadataCommand request,
-            CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteColumnCommand request, CancellationToken cancellationToken)
         {
             _validator.TryValidate(request);
-            var bussinessHandler = new UpdateCommandHandler<UpdateColumnMetadataCommand, BoardList, BoardListDto, long>(_repository, _mapper);
-            var outboxHandler = new OutboxIntegrationEventDecorator<UpdateColumnMetadataCommand, BoardListDto>(
+            var bussinessHandler = new DeleteCommandHandler<DeleteColumnCommand, BoardList, long>(_repository);
+            var outboxHandler = new OutboxIntegrationEventDecorator<DeleteColumnCommand, Unit>(
                 bussinessHandler,
                 _unitOfWork,
                 _outboxService,
-                _loggerFactory.CreateLogger<OutboxIntegrationEventDecorator<UpdateColumnMetadataCommand, BoardListDto>>()
+                _loggerFactory.CreateLogger<OutboxIntegrationEventDecorator<DeleteColumnCommand, Unit>>()
             );
-            var transactionalHandler = new TransactionDecorator<UpdateColumnMetadataCommand, BoardListDto>(
+            var transactionalHandler = new TransactionDecorator<DeleteColumnCommand, Unit>(
                 outboxHandler,
                 _unitOfWork,
-                _loggerFactory.CreateLogger<TransactionDecorator<UpdateColumnMetadataCommand, BoardListDto>>()
+                _loggerFactory.CreateLogger<TransactionDecorator<DeleteColumnCommand, Unit>>()
             );
+
             return await transactionalHandler.Handle(request, cancellationToken);
         }
     }

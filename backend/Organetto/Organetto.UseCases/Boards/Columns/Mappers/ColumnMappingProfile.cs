@@ -27,6 +27,9 @@ namespace Organetto.UseCases.Boards.Columns.Mappers
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.EntityId, opt => opt.MapFrom(src => src.BoardListId));
 
+            CreateMap<BoardListDeletedDomainEvent, BoardListDeletedIntegrationEvent>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             // Optionally, if you have a CreateColumnCommand, map its properties as well:
             // CreateMap<CreateColumnCommand, BoardList>()
             //     .ForMember(dest => dest.BoardId, opt => opt.MapFrom(src => src.BoardId))

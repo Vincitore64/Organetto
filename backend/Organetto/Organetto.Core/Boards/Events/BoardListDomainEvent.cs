@@ -17,7 +17,7 @@ namespace Organetto.Core.Boards.Events
         }
     }
 
-    public record BoardListDeletedDomainEvent(long BoardId, long BoardListId) : IDomainEvent
+    public record BoardListDeletedDomainEvent(long BoardId, long EntityId) : IDomainEvent
     {
         public BoardListDeletedDomainEvent(BoardList boardList) : this(boardList.BoardId, boardList.Id)
         {

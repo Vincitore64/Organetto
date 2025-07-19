@@ -37,17 +37,35 @@ namespace Organetto.UseCases.Shared.IntegrationEvents.Consumers
             var evt = context.Message;
             _logger.LogInformation("Received {Event} for ID {Id}", typeof(TEvent).Name, evt.Id);
 
-            var entity = await _lookup.GetByIdAsync(evt.EntityId, context.CancellationToken);
-            if (entity == null && !ShouldIgnoreMissing()) return;
+            try
+            {
+                var entity = await _lookup.GetByIdAsync(evt.EntityId, context.CancellationToken);
+                if (entity == null && !ShouldIgnoreMissing()) return;
 
-            var dto = entity is not null
-                ? _mapper.Map<TDto>(entity)
-                : default!;
+                var dto = entity is not null
+                    ? _mapper.Map<TDto>(entity)
+                    : default;
 
-            await ProcessEventAsync(evt, dto);
+                if (dto == null)
+                {
+                    await ProcessEventAsync(evt);
+                    return;
+                }
+
+                await ProcessEventAsync(evt, dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing {Event} for ID {Id}", typeof(TEvent).Name, evt.Id);
+                await ProcessEventAsync(evt);
+            }
         }
 
         protected virtual bool ShouldIgnoreMissing() => true;
         protected abstract Task ProcessEventAsync(TEvent evt, TDto dto);
+        protected virtual Task ProcessEventAsync(TEvent evt)
+        {
+            return Task.CompletedTask;
+        }
     }
 }
