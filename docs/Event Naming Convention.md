@@ -47,6 +47,7 @@ Integration events should follow this naming pattern:
 - Must implement `IIntegrationEvent` interface
 - Must be concrete classes (not abstract)
 - Must end with "IntegrationEvent" suffix
+- Must have parameterless constructors for mapping support
 - Should be located in the `Organetto.UseCases` project under appropriate feature folders
 - Should use PascalCase naming convention
 - Can optionally implement `IEntityIntegrationEvent<TEntityId>` for entity-specific events
@@ -93,22 +94,35 @@ namespace Organetto.Core.Boards.Events
 
 ### Integration Event Structure
 
+Integration events should have parameterless constructors to support serialization and deserialization across service boundaries:
+
 ```csharp
 using Organetto.UseCases.Shared.IntegrationEvents.Models;
 
 namespace Organetto.UseCases.Boards.IntegrationEvents
 {
-    public record BoardCreatedIntegrationEvent(long BoardId) : IntegrationEvent;
+    public record BoardCreatedIntegrationEvent : IntegrationEvent
+    {
+        public BoardCreatedIntegrationEvent() { }
+        
+        public long BoardId { get; init; }
+    }
 }
 ```
 
 ### Entity-Specific Integration Events
 
-For events that carry entity information, implement `IEntityIntegrationEvent<TEntityId>`:
+For events that carry entity information, implement `IEntityIntegrationEvent<TEntityId>` with parameterless constructors:
 
 ```csharp
-public record BoardMetadataUpdatedIntegrationEvent(long EntityId, long OwnerId, long[] MemberIds) 
-    : IntegrationEvent, IEntityIntegrationEvent<long>;
+public record BoardMetadataUpdatedIntegrationEvent : IntegrationEvent, IEntityIntegrationEvent<long>
+{
+    public BoardMetadataUpdatedIntegrationEvent() { }
+    
+    public long EntityId { get; init; }
+    public long OwnerId { get; init; }
+    public long[] MemberIds { get; init; } = Array.Empty<long>();
+}
 ```
 
 ## Configuration
@@ -179,6 +193,7 @@ public class ConventionEventsMapper : IEventsMapper
 ### 4. Interface Implementation
 - Domain events must implement `IDomainEvent`
 - Integration events must implement `IIntegrationEvent`
+- Integration events must have parameterless constructors
 - Use `IEntityIntegrationEvent<TEntityId>` for entity-specific events
 
 ## Troubleshooting
