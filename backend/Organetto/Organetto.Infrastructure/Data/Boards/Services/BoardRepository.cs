@@ -3,29 +3,30 @@ using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Infrastructure.Data.Shared;
 using Organetto.Infrastructure.Data.Shared.Exceptions;
+using Organetto.Infrastructure.Data.Shared.Services;
 
 namespace Organetto.Infrastructure.Data.Boards.Services
 {
     /// <summary>
     /// EF Core implementation of IBoardRepository. (Реализация IBoardRepository на основе EF Core.)
     /// </summary>
-    public class BoardRepository : IBoardRepository
+    public class BoardRepository : EfCoreGenericRepository<IBoardRepository, Board, long>, IBoardRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
         /// <summary>
         /// Constructor: injects ApplicationDbContext. (Конструктор: внедряет ApplicationDbContext.)
         /// </summary>
-        public BoardRepository(ApplicationDbContext dbContext)
+        public BoardRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         /// <inheritdoc/>
-        public async Task<Board> GetByIdAsync(long boardId, CancellationToken cancellationToken)
+        public override async Task<Board> GetByIdAsync(long boardId, CancellationToken cancellationToken)
         {
             // Возвращаем доску по её id, включая связанные списки и членов (если нужно)
-            return await _dbContext.Boards
+            return await Query(_dbContext.Boards)
                 .Include(b => b.Owner)
                 .Include(b => b.Members)
                     .ThenInclude(m => m.User)
@@ -37,18 +38,20 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         public async Task<IEnumerable<Board>> GetAllForUserAsync(long userId, CancellationToken cancellationToken)
         {
             // Получаем доски, где пользователь является владельцем.
-            var ownerBoards = await _dbContext.Boards
+            var ownerBoards = await Query(_dbContext.Boards)
                 .Where(b => b.OwnerId == userId)
                 .Include(b => b.Members).ThenInclude(m => m.User).Include(b => b.Lists)
                 .ToListAsync(cancellationToken);
 
-            // Получаем доски, где пользователь – участник.
-            var memberBoards = (await _dbContext.BoardMembers
+            var boardMembers = await Query(_dbContext.BoardMembers)
                 .Where(bm => bm.UserId == userId)
                 .Include(bm => bm.User)
                 .Include(bm => bm.Board!)
                 .ThenInclude(b => b.Lists)
-                .ToListAsync())
+                .ToListAsync();
+
+            // Получаем доски, где пользователь – участник.
+            var memberBoards = boardMembers
                 .Select(bm => bm.Board!)
                 .ToList(); // TODO: check that the Board is not null
 
@@ -57,7 +60,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public Task<Board> CreateAsync(Board board, CancellationToken cancellationToken)
+        public override Task<Board> CreateAsync(Board board, CancellationToken cancellationToken)
         {
             if (board == null)
                 throw new ArgumentNullException(nameof(board));
@@ -69,7 +72,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(Board board, CancellationToken cancellationToken)
+        public override async Task UpdateAsync(Board board, CancellationToken cancellationToken)
         {
             if (board == null)
                 throw new ArgumentNullException(nameof(board));
@@ -88,7 +91,7 @@ namespace Organetto.Infrastructure.Data.Boards.Services
         }
 
         /// <inheritdoc/>
-        public async Task DeleteAsync(long boardId, CancellationToken cancellationToken)
+        public override async Task DeleteAsync(long boardId, CancellationToken cancellationToken)
         {
             var board = await _dbContext.Boards.FindAsync(boardId);
             if (board == null)

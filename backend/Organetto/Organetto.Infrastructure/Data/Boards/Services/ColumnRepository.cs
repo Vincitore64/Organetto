@@ -3,19 +3,20 @@ using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Infrastructure.Data.Shared;
 using Organetto.Infrastructure.Data.Shared.Exceptions;
+using Organetto.Infrastructure.Data.Shared.Services;
 
 namespace Organetto.Infrastructure.Data.Boards.Services
 {
-    public class ColumnRepository : IColumnRepository
+    public class ColumnRepository : EfCoreGenericRepository<IColumnRepository, BoardList, long>, IColumnRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public ColumnRepository(ApplicationDbContext dbContext)
+        public ColumnRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
             _db = dbContext;
         }
 
-        public async Task<BoardList> GetByIdAsync(long columnId, CancellationToken cancellationToken)
+        public override async Task<BoardList> GetByIdAsync(long columnId, CancellationToken cancellationToken)
         {
             return await _db.BoardLists
                 .Include(c => c.Cards)
@@ -30,27 +31,6 @@ namespace Organetto.Infrastructure.Data.Boards.Services
                 .Include(c => c.Cards)
                 .OrderBy(c => c.Position)
                 .ToListAsync(cancellationToken);
-        }
-
-        public async Task<BoardList> CreateAsync(BoardList column, CancellationToken cancellationToken)
-        {
-            var entry = await _db.BoardLists.AddAsync(column, cancellationToken);
-            return entry.Entity;
-        }
-
-        public Task UpdateAsync(BoardList column, CancellationToken cancellationToken)
-        {
-            _db.BoardLists.Update(column);
-            return Task.CompletedTask;
-        }
-
-        public async Task DeleteAsync(long columnId, CancellationToken cancellationToken)
-        {
-            var column = await _db.BoardLists.FirstOrDefaultAsync(l => l.Id == columnId, cancellationToken);
-            if (column != null)
-            {
-                _db.BoardLists.Remove(column);
-            }
         }
     }
 }
