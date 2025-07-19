@@ -11,7 +11,7 @@ namespace Organetto.UseCases.Shared.Commands
     public class UpdateCommandHandler<TCommand, TEntity, TDto, TKey>
         : IRequestHandler<TCommand, TDto>
         where TCommand : IRequest<TDto>, IHasId<TKey>
-        where TEntity : class
+        where TEntity : class, ICrudEntity
     {
         private readonly IReadByIdAndUpdateRepository<TEntity, TKey> _repository;
         private readonly IMapper _mapper;
@@ -32,6 +32,8 @@ namespace Organetto.UseCases.Shared.Commands
 
             // 3. Persist
             await _repository.UpdateAsync(entity, cancellationToken);
+
+            entity.MarkUpdated();
 
             // 4. Map to DTO and return
             return _mapper.Map<TDto>(entity);

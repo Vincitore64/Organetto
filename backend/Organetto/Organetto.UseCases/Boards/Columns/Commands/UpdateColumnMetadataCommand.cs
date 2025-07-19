@@ -6,7 +6,6 @@ using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
 using Organetto.Core.Shared.Models;
 using Organetto.UseCases.Boards.Columns.Data;
-using Organetto.UseCases.Boards.Columns.IntergationEvents.Factories;
 using Organetto.UseCases.Shared.Commands;
 using Organetto.UseCases.Shared.Outbox.Services;
 
@@ -58,7 +57,6 @@ namespace Organetto.UseCases.Boards.Columns.Commands
                 bussinessHandler,
                 _unitOfWork,
                 _outboxService,
-                new ColumnMetadataUpdatedEventFactory(),
                 _loggerFactory.CreateLogger<OutboxIntegrationEventDecorator<UpdateColumnMetadataCommand, BoardListDto>>()
             );
             var transactionalHandler = new TransactionDecorator<UpdateColumnMetadataCommand, BoardListDto>(

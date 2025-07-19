@@ -125,6 +125,8 @@ namespace Organetto.Infrastructure.Data.Shared
                 entity.Property(l => l.Position)
                       .IsRequired();
 
+                entity.Ignore(l => l.Events);
+
                 // Relationship: BoardList.Board -> Board
                 entity.HasOne(l => l.Board)
                       .WithMany(b => b.Lists)

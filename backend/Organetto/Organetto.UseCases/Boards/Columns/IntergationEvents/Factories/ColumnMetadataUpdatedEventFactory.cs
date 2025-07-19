@@ -12,7 +12,7 @@ namespace Organetto.UseCases.Boards.Columns.IntergationEvents.Factories
             UpdateColumnMetadataCommand request,
             BoardListDto response)
         {
-            yield return new ColumnMetadataUpdatedIntegrationEvent(response.Id, request.BoardId);
+            yield return new BoardListUpdatedIntegrationEvent(response.Id, request.BoardId);
         }
     }
 }

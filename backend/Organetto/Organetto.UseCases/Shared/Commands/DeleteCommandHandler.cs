@@ -10,7 +10,7 @@ namespace Organetto.UseCases.Shared.Commands
     public class DeleteCommandHandler<TCommand, TEntity, TKey>
         : IRequestHandler<TCommand, Unit>
         where TCommand : IRequest<Unit>, IHasId<TKey>
-        where TEntity : class
+        where TEntity : class, ICrudEntity
     {
         private readonly IReadByIdAndDeleteRepository<TEntity, TKey> _repository;
 
@@ -27,6 +27,8 @@ namespace Organetto.UseCases.Shared.Commands
 
             // 2. Delete
             await _repository.DeleteAsync(request.Id, cancellationToken);
+
+            entity.MarkDeleted();
 
             return Unit.Value;
         }

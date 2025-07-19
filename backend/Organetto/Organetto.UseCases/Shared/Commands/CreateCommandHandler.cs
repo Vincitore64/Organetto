@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
+using Organetto.Core.Shared.Databases;
+using Organetto.Core.Shared.Models;
 using Organetto.Core.Shared.Services;
 
 namespace Organetto.UseCases.Shared.Commands
@@ -10,14 +12,16 @@ namespace Organetto.UseCases.Shared.Commands
     public class CreateCommandHandler<TCommand, TEntity, TDto>
         : IRequestHandler<TCommand, TDto>
         where TCommand : IRequest<TDto>
-        where TEntity : class
+        where TEntity : class, ICrudEntity
     {
         private readonly IMapper _mapper;
         private readonly ICreateRepository<TEntity> _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        protected CreateCommandHandler(ICreateRepository<TEntity> repository, IMapper mapper)
+        protected CreateCommandHandler(ICreateRepository<TEntity> repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            this._unitOfWork = unitOfWork;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -28,6 +32,10 @@ namespace Organetto.UseCases.Shared.Commands
 
             // 2. Persist
             await _repository.CreateAsync(entity, cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            entity.MarkCreated();
 
             // 3. Map to DTO
             return _mapper.Map<TDto>(entity);

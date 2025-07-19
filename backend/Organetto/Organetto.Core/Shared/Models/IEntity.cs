@@ -1,9 +1,6 @@
-﻿using Organetto.Core.Shared.Events.Models;
-
-namespace Organetto.Core.Shared.Models
+﻿namespace Organetto.Core.Shared.Models
 {
-    public interface IEntity<TId> : IHasId<TId>
+    public interface IEntity<TId> : IHasId<TId>, IHasDomainEvents
     {
-        IReadOnlyList<IDomainEvent> Events { get; }
     }
 }

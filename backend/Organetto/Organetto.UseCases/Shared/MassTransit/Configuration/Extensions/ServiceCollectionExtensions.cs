@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
+using Organetto.UseCases.Boards.Columns.IntergationEvents;
 using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Shared.MassTransit.Services;
 using System.Reflection;
@@ -63,6 +64,8 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
                 busConfigurator.AddConsumer<SignalRBoardCreatedIntegrationEventConsumer>();
                 busConfigurator.AddConsumer<SignalRBoardDeletedIntegrationEventConsumer>();
                 busConfigurator.AddConsumer<SignalRBoardMetadataUpdatedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<SignalRColumnCreatedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<SignalRColumnUpdatedIntegrationEventConsumer>();
 
                 busConfigurator.UsingInMemory((context, configuration) =>
                 {
@@ -72,6 +75,9 @@ namespace Organetto.UseCases.Shared.MassTransit.Configuration.Extensions
                         endpontCfg.ConfigureConsumer<SignalRBoardCreatedIntegrationEventConsumer>(context);
                         endpontCfg.ConfigureConsumer<SignalRBoardDeletedIntegrationEventConsumer>(context);
                         endpontCfg.ConfigureConsumer<SignalRBoardMetadataUpdatedIntegrationEventConsumer>(context);
+
+                        endpontCfg.ConfigureConsumer<SignalRColumnCreatedIntegrationEventConsumer>(context);
+                        endpontCfg.ConfigureConsumer<SignalRColumnUpdatedIntegrationEventConsumer>(context);
 
                     });
                 });

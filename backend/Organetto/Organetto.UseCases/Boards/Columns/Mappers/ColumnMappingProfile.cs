@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Organetto.Core.Boards.Data;
+using Organetto.Core.Boards.Events;
 using Organetto.UseCases.Boards.Columns.Commands;
+using Organetto.UseCases.Boards.Columns.IntergationEvents;
 
 namespace Organetto.UseCases.Boards.Columns.Mappers
 {
@@ -20,6 +22,10 @@ namespace Organetto.UseCases.Boards.Columns.Mappers
                 .ForMember(dest => dest.BoardId, opt => opt.Ignore())
                 .ForMember(dest => dest.Cards, opt => opt.Ignore())
                 .ForMember(dest => dest.Board, opt => opt.Ignore());
+
+            CreateMap<BoardListUpdatedDomainEvent, BoardListUpdatedIntegrationEvent>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.EntityId, opt => opt.MapFrom(src => src.BoardListId));
 
             // Optionally, if you have a CreateColumnCommand, map its properties as well:
             // CreateMap<CreateColumnCommand, BoardList>()

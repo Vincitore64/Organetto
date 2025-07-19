@@ -6,7 +6,7 @@ namespace Organetto.Core.Boards.Data
     /// <summary>
     /// Represents a list (column) within a board.
     /// </summary>
-    public class BoardList : BaseEntity
+    public class BoardList : CrudEntity
     {
         public BoardList()
         {
