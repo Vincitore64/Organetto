@@ -1,5 +1,5 @@
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { BoardDto, CreateBoardCommand } from '../models'
+import type { BoardDto, CreateBoardCommand, UpdateBoardCommand } from '../models'
 import type { ApiException } from '@/dataAccess/shared/models/ApiException'
 import qs from 'qs'
 
@@ -49,6 +49,42 @@ export class BoardsClient {
       const error = err as AxiosError<ApiException>
       if (error.response && error.response.data) {
         throw new Error(error.response.data.message || `API Error: ${error.response.status}`)
+      }
+      throw err
+    }
+  }
+
+  /**
+   * PATCH /api/Boards/{id}
+   * Updates an existing board.
+   * @param id - Board identifier
+   * @param board - Partial updates (e.g. title, description)
+   */
+  public async update(board: UpdateBoardCommand): Promise<BoardDto> {
+    try {
+      const response = await this.http.patch<BoardDto>(`/api/Boards`, board)
+      return response.data
+    } catch (err) {
+      const error = err as AxiosError<ApiException>
+      if (error.response?.data) {
+        throw new Error(error.response.data.message ?? `API Error: ${error.response.status}`)
+      }
+      throw err
+    }
+  }
+
+  /**
+   * DELETE /api/Boards/{id}
+   * Deletes the board with the given id.
+   * @param id - Board identifier
+   */
+  public async delete(id: number): Promise<void> {
+    try {
+      await this.http.delete<void>(`/api/Boards/${id}`)
+    } catch (err) {
+      const error = err as AxiosError<ApiException>
+      if (error.response?.data) {
+        throw new Error(error.response.data.message ?? `API Error: ${error.response.status}`)
       }
       throw err
     }
