@@ -6,7 +6,7 @@ namespace Organetto.Core.Boards.Cards.Data
     /// <summary>
     /// Represents a card/task in a list.
     /// </summary>
-    public class Card : BaseEntity
+    public class Card : CrudEntity
     {
         public Card()
         {

@@ -1,7 +1,7 @@
+using Organetto.Core.Shared.Extensions;
 using Organetto.Infrastructure.Data.Extensions;
 using Organetto.Infrastructure.Infrastructure.Extensions;
 using Organetto.UseCases.Configuration.Extensions;
-using Organetto.UseCases.Shared.Extensions;
 using Organetto.Web.Configuration.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

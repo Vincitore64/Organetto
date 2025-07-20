@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Organetto.Core.Boards.Cards.Services;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
 using Organetto.Core.Users.Services;
@@ -29,6 +30,7 @@ namespace Organetto.Infrastructure.Data.Extensions
             services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IColumnRepository, ColumnRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<IOutboxService, OutboxService>();
 
             return services;

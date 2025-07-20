@@ -16,7 +16,7 @@ namespace Organetto.UseCases.Boards.Columns.IntergationEvents
     {
         public BoardListUpdatedIntegrationEvent() : this(0, 0)
         {
-            
+
         }
     }
 
@@ -36,7 +36,7 @@ namespace Organetto.UseCases.Boards.Columns.IntergationEvents
             ILogger<SignalRColumnUpdatedIntegrationEventConsumer> logger)
             : base(lookup, mapper, logger)
         {
-            this._hub = hub;
+            _hub = hub;
         }
 
         protected override async Task ProcessEventAsync(

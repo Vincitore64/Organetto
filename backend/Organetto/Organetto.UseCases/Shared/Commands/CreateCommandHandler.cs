@@ -18,7 +18,7 @@ namespace Organetto.UseCases.Shared.Commands
         private readonly ICreateRepository<TEntity> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        protected CreateCommandHandler(ICreateRepository<TEntity> repository, IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateCommandHandler(ICreateRepository<TEntity> repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this._unitOfWork = unitOfWork;

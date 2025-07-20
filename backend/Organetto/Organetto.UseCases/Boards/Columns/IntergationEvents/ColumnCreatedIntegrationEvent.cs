@@ -35,7 +35,7 @@ namespace Organetto.UseCases.Boards.Columns.IntergationEvents
             ILogger<SignalRColumnCreatedIntegrationEventConsumer> logger)
             : base(lookup, mapper, logger)
         {
-            this._hub = hub;
+            _hub = hub;
         }
 
         protected override async Task ProcessEventAsync(

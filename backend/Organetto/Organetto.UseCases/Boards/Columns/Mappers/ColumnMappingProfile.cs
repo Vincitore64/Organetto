@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Events;
+using Organetto.UseCases.Boards.Columns.Cards.IntegrationEvents;
 using Organetto.UseCases.Boards.Columns.Commands;
 using Organetto.UseCases.Boards.Columns.IntergationEvents;
 

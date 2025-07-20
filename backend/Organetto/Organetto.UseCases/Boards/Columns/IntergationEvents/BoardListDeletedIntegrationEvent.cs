@@ -16,7 +16,7 @@ namespace Organetto.UseCases.Boards.Columns.IntergationEvents
     {
         public BoardListDeletedIntegrationEvent() : this(0, 0)
         {
-            
+
         }
     }
 
@@ -33,10 +33,10 @@ namespace Organetto.UseCases.Boards.Columns.IntergationEvents
             IColumnRepository lookup,
             IMapper mapper,
             IHubContext<ColumnHub, IColumnClient> hub,
-            ILogger<SignalRColumnUpdatedIntegrationEventConsumer> logger)
+            ILogger<SignalRColumnDeletedIntegrationEventConsumer> logger)
             : base(lookup, mapper, logger)
         {
-            this._hub = hub;
+            _hub = hub;
         }
 
         protected override async Task ProcessEventAsync(
