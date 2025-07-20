@@ -53,10 +53,18 @@ namespace Organetto.Infrastructure.Data.Boards.Services
 
         public override async Task<Card> CreateAsync(Card entity, CancellationToken cancellationToken = default)
         {
+            entity.CreatedAt = DateTime.UtcNow;
+            entity.UpdatedAt = DateTime.UtcNow;
             var created = await base.CreateAsync(entity, cancellationToken);
             var createdEntry = _db.Entry(created);
             await createdEntry.Reference(c => c.BoardList).LoadAsync(cancellationToken);
             return createdEntry.Entity;
+        }
+
+        public override Task UpdateAsync(Card entity, CancellationToken cancellationToken)
+        {
+            entity.UpdatedAt = DateTime.UtcNow;
+            return base.UpdateAsync(entity, cancellationToken);
         }
     }
 }

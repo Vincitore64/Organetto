@@ -12,11 +12,12 @@ namespace Organetto.Web.Configuration.Swagger.Extensions
         public static void AddAppSwagger(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.AddAuthorization();
-            //});
+            //services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                //c.AddAuthorization();
+                c.IncludeXmlComments("Organetto.Web.Docs.xml");
+            });
             services.AddSwaggerGenNewtonsoftSupport();
         }
 

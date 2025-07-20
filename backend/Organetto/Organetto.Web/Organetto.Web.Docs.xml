@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Organetto.Web</name>
+    </assembly>
+    <members>
+        <member name="M:Organetto.Web.Configuration.Http.Extensions.HttpClientBuilderExtensions.AddRetryPolicy(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder)">
+            <summary>
+            Добавляет политику повторной попытки (retry) для HttpClient с параметрами из конфигурации.
+            </summary>
+            <param name="builder">IHttpClientBuilder, к которому добавляется политика.</param>
+            <returns>IHttpClientBuilder с добавленной политикой retry.</returns>
+        </member>
+        <member name="P:Organetto.Web.Configuration.Logging.Middleware.Options.RequestResponseLoggingOptions.LogRequestBody">
+            <summary>Log the request body?</summary>
+        </member>
+        <member name="P:Organetto.Web.Configuration.Logging.Middleware.Options.RequestResponseLoggingOptions.LogResponseBody">
+            <summary>Log the response body?</summary>
+        </member>
+        <member name="P:Organetto.Web.Configuration.Logging.Middleware.Options.RequestResponseLoggingOptions.AllowedContentTypes">
+            <summary>Log only these content types (empty = any).</summary>
+        </member>
+        <member name="P:Organetto.Web.Configuration.Logging.Middleware.Options.RequestResponseLoggingOptions.ExcludedPaths">
+            <summary>Skip logging for these path prefixes.</summary>
+        </member>
+        <member name="P:Organetto.Web.Configuration.Logging.Middleware.Options.RequestResponseLoggingOptions.MaxBodyBytes">
+            <summary>Trim body to this many bytes (0 = no trim).</summary>
+        </member>
+        <member name="M:Organetto.Web.Configuration.Swagger.Extensions.ServiceCollectionExtensions.AddAppSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:Organetto.Web.Controllers.AccountController.Register(Organetto.Web.Authentication.Data.RegisterRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new account in Firebase Authentication.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.BoardsController.GetBoard(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Gets a board with its columns and cards by ID.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.BoardsController.GetAllOfUser(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            GET /api/boards – Retrieves all boards for the current user. (GET /api/boards – Получает все доски для текущего пользователя.)
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.BoardsController.Create(Organetto.UseCases.Boards.Commands.CreateBoardCommand,System.Threading.CancellationToken)">
+            <summary>
+            POST /api/boards
+            Creates a new board for the current user.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.CardsController.GetForColumn(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            GET api/columns/{columnId}/cards
+            Retrieves all cards in the specified column.
+            DueDate mapping isn't done here.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.CardsController.Create(System.Int64,Organetto.UseCases.Boards.Columns.Cards.Commands.CreateCardCommand,System.Threading.CancellationToken)">
+            <summary>
+            POST api/columns/{columnId}/cards
+            Creates a new card in the specified column.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.CardsController.Update(System.Int64,Organetto.UseCases.Boards.Columns.Cards.Commands.UpdateCardCommand,System.Threading.CancellationToken)">
+            <summary>
+            PUT api/columns/{columnId}/cards/{id}
+            Updates metadata of an existing card.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.CardsController.Delete(System.Int64,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            DELETE api/columns/{columnId}/cards/{id}
+            Deletes the specified card.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.ColumnsController.GetColumns(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            List all columns for a given board.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.ColumnsController.CreateColumn(System.Int64,Organetto.UseCases.Boards.Columns.Commands.CreateColumnCommand,System.Threading.CancellationToken)">
+            <summary>
+            Create a new column in the board.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.ColumnsController.UpdateColumn(System.Int64,Organetto.UseCases.Boards.Columns.Commands.UpdateColumnMetadataCommand,System.Threading.CancellationToken)">
+            <summary>
+            Rename or reorder an existing column.
+            </summary>
+        </member>
+        <member name="M:Organetto.Web.Controllers.ColumnsController.DeleteColumn(System.Int64,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Delete a column from the board.
+            </summary>
+        </member>
+    </members>
+</doc>

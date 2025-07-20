@@ -24,7 +24,7 @@ namespace Organetto.UseCases.Shared.IntegrationEvents.Services.Mappers.Configura
             {
                 // look for a matching integration event: Foo → FooIntegrationEvent
                 var ieType = deType.GetIntegrationEventType();
-                if (ieType == null) return;
+                if (ieType == null) continue;
                 CreateMap(deType, ieType);
             }
         }
