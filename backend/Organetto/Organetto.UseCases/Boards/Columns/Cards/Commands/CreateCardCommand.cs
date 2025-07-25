@@ -16,7 +16,6 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Commands
     /// Command to create a new card in a given board and column.
     /// </summary>
     public record CreateCardCommand(
-        long BoardId,
         long ColumnId,
         string Title,
         string? Description,

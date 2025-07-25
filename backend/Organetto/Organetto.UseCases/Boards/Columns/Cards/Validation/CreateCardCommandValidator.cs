@@ -7,9 +7,9 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Validation
     {
         public CreateCardCommandValidator()
         {
-            RuleFor(x => x.BoardId)
-                .GreaterThan(0)
-                .WithMessage("BoardId must be a positive number.");
+            //RuleFor(x => x.BoardId)
+            //    .GreaterThan(0)
+            //    .WithMessage("BoardId must be a positive number.");
 
             RuleFor(x => x.ColumnId)
                 .GreaterThan(0)
