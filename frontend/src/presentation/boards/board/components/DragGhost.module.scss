@@ -1,0 +1,66 @@
+
+.cardGhost {
+  transform: rotate(5deg);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.listGhost {
+  background: #f1f5f9;
+  border-radius: 12px;
+  width: 300px;
+  max-height: 400px;
+  opacity: 0.9;
+  pointer-events: none;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: rotate(5deg);
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.listTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+  flex: 1;
+}
+
+.cardCount {
+  background: #e2e8f0;
+  color: #64748b;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.listPreview {
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardPreview {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.moreCards {
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #6b7280;
+  font-style: italic;
+}

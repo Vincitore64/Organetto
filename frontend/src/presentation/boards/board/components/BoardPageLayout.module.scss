@@ -1,0 +1,60 @@
+
+.container {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.main {
+  padding: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.boardContent {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 16px;
+}
+
+.listsContainer {
+  display: flex;
+  gap: 16px;
+  height: 100%;
+  min-width: min-content;
+  padding: 8px;
+  align-items: flex-start;
+}
+
+/* Scrollbar styling for the board content */
+.boardContent::-webkit-scrollbar {
+  height: 12px;
+}
+
+.boardContent::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.boardContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+}
+
+.boardContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 8px;
+  }
+  
+  .listsContainer {
+    gap: 12px;
+    padding: 4px;
+  }
+}
