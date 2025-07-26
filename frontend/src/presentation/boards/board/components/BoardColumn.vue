@@ -1,21 +1,20 @@
 <template>
-  <section
-    ref="columnRef"
-    :class="[styles.column, { [styles.dragging]: isDragging }]"
-    :style="dragStyle"
+  <div
+    class="board-column glass"
+    :data-column-id="list.id"
+    @dragover.prevent
+    @drop="handleDrop"
   >
-    <header
-      :class="styles.header"
-      @mousedown="startColumnDrag"
-      @touchstart="startColumnDrag"
-    >
-      <h3 :class="styles.title">{{ list.title }}</h3>
-      <span :class="styles.count">{{ list.cards.length }}</span>
+    <div class="column-header">
+      <div class="header-content">
+        <h3 class="column-title">{{ list.title }}</h3>
+        <div class="column-badge">{{ list.cards.length }}</div>
+      </div>
       <a-dropdown :trigger="['click']" placement="bottomRight">
         <a-button
           type="text"
           size="small"
-          :class="styles.menuButton"
+          class="menu-button"
           :aria-label="t('board.column.menu')"
         >
           <template #icon>
@@ -23,46 +22,48 @@
           </template>
         </a-button>
         <template #overlay>
-          <a-menu>
-            <a-menu-item key="edit">
+          <a-menu class="column-menu">
+            <a-menu-item key="edit" @click="handleEdit">
               <EditOutlined />
               {{ t('board.column.edit') }}
             </a-menu-item>
-            <a-menu-item key="archive">
+            <a-menu-item key="archive" @click="handleArchive">
               <InboxOutlined />
               {{ t('board.column.archive') }}
             </a-menu-item>
             <a-menu-divider />
-            <a-menu-item key="delete" danger>
+            <a-menu-item key="delete" danger @click="handleDelete">
               <DeleteOutlined />
               {{ t('board.column.delete') }}
             </a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
-    </header>
+    </div>
     
-    <main :class="styles.content">
-      <!-- Virtual scrolling for performance with large card lists -->
-      <!-- <VirtualList
+    <div class="column-content">
+      <VirtualList
         :items="list.cards"
         :item-height="120"
-        :class="styles.cardList"
+        :container-height="600"
+        class="cards-list"
       >
-        <template #default="{ item: card }">
+        <template #default="{ item }">
           <CardItem
-            :key="card.id"
-            :card="card"
-            @click="handleCardClick(card)"
-            @drag-start="handleCardDragStart"
-            @drag-end="handleCardDragEnd"
+            :card="item"
+            class="card-item"
+            @click="handleCardClick(item)"
           />
         </template>
-      </VirtualList> -->
+      </VirtualList>
       
-      <!-- <AddCardButton :list-id="list.id" /> -->
-    </main>
-  </section>
+      <AddCardButton
+        :column-id="list.id"
+        class="add-card-button"
+        @add-card="handleAddCard"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -79,7 +80,6 @@ import { useI18n } from 'vue-i18n'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
 import VirtualList from './VirtualList.vue'
-import styles from './BoardColumn.module.scss'
 import type { ColumnDto } from '@/dataAccess/columns/models'
 
 interface Props {
@@ -129,34 +129,174 @@ const handleCardDragStart = (cardId: string) => {
 const handleCardDragEnd = (cardId: string) => {
   emit('cardDragEnd', cardId, props.list.id)
 }
+
+const handleDrop = () => {
+  // Handle drop logic
+}
+
+const handleEdit = () => {
+  // Handle edit logic
+}
+
+const handleArchive = () => {
+  // Handle archive logic
+}
+
+const handleDelete = () => {
+  // Handle delete logic
+}
+
+const handleAddCard = () => {
+  // Handle add card logic
+}
 </script>
 
-<style module="styles" lang="scss">
-@use './BoardColumn.module.scss';
+<style scoped lang="scss">
+.board-column {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: var(--shadow-light);
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  max-height: calc(100vh - 140px);
+  
+  &:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+  }
+}
 
-.cardList {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 1fr;
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  
+  .column-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+    font-family: 'Sofia Sans Extra Condensed', sans-serif;
+    letter-spacing: 0px;
+  }
+  
+  .column-badge {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary-600);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 24px;
+    text-align: center;
+  }
+  
+  .menu-button {
+    color: var(--color-text-weak);
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+    
+    &:hover {
+      color: var(--color-text);
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+
+.column-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 12px 16px 16px;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.cards-list {
   flex: 1;
   overflow-y: auto;
-  padding-right: 4px;
   
   &::-webkit-scrollbar {
     width: 6px;
   }
   
   &::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 3px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 3px;
     
     &:hover {
-      background: #94a3b8;
+      background: rgba(0, 0, 0, 0.15);
     }
+  }
+}
+
+.card-item {
+  margin-bottom: 12px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.add-card-button {
+  margin-top: auto;
+}
+
+:deep(.column-menu) {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  box-shadow: var(--shadow-medium);
+
+  .ant-menu-item {
+    transition: var(--transition-smooth);
+    
+    &:hover {
+      background: rgba(var(--color-primary-rgb), 0.04);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .board-column {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+  }
+  
+  .column-header {
+    padding: 12px 16px 8px;
+    
+    .column-title {
+      font-size: 14px;
+    }
+  }
+  
+  .column-content {
+    padding: 8px 12px 12px;
   }
 }
 </style>

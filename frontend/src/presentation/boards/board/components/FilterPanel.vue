@@ -1,121 +1,114 @@
 <template>
-  <aside :class="styles.panel">
-    <header :class="styles.header">
-      <h3 :class="styles.title">{{ t('board.filters.title') }}</h3>
+  <a-drawer
+    :open="isVisible"
+    placement="right"
+    :closable="false"
+    :width="320"
+    class="filter-panel"
+    @close="handleClose"
+  >
+    <template #title>
+      <div class="panel-header">
+        <h3 class="panel-title">{{ t('board.filters.title') }}</h3>
+        <a-button
+          type="text"
+          size="small"
+          class="close-button"
+          @click="handleClose"
+        >
+          <template #icon>
+            <CloseOutlined />
+          </template>
+        </a-button>
+      </div>
+    </template>
+    
+    <div class="panel-content">
+      <!-- Clear all filters -->
       <a-button
         v-if="hasActiveFilters"
         type="text"
         size="small"
-        :class="styles.clearButton"
+        class="clear-all-button"
         @click="clearFilters"
       >
-        <template #icon>
-          <CloseOutlined />
-        </template>
         {{ t('board.filters.clearAll') }}
       </a-button>
-    </header>
-
-    <main :class="styles.content">
+      
       <!-- Search -->
-      <section :class="styles.filterGroup">
+      <div class="filter-section">
         <a-input
           v-model:value="searchTerm"
           :placeholder="t('board.filters.searchPlaceholder')"
-          :class="styles.searchInput"
-          allow-clear
+          class="search-input"
+          @input="handleSearchChange"
         >
           <template #prefix>
-            <SearchOutlined :class="styles.searchIcon" />
+            <SearchOutlined />
           </template>
         </a-input>
-      </section>
-
-      <!-- Labels -->
-      <section :class="styles.filterGroup">
-        <h4 :class="styles.filterTitle">
-          <TagOutlined />
-          {{ t('board.filters.labels') }}
-        </h4>
-        <div :class="styles.filterOptions">
-          <a-tag
-            v-for="label in mockLabels"
-            :key="label"
-            :class="styles.filterOption"
-            :color="selectedLabels.includes(label) ? 'blue' : 'default'"
-            :checkable="true"
-            :checked="selectedLabels.includes(label)"
-            @change="(checked: boolean) => toggleLabel(label, checked)"
+      </div>
+      
+      <!-- Labels filter -->
+      <div class="filter-section">
+        <h4 class="section-title">{{ t('board.filters.labels') }}</h4>
+        <div class="labels-list">
+          <a-checkbox
+            v-for="label in availableLabels"
+            :key="label.id"
+            v-model:checked="selectedLabels[label.id]"
+            class="label-checkbox"
+            @change="handleLabelChange"
           >
-            {{ label }}
-          </a-tag>
+            <span
+              class="label-color"
+              :style="{ backgroundColor: label.color }"
+            ></span>
+            {{ label.name }}
+          </a-checkbox>
         </div>
-      </section>
-
-      <!-- Members -->
-      <section :class="styles.filterGroup">
-        <h4 :class="styles.filterTitle">
-          <UserOutlined />
-          {{ t('board.filters.members') }}
-        </h4>
-        <div :class="styles.filterOptions">
-          <div
-            v-for="member in mockMembers"
+      </div>
+      
+      <!-- Members filter -->
+      <div class="filter-section">
+        <h4 class="section-title">{{ t('board.filters.members') }}</h4>
+        <div class="members-list">
+          <a-checkbox
+            v-for="member in availableMembers"
             :key="member.id"
-            :class="[
-              styles.memberOption,
-              { [styles.active]: selectedMembers.includes(member.id) }
-            ]"
-            @click="toggleMember(member.id)"
+            v-model:checked="selectedMembers[member.id]"
+            class="member-checkbox"
+            @change="handleMemberChange"
           >
             <a-avatar
-              :src="member.avatar"
-              :alt="member.name"
               :size="24"
-              :class="styles.memberAvatar"
+              :src="member.avatar"
+              class="member-avatar"
             >
-              {{ member.name.charAt(0).toUpperCase() }}
+              {{ member.name.charAt(0) }}
             </a-avatar>
-            <span>{{ member.name }}</span>
-            <CheckOutlined
-              v-if="selectedMembers.includes(member.id)"
-              :class="styles.checkIcon"
-            />
-          </div>
+            {{ member.name }}
+          </a-checkbox>
         </div>
-      </section>
-
-      <!-- Due Date -->
-      <section :class="styles.filterGroup">
-        <h4 :class="styles.filterTitle">
-          <CalendarOutlined />
-          {{ t('board.filters.dueDate') }}
-        </h4>
-        <a-select
-          v-model:value="dueDateFilter"
-          :class="styles.select"
-          :placeholder="t('board.filters.dueDatePlaceholder')"
-          allow-clear
+      </div>
+      
+      <!-- Due date filter -->
+      <div class="filter-section">
+        <h4 class="section-title">{{ t('board.filters.dueDate') }}</h4>
+        <a-radio-group
+          v-model:value="selectedDueDate"
+          class="due-date-group"
+          @change="handleDueDateChange"
         >
-          <a-select-option value="overdue">
-            {{ t('board.filters.overdue') }}
-          </a-select-option>
-          <a-select-option value="today">
-            {{ t('board.filters.dueToday') }}
-          </a-select-option>
-          <a-select-option value="week">
-            {{ t('board.filters.dueThisWeek') }}
-          </a-select-option>
-          <a-select-option value="month">
-            {{ t('board.filters.dueThisMonth') }}
-          </a-select-option>
-          <a-select-option value="no-due">
-            {{ t('board.filters.noDueDate') }}
-          </a-select-option>
-        </a-select>
-      </section>
-    </main>
-  </aside>
+          <a-radio value="none">{{ t('board.filters.noDueDate') }}</a-radio>
+          <a-radio value="overdue">{{ t('board.filters.overdue') }}</a-radio>
+          <a-radio value="today">{{ t('board.filters.dueToday') }}</a-radio>
+          <a-radio value="week">{{ t('board.filters.dueThisWeek') }}</a-radio>
+          <a-radio value="month">{{ t('board.filters.dueThisMonth') }}</a-radio>
+        </a-radio-group>
+      </div>
+    </div>
+  </a-drawer>
 </template>
 
 <script setup lang="ts">
@@ -129,13 +122,13 @@ import {
   CheckOutlined
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
-import styles from './FilterPanel.module.scss'
+
 
 interface Emits {
   filtersChange: [filters: {
     searchTerm: string
     selectedLabels: string[]
-    selectedMembers: string[]
+    selectedMembers: Record<string, any>
     dueDateFilter: string
   }]
 }
@@ -143,9 +136,10 @@ interface Emits {
 const emit = defineEmits<Emits>()
 const { t } = useI18n()
 
+const isVisible = ref(true)
 const searchTerm = ref('')
 const selectedLabels = ref<string[]>([])
-const selectedMembers = ref<string[]>([])
+const selectedMembers = ref<Record<string, any>>({})
 const dueDateFilter = ref('')
 
 const mockLabels = ref([
@@ -156,11 +150,15 @@ const mockLabels = ref([
   'Low Priority'
 ])
 
+const availableLabels = ref(mockLabels.value.map(l => ({ id: l, name: l, })))
+
 const mockMembers = ref([
   { id: '1', name: 'John Doe', avatar: '/api/placeholder/24/24' },
   { id: '2', name: 'Jane Smith', avatar: '/api/placeholder/24/24' },
   { id: '3', name: 'Bob Johnson', avatar: '/api/placeholder/24/24' },
 ])
+
+const availableMembers = ref(mockMembers.value)
 
 const hasActiveFilters = computed(() => 
   searchTerm.value || 
@@ -168,6 +166,10 @@ const hasActiveFilters = computed(() =>
   selectedMembers.value.length > 0 || 
   dueDateFilter.value
 )
+
+const handleClose = () => {
+  isVisible.value = false
+}
 
 const toggleLabel = (label: string, checked: boolean) => {
   if (checked) {
@@ -195,6 +197,10 @@ const clearFilters = () => {
   emitFiltersChange()
 }
 
+const handleMemberChange = () => {
+
+}
+
 const emitFiltersChange = () => {
   emit('filtersChange', {
     searchTerm: searchTerm.value,
@@ -208,36 +214,196 @@ const emitFiltersChange = () => {
 watch([searchTerm, dueDateFilter], emitFiltersChange)
 </script>
 
-<style module="styles" lang="scss">
-@use './FilterPanel.module.scss';
+<style scoped lang="scss">
+:deep(.filter-panel) {
+  .ant-drawer-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+  }
+  
+  .ant-drawer-header {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 16px 24px;
+  }
+  
+  .ant-drawer-body {
+    padding: 24px;
+  }
+}
 
-.memberOption {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+.panel-header {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  justify-content: space-between;
+  width: 100%;
+  
+  .panel-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+    font-family: 'Sofia Sans Extra Condensed', sans-serif;
+    letter-spacing: 0px;
+  }
+  
+  .close-button {
+    color: var(--color-text-weak);
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+    
+    &:hover {
+      color: var(--color-text);
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.clear-all-button {
+  align-self: flex-start;
+  color: var(--color-red-600);
+  font-weight: 500;
   border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-smooth);
   
   &:hover {
-    background: #f8fafc;
+    background: rgba(var(--color-red-rgb), 0.04);
+    color: var(--color-red-700);
+  }
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+    font-family: 'Sofia Sans Extra Condensed', sans-serif;
+    letter-spacing: 0px;
+  }
+}
+
+.search-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+  
+  &:focus {
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
   }
   
-  &.active {
-    background: #e0f2fe;
-    color: #0277bd;
+  :deep(.ant-input) {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    
+    &:focus {
+      box-shadow: none;
+    }
   }
 }
 
-.checkIcon {
-  color: #10b981;
-  font-size: 14px;
+.labels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  .label-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    
+    .label-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+  }
 }
 
-.filterOptions {
-  display: grid;
-  gap: 4px;
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  .member-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    
+    .member-avatar {
+      flex-shrink: 0;
+    }
+  }
+}
+
+.due-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  :deep(.ant-radio-wrapper) {
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  :deep(.filter-panel) {
+    .ant-drawer-content {
+      width: 100% !important;
+    }
+  }
+  
+  .panel-header {
+    .panel-title {
+      font-size: 16px;
+    }
+  }
+  
+  .panel-content {
+    gap: 20px;
+  }
+  
+  .filter-section {
+    gap: 10px;
+    
+    .section-title {
+      font-size: 13px;
+    }
+  }
 }
 </style>

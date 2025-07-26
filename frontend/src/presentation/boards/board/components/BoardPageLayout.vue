@@ -1,5 +1,5 @@
 <template>
-  <main :class="styles.container">
+  <a-layout class="board-page-layout">
     <BoardHeader 
       :board="board"
       :show-filters="showFilters"
@@ -8,11 +8,11 @@
     
     <FilterPanel v-if="showFilters" @filter-change="handleFilterChange" />
     
-    <main :class="styles.main">
-      <section :class="styles.boardContent">
+    <a-layout-content class="board-main">
+      <div class="board-content">
         <div 
           ref="listsContainerRef"
-          :class="styles.listsContainer"
+          class="lists-container"
         >
           <BoardColumn
             v-for="list in board.columns"
@@ -23,13 +23,13 @@
           />
           <AddListCard :board-id="board.id" />
         </div>
-      </section>
-    </main>
+      </div>
+    </a-layout-content>
     
     <!-- Drag overlay for visual feedback -->
     <div 
       v-if="activeCard || activeList"
-      :class="styles.dragOverlay"
+      class="drag-overlay"
       :style="dragOverlayStyle"
     >
       <DragGhost
@@ -52,7 +52,7 @@
     
     <!-- Screen reader announcements for drag operations -->
     <div id="drag-announcements" class="sr-only" aria-live="polite" />
-  </main>
+  </a-layout>
 </template>
 
 <script setup lang="ts">
@@ -66,7 +66,7 @@ import FilterPanel from './FilterPanel.vue'
 import DragGhost from './DragGhost.vue'
 // import { useBoardDrag } from '../../hooks/useBoardDrag'
 // import { useCardDrag } from '../../hooks/useCardDrag'
-import styles from './BoardPageLayout.module.scss'
+// Removed SCSS module import
 import type { BoardDetailedDto } from '@/dataAccess/boards/models'
 import type { CardDto } from '@/dataAccess/cards/models'
 import type { ColumnDto } from '@/dataAccess/columns/models'
@@ -163,10 +163,68 @@ const handleFilterChange = (filters: any) => {
 // }
 </script>
 
-<style module="styles" lang="scss">
-@use './BoardPageLayout.module.scss';
+<style scoped lang="scss">
+.board-page-layout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+    pointer-events: none;
+  }
+}
 
-.dragOverlay {
+.board-main {
+  padding: 1rem;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+}
+
+.board-content {
+  height: calc(100vh - 120px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 1rem;
+  
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    height: 12px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+.lists-container {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+  min-width: min-content;
+  padding: 0.5rem;
+  align-items: flex-start;
+}
+
+.drag-overlay {
   position: fixed;
   pointer-events: none;
   z-index: 1000;
@@ -183,5 +241,32 @@ const handleFilterChange = (filters: any) => {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .board-main {
+    padding: 0.5rem;
+  }
+  
+  .lists-container {
+    gap: 0.75rem;
+    padding: 0.25rem;
+  }
+  
+  .board-content {
+    height: calc(100vh - 100px);
+  }
+}
+
+@media (max-width: 480px) {
+  .board-main {
+    padding: 0.25rem;
+  }
+  
+  .lists-container {
+    gap: 0.5rem;
+    padding: 0.125rem;
+  }
 }
 </style>
