@@ -348,7 +348,7 @@ const archiveCard = () => {
 </script>
 
 <style module="styles" lang="scss">
-@import './CardModal.module.scss';
+@use './CardModal.module.scss';
 
 .content {
   display: grid;

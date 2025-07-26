@@ -132,7 +132,7 @@ const handleCardDragEnd = (cardId: string) => {
 </script>
 
 <style module="styles" lang="scss">
-@import './BoardColumn.module.scss';
+@use './BoardColumn.module.scss';
 
 .cardList {
   display: grid;

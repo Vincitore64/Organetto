@@ -1,0 +1,72 @@
+{
+   "header": {
+    "starBoard": "Добавить доску в избранное",
+    "toggleFilters": "Переключить фильтры",
+    "filter": "Фильтр",
+    "shareBoard": "Поделиться доской",
+    "share": "Поделиться",
+    "boardMenu": "Меню доски",
+    "settings": "Настройки",
+    "export": "Экспорт",
+    "archive": "Архивировать",
+    "delete": "Удалить"
+  },
+  "column": {
+    "menu": "Меню колонки",
+    "edit": "Редактировать",
+    "archive": "Архивировать",
+    "delete": "Удалить"
+  },
+  "addCard": {
+    "placeholder": "Введите название карточки...",
+    "add": "Добавить карточку",
+    "addCard": "Добавить карточку"
+  },
+  "addList": {
+    "placeholder": "Введите название списка...",
+    "addButton": "Добавить список",
+    "addAnother": "Добавить ещё список"
+  },
+  "avatarGroup": {
+    "moreUsers": "ещё {count}"
+  },
+  "cardModal": {
+    "inList": "в списке {listName}",
+    "labels": "Метки",
+    "description": "Описание",
+    "descriptionPlaceholder": "Добавьте подробное описание...",
+    "activity": "Активность",
+    "commentPlaceholder": "Написать комментарий...",
+    "addComment": "Комментарий",
+    "addToCard": "Добавить к карточке",
+    "members": "Участники",
+    "dueDate": "Срок выполнения",
+    "attachment": "Вложение",
+    "actions": "Действия",
+    "move": "Переместить",
+    "copy": "Копировать",
+    "archive": "Архивировать"
+  },
+  "filters": {
+    "title": "Фильтры",
+    "clearAll": "Очистить все",
+    "searchPlaceholder": "Поиск карточек...",
+    "labels": "Метки",
+    "members": "Участники",
+    "dueDate": "Срок выполнения",
+    "dueDatePlaceholder": "Выберите фильтр по сроку",
+    "overdue": "Просрочено",
+    "dueToday": "Сегодня",
+    "dueThisWeek": "На этой неделе",
+    "dueThisMonth": "В этом месяце",
+    "noDueDate": "Без срока"
+  },
+  "dragGhost": {
+    "moreCards": "ещё {count} карточек"
+  },
+  "loading": "Загрузка доски...",
+  "notFound": "Доска не найдена",
+  "visibility": {
+    "personal": "Личная"
+  }
+}

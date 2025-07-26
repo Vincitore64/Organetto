@@ -9,20 +9,20 @@
         :class="styles.input"
       />
       <div :class="styles.actions">
-        <button type="submit" :class="styles.addButton">
+        <a-button type="submit" :class="styles.addButton">
           {{ t('board.addList.addButton') }}
-        </button>
-        <button type="button" @click="handleCancel" :class="styles.cancelButton">
-          <XIcon :size="20" />
-        </button>
+        </a-button>
+        <a-button type="button" @click="handleCancel" :class="styles.cancelButton">
+          X
+        </a-button>
       </div>
     </form>
   </div>
   
-  <button v-else :class="styles.addCard" @click="startAdding">
+  <a-button v-else :class="styles.addCard" @click="startAdding">
     <PlusIcon :size="20" />
     <span>{{ t('board.addList.addAnother') }}</span>
-  </button>
+  </a-button>
 </template>
 
 <script setup lang="ts">
@@ -64,5 +64,5 @@ const startAdding = async () => {
 </script>
 
 <style module="styles" lang="scss">
-@import './AddListCard.module.scss';
+@use './AddListCard.module.scss';
 </style>

@@ -154,7 +154,7 @@ const handleShare = () => {
 </script>
 
 <style module="styles" lang="scss">
-@import './BoardHeader.module.scss';
+@use './BoardHeader.module.scss';
 
 .starred {
   color: #fbbf24 !important;

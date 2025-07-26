@@ -209,7 +209,7 @@ watch([searchTerm, dueDateFilter], emitFiltersChange)
 </script>
 
 <style module="styles" lang="scss">
-@import './FilterPanel.module.scss';
+@use './FilterPanel.module.scss';
 
 .memberOption {
   display: grid;

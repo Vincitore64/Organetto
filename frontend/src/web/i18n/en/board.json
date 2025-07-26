@@ -1,0 +1,72 @@
+{
+  "header": {
+    "starBoard": "Star this board",
+    "toggleFilters": "Toggle filters",
+    "filter": "Filter",
+    "shareBoard": "Share board",
+    "share": "Share",
+    "boardMenu": "Board menu",
+    "settings": "Settings",
+    "export": "Export",
+    "archive": "Archive",
+    "delete": "Delete"
+  },
+  "column": {
+    "menu": "Column menu",
+    "edit": "Edit",
+    "archive": "Archive",
+    "delete": "Delete"
+  },
+  "addCard": {
+    "placeholder": "Enter a title for this card...",
+    "add": "Add card",
+    "addCard": "Add a card"
+  },
+  "addList": {
+    "placeholder": "Enter list title...",
+    "addButton": "Add list",
+    "addAnother": "Add another list"
+  },
+  "avatarGroup": {
+    "moreUsers": "{count} more"
+  },
+  "cardModal": {
+    "inList": "in list {listName}",
+    "labels": "Labels",
+    "description": "Description",
+    "descriptionPlaceholder": "Add a more detailed description...",
+    "activity": "Activity",
+    "commentPlaceholder": "Write a comment...",
+    "addComment": "Comment",
+    "addToCard": "Add to card",
+    "members": "Members",
+    "dueDate": "Due date",
+    "attachment": "Attachment",
+    "actions": "Actions",
+    "move": "Move",
+    "copy": "Copy",
+    "archive": "Archive"
+  },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear all",
+    "searchPlaceholder": "Search cards...",
+    "labels": "Labels",
+    "members": "Members",
+    "dueDate": "Due date",
+    "dueDatePlaceholder": "Select due date filter",
+    "overdue": "Overdue",
+    "dueToday": "Due today",
+    "dueThisWeek": "Due this week",
+    "dueThisMonth": "Due this month",
+    "noDueDate": "No due date"
+  },
+  "dragGhost": {
+    "moreCards": "{count} more cards"
+  },
+  "loading": "Loading board...",
+  "notFound": "Board not found",
+  "visibility": {
+    "personal": "Personal"
+  }
+}

@@ -164,7 +164,7 @@ const handleFilterChange = (filters: any) => {
 </script>
 
 <style module="styles" lang="scss">
-@import './BoardPageLayout.module.scss';
+@use './BoardPageLayout.module.scss';
 
 .dragOverlay {
   position: fixed;

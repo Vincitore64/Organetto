@@ -71,5 +71,5 @@ const avatarSize = computed(() => {
 </script>
 
 <style module="styles" lang="scss">
-@import './AvatarGroup.module.scss';
+@use './AvatarGroup.module.scss';
 </style>

@@ -139,5 +139,5 @@ const startDrag = () => {
 </script>
 
 <style module="styles" lang="scss">
-@import './CardItem.module.scss';
+@use './CardItem.module.scss';
 </style>

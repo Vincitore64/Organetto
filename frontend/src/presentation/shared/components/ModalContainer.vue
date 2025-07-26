@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
-import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps<{
   open: boolean

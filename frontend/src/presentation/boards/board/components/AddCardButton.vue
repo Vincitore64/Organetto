@@ -79,5 +79,5 @@ const startAdding = async () => {
 </script>
 
 <style module="styles" lang="scss">
-@import './AddCardButton.module.scss';
+@use './AddCardButton.module.scss'; 
 </style>

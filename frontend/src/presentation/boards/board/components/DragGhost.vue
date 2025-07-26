@@ -62,5 +62,5 @@ const remainingCardsCount = computed(() => {
 </script>
 
 <style module="styles" lang="scss">
-@import './DragGhost.module.scss';
+@use './DragGhost.module.scss';
 </style>
