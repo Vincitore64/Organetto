@@ -19,7 +19,7 @@
     <div
       v-if="remainingCount > 0"
       :class="[styles.avatar, styles.overflow]"
-      :title="$t('board.avatarGroup.moreUsers', { count: remainingCount })"
+      :title="t('board.avatarGroup.moreUsers', { count: remainingCount })"
     >
       <a-avatar :size="avatarSize">
         +{{ remainingCount }}

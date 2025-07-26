@@ -1,7 +1,7 @@
 <template>
   <aside :class="styles.panel">
     <header :class="styles.header">
-      <h3 :class="styles.title">{{ $t('board.filters.title') }}</h3>
+      <h3 :class="styles.title">{{ t('board.filters.title') }}</h3>
       <a-button
         v-if="hasActiveFilters"
         type="text"
@@ -12,7 +12,7 @@
         <template #icon>
           <CloseOutlined />
         </template>
-        {{ $t('board.filters.clearAll') }}
+        {{ t('board.filters.clearAll') }}
       </a-button>
     </header>
 
@@ -21,7 +21,7 @@
       <section :class="styles.filterGroup">
         <a-input
           v-model:value="searchTerm"
-          :placeholder="$t('board.filters.searchPlaceholder')"
+          :placeholder="t('board.filters.searchPlaceholder')"
           :class="styles.searchInput"
           allow-clear
         >
@@ -35,7 +35,7 @@
       <section :class="styles.filterGroup">
         <h4 :class="styles.filterTitle">
           <TagOutlined />
-          {{ $t('board.filters.labels') }}
+          {{ t('board.filters.labels') }}
         </h4>
         <div :class="styles.filterOptions">
           <a-tag
@@ -56,7 +56,7 @@
       <section :class="styles.filterGroup">
         <h4 :class="styles.filterTitle">
           <UserOutlined />
-          {{ $t('board.filters.members') }}
+          {{ t('board.filters.members') }}
         </h4>
         <div :class="styles.filterOptions">
           <div
@@ -89,28 +89,28 @@
       <section :class="styles.filterGroup">
         <h4 :class="styles.filterTitle">
           <CalendarOutlined />
-          {{ $t('board.filters.dueDate') }}
+          {{ t('board.filters.dueDate') }}
         </h4>
         <a-select
           v-model:value="dueDateFilter"
           :class="styles.select"
-          :placeholder="$t('board.filters.dueDatePlaceholder')"
+          :placeholder="t('board.filters.dueDatePlaceholder')"
           allow-clear
         >
           <a-select-option value="overdue">
-            {{ $t('board.filters.overdue') }}
+            {{ t('board.filters.overdue') }}
           </a-select-option>
           <a-select-option value="today">
-            {{ $t('board.filters.dueToday') }}
+            {{ t('board.filters.dueToday') }}
           </a-select-option>
           <a-select-option value="week">
-            {{ $t('board.filters.dueThisWeek') }}
+            {{ t('board.filters.dueThisWeek') }}
           </a-select-option>
           <a-select-option value="month">
-            {{ $t('board.filters.dueThisMonth') }}
+            {{ t('board.filters.dueThisMonth') }}
           </a-select-option>
           <a-select-option value="no-due">
-            {{ $t('board.filters.noDueDate') }}
+            {{ t('board.filters.noDueDate') }}
           </a-select-option>
         </a-select>
       </section>

@@ -4,7 +4,7 @@
       <textarea
         ref="textareaRef"
         v-model="title"
-        :placeholder="$t('board.addCard.placeholder')"
+        :placeholder="t('board.addCard.placeholder')"
         :class="styles.textarea"
         :rows="3"
         @keydown.esc="handleCancel"
@@ -16,7 +16,7 @@
           size="small"
           :class="styles.addButton"
         >
-          {{ $t('board.addCard.add') }}
+          {{ t('board.addCard.add') }}
         </a-button>
         <a-button
           type="text"
@@ -34,14 +34,13 @@
   
   <button v-else :class="styles.addButton" @click="startAdding">
     <PlusOutlined />
-    <span>{{ $t('board.addCard.addCard') }}</span>
+    <span>{{ t('board.addCard.addCard') }}</span>
   </button>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons-vue'
-import { useListStore } from '../../stores/listStore'
 import { useI18n } from 'vue-i18n'
 import styles from './AddCardButton.module.scss'
 
@@ -51,7 +50,6 @@ interface Props {
 
 const props = defineProps<Props>()
 const { t } = useI18n()
-const listStore = useListStore()
 
 const isAdding = ref(false)
 const title = ref('')
@@ -59,10 +57,10 @@ const textareaRef = ref<HTMLTextAreaElement>()
 
 const handleSubmit = async () => {
   if (title.value.trim()) {
-    await listStore.createCard({ 
-      listId: props.listId, 
-      title: title.value.trim() 
-    })
+    // await listStore.createCard({ 
+    //   listId: props.listId, 
+    //   title: title.value.trim() 
+    // })
     title.value = ''
     isAdding.value = false
   }

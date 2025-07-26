@@ -3,5 +3,5 @@ export interface CardDto {
   title: string
   description: string
   position: number
-  dueDate?: string
+  dueDate?: string // ISO 8601 date-time string
 }

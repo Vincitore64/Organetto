@@ -1,5 +1,5 @@
 <template>
-  <div :class="styles.container">
+  <main :class="styles.container">
     <BoardHeader 
       :board="board"
       :show-filters="showFilters"
@@ -13,17 +13,13 @@
         <div 
           ref="listsContainerRef"
           :class="styles.listsContainer"
-          @dragover="handleDragOver"
-          @drop="handleDrop"
         >
           <BoardColumn
-            v-for="list in lists"
+            v-for="list in board.columns"
             :key="list.id"
             :list="list"
             :draggable="true"
             @card-click="handleCardClick"
-            @drag-start="handleListDragStart"
-            @drag-end="handleListDragEnd"
           />
           <AddListCard :board-id="board.id" />
         </div>
@@ -56,7 +52,7 @@
     
     <!-- Screen reader announcements for drag operations -->
     <div id="drag-announcements" class="sr-only" aria-live="polite" />
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -68,14 +64,15 @@ import AddListCard from './AddListCard.vue'
 import CardModal from './CardModal.vue'
 import FilterPanel from './FilterPanel.vue'
 import DragGhost from './DragGhost.vue'
-import { useBoardDrag } from '../../hooks/useBoardDrag'
-import { useCardDrag } from '../../hooks/useCardDrag'
-import { Board, List, Card } from '../../types/board'
+// import { useBoardDrag } from '../../hooks/useBoardDrag'
+// import { useCardDrag } from '../../hooks/useCardDrag'
 import styles from './BoardPageLayout.module.scss'
+import type { BoardDetailedDto } from '@/dataAccess/boards/models'
+import type { CardDto } from '@/dataAccess/cards/models'
+import type { ColumnDto } from '@/dataAccess/columns/models'
 
 interface Props {
-  board: Board
-  lists: List[]
+  board: BoardDetailedDto
 }
 
 const props = defineProps<Props>()
@@ -83,13 +80,13 @@ const props = defineProps<Props>()
 const { x: mouseX, y: mouseY } = useMouse()
 const listsContainerRef = ref<HTMLElement>()
 
-const activeCard = ref<Card | null>(null)
-const activeList = ref<List | null>(null)
-const selectedCard = ref<Card | null>(null)
+const activeCard = ref<CardDto | null>(null)
+const activeList = ref<ColumnDto | null>(null)
+const selectedCard = ref<CardDto | null>(null)
 const showFilters = ref(false)
 
-const { handleDragStart: handleListDragStart, handleDragEnd: handleListDragEnd } = useBoardDrag()
-const { handleCardDragStart, handleCardDragEnd } = useCardDrag()
+// const { handleDragStart: handleListDragStart, handleDragEnd: handleListDragEnd } = useBoardDrag()
+// const { handleCardDragStart, handleCardDragEnd } = useCardDrag()
 
 const dragOverlayStyle = computed(() => ({
   position: 'fixed',
@@ -104,7 +101,7 @@ const toggleFilters = () => {
   showFilters.value = !showFilters.value
 }
 
-const handleCardClick = (card: Card) => {
+const handleCardClick = (card: CardDto) => {
   selectedCard.value = card
 }
 
@@ -117,53 +114,53 @@ const handleFilterChange = (filters: any) => {
   console.log('Filters changed:', filters)
 }
 
-const handleDragOver = (event: DragEvent) => {
-  event.preventDefault()
-}
+// const handleDragOver = (event: DragEvent) => {
+//   event.preventDefault()
+// }
 
-const handleDrop = (event: DragEvent) => {
-  event.preventDefault()
+// const handleDrop = (event: DragEvent) => {
+//   event.preventDefault()
   
-  const dragType = event.dataTransfer?.getData('text/plain')
+//   const dragType = event.dataTransfer?.getData('text/plain')
   
-  if (dragType === 'card') {
-    handleCardDragEnd(event)
-    activeCard.value = null
-  } else if (dragType === 'list') {
-    handleListDragEnd(event)
-    activeList.value = null
-  }
-}
+//   if (dragType === 'card') {
+//     handleCardDragEnd(event)
+//     activeCard.value = null
+//   } else if (dragType === 'list') {
+//     handleListDragEnd(event)
+//     activeList.value = null
+//   }
+// }
 
-// Handle list drag events
-const onListDragStart = (event: DragEvent, list: List) => {
-  if (event.dataTransfer) {
-    event.dataTransfer.setData('text/plain', 'list')
-    event.dataTransfer.setData('application/json', JSON.stringify(list))
-  }
-  activeList.value = list
-  handleListDragStart(event)
-}
+// // Handle list drag events
+// const onListDragStart = (event: DragEvent, list: List) => {
+//   if (event.dataTransfer) {
+//     event.dataTransfer.setData('text/plain', 'list')
+//     event.dataTransfer.setData('application/json', JSON.stringify(list))
+//   }
+//   activeList.value = list
+//   handleListDragStart(event)
+// }
 
-const onListDragEnd = (event: DragEvent) => {
-  activeList.value = null
-  handleListDragEnd(event)
-}
+// const onListDragEnd = (event: DragEvent) => {
+//   activeList.value = null
+//   handleListDragEnd(event)
+// }
 
-// Handle card drag events
-const onCardDragStart = (event: DragEvent, card: Card) => {
-  if (event.dataTransfer) {
-    event.dataTransfer.setData('text/plain', 'card')
-    event.dataTransfer.setData('application/json', JSON.stringify(card))
-  }
-  activeCard.value = card
-  handleCardDragStart(event)
-}
+// // Handle card drag events
+// const onCardDragStart = (event: DragEvent, card: Card) => {
+//   if (event.dataTransfer) {
+//     event.dataTransfer.setData('text/plain', 'card')
+//     event.dataTransfer.setData('application/json', JSON.stringify(card))
+//   }
+//   activeCard.value = card
+//   handleCardDragStart(event)
+// }
 
-const onCardDragEnd = (event: DragEvent) => {
-  activeCard.value = null
-  handleCardDragEnd(event)
-}
+// const onCardDragEnd = (event: DragEvent) => {
+//   activeCard.value = null
+//   handleCardDragEnd(event)
+// }
 </script>
 
 <style module="styles" lang="scss">

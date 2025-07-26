@@ -23,7 +23,7 @@
         v-if="remainingCardsCount > 0"
         :class="styles.moreCards"
       >
-        {{ $t('board.dragGhost.moreCards', { count: remainingCardsCount }) }}
+        {{ t('board.dragGhost.moreCards', { count: remainingCardsCount }) }}
       </div>
     </main>
   </div>

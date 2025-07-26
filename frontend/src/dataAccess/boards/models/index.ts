@@ -1,3 +1,6 @@
+import type { ColumnDto } from '@/dataAccess/columns/models'
+import type { BoardMemberDto } from '../members/models'
+
 /** Response model for a Kanban board. */
 export interface BoardDto {
   id: number // bigint -> number (int64)
@@ -7,6 +10,14 @@ export interface BoardDto {
   createdAt: string // ISO 8601 date-time string
   updatedAt: string // ISO 8601 date-time string
   isArchived: boolean // boolean
+}
+
+export interface BoardDetailedDto {
+  id: number // bigint -> number (int64)
+  title: string // string
+  description?: string // nullable string
+  members: BoardMemberDto[],
+  columns: ColumnDto[]
 }
 
 export interface CreateBoardCommand {

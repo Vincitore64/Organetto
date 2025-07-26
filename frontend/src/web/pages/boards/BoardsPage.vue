@@ -135,7 +135,7 @@
             <!-- {{ boadrdPageViews.state.value.isConnected.value }} -->
             <transition-group name="board-list" tag="div" class="boards-grid">
               <BoardCard v-for="board in boardPageViews.state.value.views.value" :key="board.id" :board="board"
-                @open="openBoard" class="board-item" />
+                @open="openBoard(board.id)" class="board-item" />
               <CreateBoardCard @create="showCreateBoardModal" class="board-item create-item" />
             </transition-group>
           </div>
@@ -333,7 +333,10 @@ function startUp() {
 
 startUp()
 
-const openBoard = (id: number) => router.push({ name: 'Board', params: { id, userId: props.userId } })
+const openBoard = (id: number) => {
+  debugger
+  router.push({ name: 'Board', params: { id: id, userId: props.userId } })
+}
 
 // Данные для шаблонов
 const templates = ref([

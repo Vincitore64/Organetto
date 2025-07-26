@@ -6,7 +6,7 @@
         type="text"
         size="small"
         :class="[styles.starButton, { [styles.starred]: isStarred }]"
-        :aria-label="$t('board.header.starBoard')"
+        :aria-label="t('board.header.starBoard')"
         @click="toggleStar"
       >
         <template #icon>
@@ -15,7 +15,7 @@
         </template>
       </a-button>
       <a-tag :class="styles.visibility" :color="visibilityColor">
-        {{ $t(`board.visibility.${board.visibility.toLowerCase()}`) }}
+        {{ t(`board.visibility.personal`) }} <!-- ${board.visibility.toLowerCase()} -->
       </a-tag>
     </section>
     
@@ -25,12 +25,12 @@
         size="small"
         :class="[styles.filterButton, { [styles.active]: showFilters }]"
         @click="handleToggleFilters"
-        :aria-label="$t('board.header.toggleFilters')"
+        :aria-label="t('board.header.toggleFilters')"
       >
         <template #icon>
           <FilterOutlined />
         </template>
-        {{ $t('board.header.filter') }}
+        {{ t('board.header.filter') }}
       </a-button>
       
       <AvatarGroup
@@ -43,13 +43,13 @@
         type="primary"
         size="small"
         :class="styles.shareButton"
-        :aria-label="$t('board.header.shareBoard')"
+        :aria-label="t('board.header.shareBoard')"
         @click="handleShare"
       >
         <template #icon>
           <ShareAltOutlined />
         </template>
-        {{ $t('board.header.share') }}
+        {{ t('board.header.share') }}
       </a-button>
       
       <a-dropdown :trigger="['click']" placement="bottomRight">
@@ -57,7 +57,7 @@
           type="text"
           size="small"
           :class="styles.menuButton"
-          :aria-label="$t('board.header.boardMenu')"
+          :aria-label="t('board.header.boardMenu')"
         >
           <template #icon>
             <MoreOutlined />
@@ -67,20 +67,20 @@
           <a-menu>
             <a-menu-item key="settings">
               <SettingOutlined />
-              {{ $t('board.header.settings') }}
+              {{ t('board.header.settings') }}
             </a-menu-item>
             <a-menu-item key="export">
               <ExportOutlined />
-              {{ $t('board.header.export') }}
+              {{ t('board.header.export') }}
             </a-menu-item>
             <a-menu-divider />
             <a-menu-item key="archive">
-              <ArchiveBoxOutlined />
-              {{ $t('board.header.archive') }}
+              <InboxOutlined />
+              {{ t('board.header.archive') }}
             </a-menu-item>
             <a-menu-item key="delete" danger>
               <DeleteOutlined />
-              {{ $t('board.header.delete') }}
+              {{ t('board.header.delete') }}
             </a-menu-item>
           </a-menu>
         </template>
@@ -100,15 +100,15 @@ import {
   SettingOutlined,
   ExportOutlined,
   DeleteOutlined,
-  ArchiveBoxOutlined
+  InboxOutlined
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
-import { Board } from '../../types/board'
 import AvatarGroup from './AvatarGroup.vue'
 import styles from './BoardHeader.module.scss'
+import type { BoardDetailedDto } from '@/dataAccess/boards/models'
 
 interface Props {
-  board: Board
+  board: BoardDetailedDto
   showFilters: boolean
 }
 
@@ -131,10 +131,10 @@ const mockUsers = ref([
 ])
 
 const visibilityColor = computed(() => {
-  switch (props.board.visibility) {
+  switch ('Personal') {
     case 'Personal': return 'blue'
-    case 'Team': return 'green'
-    case 'Public': return 'orange'
+    // case 'Team': return 'green'
+    // case 'Public': return 'orange'
     default: return 'default'
   }
 })

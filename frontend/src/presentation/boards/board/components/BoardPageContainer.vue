@@ -1,74 +1,74 @@
 <template>
-  <div v-if="isLoading" class="min-h-screen flex items-center justify-center">
-    <div class="text-lg text-gray-600">{{ $t('board.loading') }}</div>
-  </div>
+  <main v-if="isLoading" class="min-h-screen flex items-center justify-center">
+    <div class="text-lg text-gray-600">{{ t('board.loading') }}</div>
+  </main>
   
-  <div v-else-if="!activeBoard" class="min-h-screen flex items-center justify-center">
-    <div class="text-lg text-gray-600">{{ $t('board.notFound') }}</div>
-  </div>
+  <main v-else-if="!activeBoard" class="min-h-screen flex items-center justify-center">
+    <div class="text-lg text-gray-600">{{ t('board.notFound') }}</div>
+  </main>
   
-  <BoardPageLayout v-else :board="activeBoard" :lists="lists" />
+  <BoardPageLayout v-else :board="activeBoard" />
 </template>
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import BoardPageLayout from './BoardPageLayout.vue'
-import { useBoardStore } from '../../stores/boardStore'
-import { useListStore } from '../../stores/listStore'
-import { useBoardHub } from '../../hooks/useBoardHub'
-import { useConnectionStatus } from '../../hooks/useConnectionStatus'
+import { useApiState } from '@/application/shared/hooks/useApiHandler'
+import { tryInjectServices } from '@/shared'
+import { ApiClient } from '@/dataAccess/services/ApiClient'
+import type { BoardDetailedDto } from '@/dataAccess/boards/models'
+import _ from 'lodash'
+// import { useBoardStore } from '../../stores/boardStore'
+// import { useListStore } from '../../stores/listStore'
+// import { useBoardHub } from '../../hooks/useBoardHub'
+// import { useConnectionStatus } from '../../hooks/useConnectionStatus'
 
-interface Props {
+const props = defineProps<{
   boardId: string
-}
+}>()
 
-const props = defineProps<Props>()
+const client = tryInjectServices().resolve(ApiClient)
+
 const { t } = useI18n()
 
-const boardStore = useBoardStore()
-const listStore = useListStore()
-const { isConnected } = useConnectionStatus()
-const { joinBoardRoom, leaveBoardRoom } = useBoardHub()
+const { state: activeBoard, isLoading, execute } = useApiState<ApiClient, BoardDetailedDto, [number]>(client)
+  (client => client.boards.getById.bind(client.boards))
+  (_.parseInt(props.boardId))
+  ()
 
-const { activeBoard, isLoading } = storeToRefs(boardStore)
-const { lists } = storeToRefs(listStore)
+execute()
 
-// Load board data when component mounts or boardId changes
-watch(
-  () => props.boardId,
-  async (newBoardId) => {
-    if (newBoardId) {
-      await boardStore.loadBoard(newBoardId)
-      await listStore.loadLists(newBoardId)
-    }
-  },
-  { immediate: true }
-)
+// const boardStore = useBoardStore()
+// const listStore = useListStore()
+// const { isConnected } = useConnectionStatus()
+// const { joinBoardRoom, leaveBoardRoom } = useBoardHub()
+
+// const { activeBoard, isLoading } = storeToRefs(boardStore)
+// const { lists } = storeToRefs(listStore)
 
 // Real-time collaboration: Join board room when connected
-watch(
-  [() => isConnected.value, () => props.boardId],
-  ([connected, boardId]) => {
-    if (connected && boardId) {
-      joinBoardRoom(boardId)
-    }
-  },
-  { immediate: true }
-)
+// watch(
+//   [() => isConnected.value, () => props.boardId],
+//   ([connected, boardId]) => {
+//     if (connected && boardId) {
+//       joinBoardRoom(boardId)
+//     }
+//   },
+//   { immediate: true }
+// )
 
-onMounted(() => {
-  // Initial load
-  if (props.boardId) {
-    boardStore.loadBoard(props.boardId)
-    listStore.loadLists(props.boardId)
-  }
-})
+// onMounted(() => {
+//   // Initial load
+//   if (props.boardId) {
+//     boardStore.loadBoard(props.boardId)
+//     listStore.loadLists(props.boardId)
+//   }
+// })
 
-onUnmounted(() => {
-  if (props.boardId) {
-    leaveBoardRoom(props.boardId)
-  }
-})
+// onUnmounted(() => {
+//   if (props.boardId) {
+//     leaveBoardRoom(props.boardId)
+//   }
+// })
 </script>

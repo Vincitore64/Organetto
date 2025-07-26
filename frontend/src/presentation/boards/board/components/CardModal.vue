@@ -18,7 +18,7 @@
             @blur="updateTitle"
           />
           <span :class="styles.listName">
-            {{ $t('board.cardModal.inList', { listName: 'To Do' }) }}
+            {{ t('board.cardModal.inList', { listName: 'To Do' }) }}
           </span>
         </div>
       </header>
@@ -28,7 +28,7 @@
           <!-- Labels -->
           <section v-if="card.labels.length > 0" :class="styles.section">
             <h3 :class="styles.sectionTitle">
-              {{ $t('board.cardModal.labels') }}
+              {{ t('board.cardModal.labels') }}
             </h3>
             <div :class="styles.labels">
               <a-tag
@@ -47,11 +47,11 @@
           <section :class="styles.section">
             <h3 :class="styles.sectionTitle">
               <FileTextOutlined />
-              {{ $t('board.cardModal.description') }}
+              {{ t('board.cardModal.description') }}
             </h3>
             <a-textarea
               v-model:value="description"
-              :placeholder="$t('board.cardModal.descriptionPlaceholder')"
+              :placeholder="t('board.cardModal.descriptionPlaceholder')"
               :class="styles.descriptionTextarea"
               :rows="4"
               :auto-size="{ minRows: 4, maxRows: 8 }"
@@ -63,7 +63,7 @@
           <section :class="styles.section">
             <h3 :class="styles.sectionTitle">
               <MessageOutlined />
-              {{ $t('board.cardModal.activity') }}
+              {{ t('board.cardModal.activity') }}
             </h3>
             <div :class="styles.commentForm">
               <a-avatar
@@ -75,7 +75,7 @@
               </a-avatar>
               <a-textarea
                 v-model:value="newComment"
-                :placeholder="$t('board.cardModal.commentPlaceholder')"
+                :placeholder="t('board.cardModal.commentPlaceholder')"
                 :class="styles.commentInput"
                 :rows="2"
                 :auto-size="{ minRows: 2, maxRows: 4 }"
@@ -87,7 +87,7 @@
                 size="small"
                 @click="addComment"
               >
-                {{ $t('board.cardModal.addComment') }}
+                {{ t('board.cardModal.addComment') }}
               </a-button>
             </div>
           </section>
@@ -97,7 +97,7 @@
           <!-- Add to card -->
           <section :class="styles.section">
             <h3 :class="styles.sectionTitle">
-              {{ $t('board.cardModal.addToCard') }}
+              {{ t('board.cardModal.addToCard') }}
             </h3>
             <div :class="styles.actionButtons">
               <a-button
@@ -108,7 +108,7 @@
                 <template #icon>
                   <UserOutlined />
                 </template>
-                {{ $t('board.cardModal.members') }}
+                {{ t('board.cardModal.members') }}
               </a-button>
               <a-button
                 :class="styles.actionButton"
@@ -118,7 +118,7 @@
                 <template #icon>
                   <TagOutlined />
                 </template>
-                {{ $t('board.cardModal.labels') }}
+                {{ t('board.cardModal.labels') }}
               </a-button>
               <a-button
                 :class="styles.actionButton"
@@ -128,7 +128,7 @@
                 <template #icon>
                   <CalendarOutlined />
                 </template>
-                {{ $t('board.cardModal.dueDate') }}
+                {{ t('board.cardModal.dueDate') }}
               </a-button>
               <a-button
                 :class="styles.actionButton"
@@ -138,7 +138,7 @@
                 <template #icon>
                   <PaperClipOutlined />
                 </template>
-                {{ $t('board.cardModal.attachment') }}
+                {{ t('board.cardModal.attachment') }}
               </a-button>
             </div>
           </section>
@@ -146,7 +146,7 @@
           <!-- Actions -->
           <section :class="styles.section">
             <h3 :class="styles.sectionTitle">
-              {{ $t('board.cardModal.actions') }}
+              {{ t('board.cardModal.actions') }}
             </h3>
             <div :class="styles.actionButtons">
               <a-button
@@ -157,7 +157,7 @@
                 <template #icon>
                   <ArrowRightOutlined />
                 </template>
-                {{ $t('board.cardModal.move') }}
+                {{ t('board.cardModal.move') }}
               </a-button>
               <a-button
                 :class="styles.actionButton"
@@ -167,7 +167,7 @@
                 <template #icon>
                   <CopyOutlined />
                 </template>
-                {{ $t('board.cardModal.copy') }}
+                {{ t('board.cardModal.copy') }}
               </a-button>
               <a-button
                 :class="[styles.actionButton, styles.danger]"
@@ -177,7 +177,7 @@
                 <template #icon>
                   <DeleteOutlined />
                 </template>
-                {{ $t('board.cardModal.archive') }}
+                {{ t('board.cardModal.archive') }}
               </a-button>
             </div>
           </section>
@@ -185,7 +185,7 @@
           <!-- Members -->
           <section v-if="mockUsers.length > 0" :class="styles.section">
             <h3 :class="styles.sectionTitle">
-              {{ $t('board.cardModal.members') }}
+              {{ t('board.cardModal.members') }}
             </h3>
             <AvatarGroup
               :users="mockUsers"
@@ -197,7 +197,7 @@
           <!-- Due Date -->
           <section v-if="card.dueDate" :class="styles.section">
             <h3 :class="styles.sectionTitle">
-              {{ $t('board.cardModal.dueDate') }}
+              {{ t('board.cardModal.dueDate') }}
             </h3>
             <div :class="styles.dueDate">
               <CalendarOutlined />
@@ -235,7 +235,6 @@ import {
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
-import { Card } from '../../types/board'
 import AvatarGroup from './AvatarGroup.vue'
 import styles from './CardModal.module.scss'
 

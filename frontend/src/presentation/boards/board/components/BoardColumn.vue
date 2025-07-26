@@ -16,7 +16,7 @@
           type="text"
           size="small"
           :class="styles.menuButton"
-          :aria-label="$t('board.column.menu')"
+          :aria-label="t('board.column.menu')"
         >
           <template #icon>
             <MoreOutlined />
@@ -26,16 +26,16 @@
           <a-menu>
             <a-menu-item key="edit">
               <EditOutlined />
-              {{ $t('board.column.edit') }}
+              {{ t('board.column.edit') }}
             </a-menu-item>
             <a-menu-item key="archive">
-              <ArchiveBoxOutlined />
-              {{ $t('board.column.archive') }}
+              <InboxOutlined />
+              {{ t('board.column.archive') }}
             </a-menu-item>
             <a-menu-divider />
             <a-menu-item key="delete" danger>
               <DeleteOutlined />
-              {{ $t('board.column.delete') }}
+              {{ t('board.column.delete') }}
             </a-menu-item>
           </a-menu>
         </template>
@@ -44,7 +44,7 @@
     
     <main :class="styles.content">
       <!-- Virtual scrolling for performance with large card lists -->
-      <VirtualList
+      <!-- <VirtualList
         :items="list.cards"
         :item-height="120"
         :class="styles.cardList"
@@ -58,9 +58,9 @@
             @drag-end="handleCardDragEnd"
           />
         </template>
-      </VirtualList>
+      </VirtualList> -->
       
-      <AddCardButton :list-id="list.id" />
+      <!-- <AddCardButton :list-id="list.id" /> -->
     </main>
   </section>
 </template>
@@ -72,17 +72,18 @@ import {
   MoreOutlined,
   EditOutlined,
   DeleteOutlined,
-  ArchiveBoxOutlined
+  InboxOutlined
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
-import { List, Card } from '../../types/board'
+// import { List, Card } from '../../types/board'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
 import VirtualList from './VirtualList.vue'
 import styles from './BoardColumn.module.scss'
+import type { ColumnDto } from '@/dataAccess/columns/models'
 
 interface Props {
-  list: List
+  list: ColumnDto
 }
 
 interface Emits {

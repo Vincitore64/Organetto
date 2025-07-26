@@ -1,5 +1,5 @@
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { BoardDto, CreateBoardCommand, UpdateBoardCommand } from '../models'
+import type { BoardDetailedDto, BoardDto, CreateBoardCommand, UpdateBoardCommand } from '../models'
 import type { ApiException } from '@/dataAccess/shared/models/ApiException'
 import qs from 'qs'
 
@@ -26,6 +26,26 @@ export class BoardsClient {
     try {
       const response = await this.http.get<BoardDto[]>(
         `/api/Boards?${qs.stringify({ userId: userId })}`,
+      )
+      return response.data
+    } catch (err) {
+      const error = err as AxiosError<ApiException>
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data.message || `API Error: ${error.response.status}`)
+      }
+      throw err
+    }
+  }
+
+  /**
+   * GET /api/Boards/{userId}
+   * Retrieves all boards where the given user is owner or member.
+   * @param userId - Internal user ID (int64).
+   */
+  public async getById(id: number): Promise<BoardDetailedDto> {
+    try {
+      const response = await this.http.get<BoardDetailedDto>(
+        `/api/Boards/${id}`,
       )
       return response.data
     } catch (err) {
