@@ -24,8 +24,10 @@
   },
   "addList": {
     "placeholder": "Enter list title...",
-    "addButton": "Add list",
-    "addAnother": "Add another list"
+    "addButton": "Create",
+    "addAnother": "Add another list",
+    "title": "Create a new list",
+    "cancel": "Cancel"
   },
   "avatarGroup": {
     "moreUsers": "{count} more"

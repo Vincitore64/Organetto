@@ -1,67 +1,11 @@
-<template>
-  <main class="add-list-container">
-    <FeatureCard
-      v-if="!isAdding"
-      :title="t('board.addList.placeholder')"
-      :icon="PlusOutlined"
-      :clickable="true"
-      :show-cover="true"
-      :show-floating-icons="true"
-      class="add-list-card"
-      @click="startAdding"
-    />
-    
-    <div v-else class="add-list-form">
-      <header class="add-list-title">
-        <!-- {{ t('board.addList.title') }} -->
-          Create a new list
-      </header>
-      <a-divider class="item-modal-title-divider"></a-divider>
-      <a-input
-        ref="inputRef"
-        v-model:value="title"
-        :placeholder="t('board.addList.placeholder')"
-        @keydown.enter="handleSubmit"
-        @keydown.esc="handleCancel"
-      />
-      
-      <div class="form-actions">
-        <a-button
-          type="primary"
-          size="small"
-          class="submit-button"
-          @click="handleSubmit"
-        >
-          {{ t('board.addList.addButton') }}
-        </a-button>
-        
-        <a-button
-          type="text"
-          size="small"
-          class="cancel-button"
-          @click="handleCancel"
-        >
-          <template #icon>
-            <CloseOutlined />
-          </template>
-        </a-button>
-      </div>
-    </div>
-  </main>
-</template>
-
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons-vue'
-import FeatureCard from '@/presentation/shared/components/FeatureCard.vue'
+import { PlusOutlined } from '@ant-design/icons-vue'
 
-
-interface Props {
+const props = defineProps<{
   boardId: number
-}
-
-const props = defineProps<Props>()
+}>()
 const { t } = useI18n()
 // const listStore = useListStore()
 
@@ -90,6 +34,46 @@ const startAdding = async () => {
 }
 </script>
 
+<template>
+  <main class="add-list-container">
+    <section v-if="!isAdding">
+      <a-button class="add-list-btn" type="primary" @click="startAdding">
+        {{ t('board.addList.title') }}
+        <template #icon>
+          <PlusOutlined />
+        </template>
+      </a-button>
+    </section>
+    
+    <div v-else class="add-list-form">
+      <header class="add-list-title">
+        {{ t('board.addList.title') }}
+      </header>
+      <a-divider class="add-list-title-divider"></a-divider>
+      <a-input
+        ref="inputRef"
+        v-model:value="title"
+        :placeholder="t('board.addList.placeholder')"
+        @keydown.enter="handleSubmit"
+        @keydown.esc="handleCancel"
+      />
+      
+      <div class="form-actions">
+        <a-button
+          block
+          type="primary"
+          @click="handleSubmit"
+        >
+          {{ t('board.addList.addButton') }}
+        </a-button>
+        <section class="cancel-action" @click="handleCancel">
+          {{ t('board.addList.cancel') }}
+        </section>
+      </div>
+    </div>
+  </main>
+</template>
+
 <style scoped lang="scss">
 .add-list-container {
   width: 300px;
@@ -98,28 +82,35 @@ const startAdding = async () => {
 }
 
 // Customize the FeatureCard for add list functionality
-.add-list-card {
-  height: 200px;
-  :deep(.feature-cover) {
-    height: 80px;
-  }
-  :deep(.feature-body) {
-    .main-icon {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 8px;
+.add-list-btn {
+  width: 100%;
+}
+// .add-list-card {
+//   height: 200px;
+//   :deep(.feature-cover) {
+//     height: 80px;
+//   }
+//   :deep(.feature-body) {
+//     .main-icon {
+//       width: 48px;
+//       height: 48px;
+//       margin-bottom: 8px;
       
-      .icon {
-        font-size: 20px;
-      }
-    }
+//       .icon {
+//         font-size: 20px;
+//       }
+//     }
     
-    .feature-title {
-      font-size: 16px;
-      font-weight: 400;
-      margin: 0;
-    }
-  }
+//     .feature-title {
+//       font-size: 16px;
+//       font-weight: 400;
+//       margin: 0;
+//     }
+//   }
+// }
+
+.add-list-title-divider {
+  margin-top: 8px;
 }
 
 // The add list form mirrors the visual treatment of other cards: a clean white
@@ -130,7 +121,8 @@ const startAdding = async () => {
   width: 300px;
   min-width: 300px;
   max-width: 300px;
-  background: rgba(255, 255, 255, 0.98);
+  // background: rgba(255, 255, 255, 0.98);
+  background: linear-gradient(135deg, #ffffff, #fff7eb);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
@@ -178,37 +170,50 @@ const startAdding = async () => {
 
   .form-actions {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
-    margin-top: 16px;
-
-    .submit-button {
-      background: var(--color-blue-gradient);
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      height: 36px;
-      box-shadow: var(--shadow-light);
-      transition: var(--transition-smooth);
-
-      &:hover {
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-medium);
-      }
-    }
-
-    .cancel-button {
+    margin-top: 24px;
+    .cancel-action {
+      cursor: pointer;
+      text-align: center;
+      font-size: 1rem;
+      letter-spacing: 0.2px;
       color: var(--color-text-weak);
-      border-radius: 8px;
-      height: 36px;
-      transition: var(--transition-smooth);
-
+      font-family: 'Sofia Sans Extra Condensed', sans-serif;
+      // text-decoration: underline;
       &:hover {
+        // text-decoration: none;
         color: var(--color-text);
-        background: rgba(0, 0, 0, 0.04);
       }
     }
+
+    // .submit-button {
+    //   background: var(--color-blue-gradient);
+    //   border: none;
+    //   border-radius: 8px;
+    //   // font-size: 14px;
+    //   font-weight: 500;
+    //   box-shadow: var(--shadow-light);
+    //   transition: var(--transition-smooth);
+
+    //   &:hover {
+    //     transform: translateY(-1px);
+    //     box-shadow: var(--shadow-medium);
+    //   }
+    // }
+
+    // .cancel-button {
+    //   color: var(--color-text-weak);
+    //   border-radius: 8px;
+    //   height: 36px;
+    //   transition: var(--transition-smooth);
+
+    //   &:hover {
+    //     color: var(--color-text);
+    //     background: rgba(0, 0, 0, 0.04);
+    //   }
+    // }
   }
 }
 

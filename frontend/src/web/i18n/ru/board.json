@@ -25,7 +25,9 @@
   "addList": {
     "placeholder": "Введите название списка...",
     "addButton": "Добавить список",
-    "addAnother": "Добавить ещё список"
+    "addAnother": "Добавить ещё список",
+    "title": "Создать новый список",
+    "cancel": "Отмена"
   },
   "avatarGroup": {
     "moreUsers": "ещё {count}"
