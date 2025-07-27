@@ -164,21 +164,25 @@ const handleFilterChange = (filters: any) => {
 </script>
 
 <style scoped lang="scss">
+// Mirror the boards overview page by switching from a dark purple gradient to the
+// light application background.  A secondary gradient layer provides subtle
+// texture without overpowering the content.
 .board-page-layout {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  // background: var(--color-bg-gradient);
+  background: transparent;
   position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
-    pointer-events: none;
-  }
+
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   background: var(--color-bg-gradient-2);
+  //   pointer-events: none;
+  // }
 }
 
 .board-main {

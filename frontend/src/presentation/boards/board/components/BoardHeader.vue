@@ -157,8 +157,12 @@ const handleShare = () => {
 </script>
 
 <style scoped lang="scss">
+// Use the shared header height variable so that the board header aligns with
+// other pages.  The background is semi‑opaque white with a slight blur and
+// subtle border to separate it from the content.  Shadow values mirror those
+// used on the boards overview page.
 .board-header {
-  height: 65px;
+  height: var(--header-height);
   padding: 0 16px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);

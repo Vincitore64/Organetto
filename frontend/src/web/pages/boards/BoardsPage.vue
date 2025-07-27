@@ -137,6 +137,7 @@
               <BoardCard v-for="board in boardPageViews.state.value.views.value" :key="board.id" :board="board"
                 @open="openBoard(board.id)" class="board-item" />
               <CreateBoardCard @create="showCreateBoardModal" class="board-item create-item" />
+              <CreateBoardCardV2 @create="showCreateBoardModal" class="board-item create-item" />
             </transition-group>
           </div>
 
@@ -249,6 +250,7 @@ import { useCreateBoard } from '@/application/boards/hooks/useCreateBoard'
 import type { CreateBoardState } from '@/application'
 import { mapToBoardPageView } from '@/presentation/boards'
 import { useForm } from '@/presentation/shared'
+import CreateBoardCardV2 from '@/presentation/boards/components/CreateBoardCardV2.vue'
 
 const props = defineProps<{
   userId: string,

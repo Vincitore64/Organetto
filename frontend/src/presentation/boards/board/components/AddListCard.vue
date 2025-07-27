@@ -5,7 +5,7 @@
       type="dashed"
       block
       size="large"
-      class="add-list-button glass"
+      class="add-list-button"
       @click="startAdding"
     >
       <template #icon>
@@ -94,11 +94,14 @@ const startAdding = async () => {
   max-width: 300px;
 }
 
+// The "Add list" button echoes the styling of the create board card by using a
+// coloured dashed border and a light surface.  This helps it blend with the
+// overall boards aesthetic.
 .add-list-button {
   height: 120px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
-  border: 2px dashed rgba(0, 0, 0, 0.1);
+  border: 2px dashed var(--color-primary-300, #91d5ff);
   border-radius: 12px;
   color: var(--color-text-weak);
   font-size: 16px;
@@ -109,74 +112,78 @@ const startAdding = async () => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  
+
   &:hover {
-    background: rgba(var(--color-primary-rgb), 0.08);
-    border-color: rgba(var(--color-primary-rgb), 0.3);
+    background: rgba(var(--color-primary-rgb), 0.1);
+    border-color: var(--color-primary-400, #69c0ff);
     color: var(--color-primary-600);
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
   }
-  
+
   &:focus {
-    background: rgba(var(--color-primary-rgb), 0.08);
-    border-color: var(--color-primary-400);
+    background: rgba(var(--color-primary-rgb), 0.1);
+    border-color: var(--color-primary-400, #69c0ff);
     color: var(--color-primary-600);
   }
-  
+
   .anticon {
     font-size: 24px;
   }
 }
 
+// The add list form mirrors the visual treatment of other cards: a clean white
+// surface with gentle rounding and subtle shadow.  Inputs use a slightly
+// translucent background to indicate interactivity and highlight the focus
+// state with a coloured outline.
 .add-list-form {
   width: 300px;
   min-width: 300px;
   max-width: 300px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: var(--shadow-light);
-  
+
   .list-input {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 8px;
     font-size: 16px;
     font-weight: 500;
     height: 44px;
     transition: var(--transition-smooth);
-    
+
     &:focus {
       border-color: var(--color-primary-400);
       box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
     }
-    
+
     :deep(.ant-input) {
       background: transparent;
       border: none;
       box-shadow: none;
       font-size: 16px;
       font-weight: 500;
-      
+
       &:focus {
         box-shadow: none;
       }
-      
+
       &::placeholder {
         color: var(--color-text-weak);
       }
     }
   }
-  
+
   .form-actions {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-top: 16px;
-    
+
     .submit-button {
       background: var(--color-blue-gradient);
       border: none;
@@ -186,19 +193,19 @@ const startAdding = async () => {
       height: 36px;
       box-shadow: var(--shadow-light);
       transition: var(--transition-smooth);
-      
+
       &:hover {
         transform: translateY(-1px);
         box-shadow: var(--shadow-medium);
       }
     }
-    
+
     .cancel-button {
       color: var(--color-text-weak);
       border-radius: 8px;
       height: 36px;
       transition: var(--transition-smooth);
-      
+
       &:hover {
         color: var(--color-text);
         background: rgba(0, 0, 0, 0.04);

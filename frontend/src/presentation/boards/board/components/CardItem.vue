@@ -150,28 +150,30 @@ const startDrag = () => {
 </script>
 
 <style scoped lang="scss">
+// Cards within a column use the same surface and hover treatment as boards
+// overview cards.  Removing the blur effect improves clarity against the
+// lighter page background and aligns with the rest of the application.
 .board-card {
   width: 100%;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
+  background: var(--color-surface);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: var(--shadow-light);
   transition: var(--transition-smooth);
   cursor: pointer;
   margin-bottom: 12px;
-  
+
   &:hover {
     box-shadow: var(--shadow-medium);
     transform: translateY(-2px);
-    border-color: rgba(var(--color-primary-rgb), 0.2);
+    border-color: var(--color-primary-200, #bae7ff);
   }
-  
+
   &.card-dragging {
     opacity: 0.6;
     transform: rotate(5deg);
   }
-  
+
   :deep(.ant-card-body) {
     padding: 16px;
   }

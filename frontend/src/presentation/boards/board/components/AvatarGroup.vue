@@ -76,45 +76,49 @@ const avatarSize = computed(() => {
 </script>
 
 <style scoped lang="scss">
+// The avatar group is rendered on a light surface similar to other cards.
+// Using the global surface colour for the border and background ties these
+// elements into the overall design language.  Hover states and stacking
+// behaviour remain unchanged.
 .avatar-group {
   display: flex;
   align-items: center;
   gap: 4px;
-  
+
   .avatar {
-    border: 2px solid rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--color-surface);
+    background: var(--color-surface);
     backdrop-filter: blur(10px);
     transition: var(--transition-smooth);
     cursor: pointer;
-    
+
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       border-color: var(--color-primary-400);
     }
-    
+
     &.stacked {
       margin-left: -8px;
-      
+
       &:first-child {
         margin-left: 0;
       }
     }
-    
+
     &.more-avatar {
       background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
       color: white;
       font-weight: 600;
       font-size: 12px;
-      
+
       &:hover {
         background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-700));
         transform: translateY(-2px) scale(1.05);
       }
     }
   }
-  
+
   :deep(.ant-avatar) {
     display: flex;
     align-items: center;
@@ -122,7 +126,7 @@ const avatarSize = computed(() => {
     font-weight: 600;
     font-size: 14px;
     color: var(--color-text);
-    
+
     img {
       object-fit: cover;
     }

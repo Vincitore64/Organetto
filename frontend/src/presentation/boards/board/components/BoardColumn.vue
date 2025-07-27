@@ -1,6 +1,6 @@
 <template>
   <div
-    class="board-column glass"
+    class="board-column"
     :data-column-id="list.id"
     @dragover.prevent
     @drop="handleDrop"
@@ -152,12 +152,15 @@ const handleAddCard = () => {
 </script>
 
 <style scoped lang="scss">
+// Columns in the board adopt the same surface treatment as cards on the boards
+// overview page: a clean white panel with a subtle stroke and shadow.  The glass
+// blur effect is removed to improve contrast against the lighter page
+// background.
 .board-column {
   width: 300px;
   min-width: 300px;
   max-width: 300px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: var(--color-surface);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   box-shadow: var(--shadow-light);
@@ -166,10 +169,11 @@ const handleAddCard = () => {
   flex-direction: column;
   height: fit-content;
   max-height: calc(100vh - 140px);
-  
+
   &:hover {
     box-shadow: var(--shadow-medium);
     transform: translateY(-2px);
+    border-color: var(--color-primary-200, #bae7ff);
   }
 }
 

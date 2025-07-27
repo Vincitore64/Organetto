@@ -94,67 +94,76 @@ const startAdding = async () => {
   width: 100%;
 }
 
+// The "Add card" button follows the same visual language as the board cards on the
+// boards listing page.  A lightly tinted surface with a coloured dashed border
+// helps it stand out without feeling heavy.  When hovered or focused the
+// border and background gently shift towards the primary colour, mirroring the
+// hover behaviour used by other cards in the application.
 .add-card-button {
-  background: rgba(0, 0, 0, 0.02);
-  border: 2px dashed rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px dashed var(--color-primary-300, #91d5ff);
+  border-radius: 10px;
   color: var(--color-text-weak);
   font-size: 14px;
   font-weight: 500;
   height: 40px;
   transition: var(--transition-smooth);
-  
+
   &:hover {
-    background: rgba(var(--color-primary-rgb), 0.04);
-    border-color: rgba(var(--color-primary-rgb), 0.2);
+    background: rgba(var(--color-primary-rgb), 0.08);
+    border-color: var(--color-primary-400, #69c0ff);
     color: var(--color-primary-600);
     transform: translateY(-1px);
+    box-shadow: var(--shadow-light);
   }
-  
+
   &:focus {
-    background: rgba(var(--color-primary-rgb), 0.04);
-    border-color: var(--color-primary-400);
+    background: rgba(var(--color-primary-rgb), 0.08);
+    border-color: var(--color-primary-400, #69c0ff);
     color: var(--color-primary-600);
   }
 }
 
+// The add card form uses a solid surface rather than heavy glass to better match
+// the cards shown on the boards page.  Input fields have clear focus states
+// and the actions align with other primary buttons.
 .add-card-form {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 16px;
   box-shadow: var(--shadow-light);
-  
+
   .card-textarea {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
     transition: var(--transition-smooth);
-    
+
     &:focus {
       border-color: var(--color-primary-400);
       box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
     }
-    
+
     :deep(.ant-input) {
       background: transparent;
       border: none;
       box-shadow: none;
-      
+
       &:focus {
         box-shadow: none;
       }
     }
   }
-  
+
   .form-actions {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 12px;
-    
+
     .submit-button {
       background: var(--color-blue-gradient);
       border: none;
@@ -163,18 +172,18 @@ const startAdding = async () => {
       font-weight: 500;
       box-shadow: var(--shadow-light);
       transition: var(--transition-smooth);
-      
+
       &:hover {
         transform: translateY(-1px);
         box-shadow: var(--shadow-medium);
       }
     }
-    
+
     .cancel-button {
       color: var(--color-text-weak);
       border-radius: 6px;
       transition: var(--transition-smooth);
-      
+
       &:hover {
         color: var(--color-text);
         background: rgba(0, 0, 0, 0.04);
