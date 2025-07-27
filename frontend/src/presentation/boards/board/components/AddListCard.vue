@@ -1,25 +1,26 @@
 <template>
-  <div class="add-list-container">
-    <a-button
+  <main class="add-list-container">
+    <FeatureCard
       v-if="!isAdding"
-      type="dashed"
-      block
-      size="large"
-      class="add-list-button"
+      :title="t('board.addList.placeholder')"
+      :icon="PlusOutlined"
+      :clickable="true"
+      :show-cover="true"
+      :show-floating-icons="true"
+      class="add-list-card"
       @click="startAdding"
-    >
-      <template #icon>
-        <PlusOutlined />
-      </template>
-      {{ t('board.addList.placeholder') }}
-    </a-button>
+    />
     
-    <div v-else class="add-list-form glass">
+    <div v-else class="add-list-form">
+      <header class="add-list-title">
+        <!-- {{ t('board.addList.title') }} -->
+          Create a new list
+      </header>
+      <a-divider class="item-modal-title-divider"></a-divider>
       <a-input
         ref="inputRef"
         v-model:value="title"
         :placeholder="t('board.addList.placeholder')"
-        class="list-input"
         @keydown.enter="handleSubmit"
         @keydown.esc="handleCancel"
       />
@@ -46,12 +47,14 @@
         </a-button>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { PlusOutlined, CloseOutlined } from '@ant-design/icons-vue'
+import FeatureCard from '@/presentation/shared/components/FeatureCard.vue'
 
 
 interface Props {
@@ -94,41 +97,28 @@ const startAdding = async () => {
   max-width: 300px;
 }
 
-// The "Add list" button echoes the styling of the create board card by using a
-// coloured dashed border and a light surface.  This helps it blend with the
-// overall boards aesthetic.
-.add-list-button {
-  height: 120px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  border: 2px dashed var(--color-primary-300, #91d5ff);
-  border-radius: 12px;
-  color: var(--color-text-weak);
-  font-size: 16px;
-  font-weight: 500;
-  transition: var(--transition-smooth);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  &:hover {
-    background: rgba(var(--color-primary-rgb), 0.1);
-    border-color: var(--color-primary-400, #69c0ff);
-    color: var(--color-primary-600);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
+// Customize the FeatureCard for add list functionality
+.add-list-card {
+  height: 200px;
+  :deep(.feature-cover) {
+    height: 80px;
   }
-
-  &:focus {
-    background: rgba(var(--color-primary-rgb), 0.1);
-    border-color: var(--color-primary-400, #69c0ff);
-    color: var(--color-primary-600);
-  }
-
-  .anticon {
-    font-size: 24px;
+  :deep(.feature-body) {
+    .main-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 8px;
+      
+      .icon {
+        font-size: 20px;
+      }
+    }
+    
+    .feature-title {
+      font-size: 16px;
+      font-weight: 400;
+      margin: 0;
+    }
   }
 }
 
@@ -146,6 +136,14 @@ const startAdding = async () => {
   border-radius: 12px;
   padding: 16px;
   box-shadow: var(--shadow-light);
+  .add-list-title {
+    text-align: center;
+    // margin-bottom: 1rem;
+    background: transparent;
+    font-size: 1.75rem;
+    font-weight: 300;
+    font-family: 'Sofia Sans Extra Condensed', sans-serif;
+  }
 
   .list-input {
     background: rgba(255, 255, 255, 0.9);
@@ -156,26 +154,26 @@ const startAdding = async () => {
     height: 44px;
     transition: var(--transition-smooth);
 
-    &:focus {
-      border-color: var(--color-primary-400);
-      box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
-    }
+    // &:focus {
+    //   border-color: var(--color-primary-400);
+    //   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+    // }
 
-    :deep(.ant-input) {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      font-size: 16px;
-      font-weight: 500;
+    // :deep(.ant-input) {
+    //   background: transparent;
+    //   border: none;
+    //   box-shadow: none;
+    //   font-size: 16px;
+    //   font-weight: 500;
 
-      &:focus {
-        box-shadow: none;
-      }
+    //   &:focus {
+    //     box-shadow: none;
+    //   }
 
-      &::placeholder {
-        color: var(--color-text-weak);
-      }
-    }
+    //   &::placeholder {
+    //     color: var(--color-text-weak);
+    //   }
+    // }
   }
 
   .form-actions {
@@ -222,26 +220,37 @@ const startAdding = async () => {
     max-width: 280px;
   }
   
-  .add-list-button {
+  .add-list-card {
     height: 100px;
-    font-size: 14px;
     
-    .anticon {
-      font-size: 20px;
+    :deep(.feature-body) {
+      .main-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 6px;
+        
+        .icon {
+          font-size: 16px;
+        }
+      }
+      
+      .feature-title {
+        font-size: 14px;
+      }
     }
   }
   
   .add-list-form {
     padding: 16px;
     
-    .list-input {
-      font-size: 14px;
-      height: 40px;
+    // .list-input {
+    //   font-size: 14px;
+    //   height: 40px;
       
-      :deep(.ant-input) {
-        font-size: 14px;
-      }
-    }
+    //   :deep(.ant-input) {
+    //     font-size: 14px;
+    //   }
+    // }
     
     .form-actions {
       margin-top: 12px;

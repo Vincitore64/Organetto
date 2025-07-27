@@ -137,7 +137,7 @@
               <BoardCard v-for="board in boardPageViews.state.value.views.value" :key="board.id" :board="board"
                 @open="openBoard(board.id)" class="board-item" />
               <CreateBoardCard @create="showCreateBoardModal" class="board-item create-item" />
-              <CreateBoardCardV2 @create="showCreateBoardModal" class="board-item create-item" />
+              <!-- <CreateBoardCardV2 @create="showCreateBoardModal" class="board-item create-item" /> -->
             </transition-group>
           </div>
 
