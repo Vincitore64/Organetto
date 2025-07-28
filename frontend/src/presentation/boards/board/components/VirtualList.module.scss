@@ -27,6 +27,8 @@
 }
 
 .visibleItems {
+  display: grid;
+  gap: 12px;
   position: absolute;
   top: 0;
   left: 0;

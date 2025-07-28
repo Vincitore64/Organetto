@@ -29,6 +29,11 @@
     "title": "Создать новый список",
     "cancel": "Отмена"
   },
+  "item": {
+    "addButton": "Добавить",
+    "title": "Создать новый",
+    "cancel": "Отмена"
+  },
   "avatarGroup": {
     "moreUsers": "ещё {count}"
   },

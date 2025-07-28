@@ -1,16 +1,58 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import AddItemCard from '../shared/components/AddItemCard.vue'
+import { useAsyncState } from '@vueuse/core'
+
+const props = defineProps<{
+  listId: number
+}>()
+const { t } = useI18n()
+
+const title = ref('')
+const textareaRef = ref<HTMLTextAreaElement>()
+
+const asyncState = useAsyncState(handleSubmit, null, { immediate: false })
+
+async function handleSubmit() {
+  if (title.value.trim()) {
+    // await listStore.createCard({ 
+    //   listId: props.listId, 
+    //   title: title.value.trim() 
+    // })
+    title.value = ''
+  }
+}
+
+const handleCancel = () => {
+  title.value = ''
+}
+</script>
 <template>
-  <div class="add-card-container">
+  <AddItemCard :async-state="asyncState">
+    <template :props="{ isAdding }" #default>
+      <a-textarea
+        ref="textareaRef"
+        v-model:value="title"
+        :placeholder="t('board.addCard.placeholder')"
+        :auto-size="{ minRows: 2, maxRows: 4 }"
+        class="card-textarea"
+        @keydown.enter.prevent="handleSubmit"
+        @keydown.esc="handleCancel"
+      />
+    </template>
+  </AddItemCard>
+  <!-- <div class="add-card-container">
     <a-button
       v-if="!isAdding"
-      type="text"
+      type="primary"
       block
-      class="add-card-button"
       @click="startAdding"
     >
       <template #icon>
         <PlusOutlined />
       </template>
-      {{ t('board.addCard.placeholder') }}
+      Create a new card
     </a-button>
     
     <div v-else class="add-card-form glass">
@@ -46,48 +88,8 @@
         </a-button>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
-
-<script setup lang="ts">
-import { ref, nextTick } from 'vue'
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons-vue'
-import { useI18n } from 'vue-i18n'
-
-
-interface Props {
-  listId: string
-}
-
-const props = defineProps<Props>()
-const { t } = useI18n()
-
-const isAdding = ref(false)
-const title = ref('')
-const textareaRef = ref<HTMLTextAreaElement>()
-
-const handleSubmit = async () => {
-  if (title.value.trim()) {
-    // await listStore.createCard({ 
-    //   listId: props.listId, 
-    //   title: title.value.trim() 
-    // })
-    title.value = ''
-    isAdding.value = false
-  }
-}
-
-const handleCancel = () => {
-  title.value = ''
-  isAdding.value = false
-}
-
-const startAdding = async () => {
-  isAdding.value = true
-  await nextTick()
-  textareaRef.value?.focus()
-}
-</script>
 
 <style scoped lang="scss">
 .add-card-container {

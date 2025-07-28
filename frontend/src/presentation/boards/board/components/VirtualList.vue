@@ -37,12 +37,14 @@ import styles from './VirtualList.module.scss'
 interface Props {
   items: T[]
   itemHeight: number
+  gap: number
   height?: number
   overscan?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   height: 400,
+  gap: 12,
   overscan: 5
 })
 
@@ -62,9 +64,9 @@ const containerHeight = computed(() => {
 
 const totalHeight = computed(() => {
   if (!useVirtualScrolling.value) {
-    return props.items.length * props.itemHeight
+    return props.items.length * props.itemHeight + props.items.length * props.gap
   }
-  return props.items.length * props.itemHeight
+  return props.items.length * props.itemHeight + props.items.length * props.gap
 })
 
 const visibleCount = computed(() => {
@@ -100,7 +102,7 @@ const offsetY = computed(() => {
 })
 
 const visibleHeight = computed(() => {
-  return visibleItems.value.length * props.itemHeight
+  return visibleItems.value.length * props.itemHeight + visibleItems.value.length * props.gap
 })
 
 const handleScroll = () => {

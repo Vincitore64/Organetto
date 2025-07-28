@@ -59,7 +59,6 @@
       
       <AddCardButton
         :column-id="list.id"
-        class="add-card-button"
         @add-card="handleAddCard"
       />
     </div>

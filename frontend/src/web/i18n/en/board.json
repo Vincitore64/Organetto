@@ -29,6 +29,11 @@
     "title": "Create a new list",
     "cancel": "Cancel"
   },
+  "item": {
+    "addButton": "Create",
+    "title": "Create a new one",
+    "cancel": "Cancel"
+  },
   "avatarGroup": {
     "moreUsers": "{count} more"
   },
