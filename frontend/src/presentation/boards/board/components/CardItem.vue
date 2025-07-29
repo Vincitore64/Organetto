@@ -1,75 +1,3 @@
-<template>
-  <a-card
-    class="board-card glass"
-    :class="{ 'card-dragging': isDragging }"
-    :draggable="true"
-    @dragstart="handleDragStart"
-    @dragend="handleDragEnd"
-    @click="handleClick"
-    :hoverable="true"
-    size="small"
-  >
-    <!-- Labels -->
-    <div v-if="card.labels?.length" class="card-labels">
-      <a-tag
-        v-for="label in card.labels"
-        :key="label.id"
-        class="card-label"
-        :style="{ backgroundColor: label.color, borderColor: label.color }"
-        size="small"
-      >
-        {{ label.name }}
-      </a-tag>
-    </div>
-
-    <!-- Title -->
-    <h4 class="card-title">{{ card.title }}</h4>
-
-    <!-- Description -->
-    <p v-if="card.description" class="card-description">
-      {{ card.description }}
-    </p>
-
-    <!-- Footer with badges -->
-    <div v-if="hasFooterContent" class="card-footer">
-      <div class="card-badges">
-        <!-- Due date -->
-        <div v-if="card.dueDate" class="card-badge due-date">
-          <ClockCircleOutlined />
-          <span>{{ formatDueDate(card.dueDate) }}</span>
-        </div>
-
-        <!-- Comments count -->
-        <div v-if="card.commentsCount" class="card-badge comments">
-          <MessageOutlined />
-          <span>{{ card.commentsCount }}</span>
-        </div>
-
-        <!-- Attachments count -->
-        <div v-if="card.attachmentsCount" class="card-badge attachments">
-          <PaperClipOutlined />
-          <span>{{ card.attachmentsCount }}</span>
-        </div>
-
-        <!-- Checklist progress -->
-        <div v-if="card.checklistsCount" class="card-badge checklist">
-          <CheckSquareOutlined />
-          <span>{{ card.completedChecklistsCount }}/{{ card.checklistsCount }}</span>
-        </div>
-      </div>
-
-      <!-- Assigned users -->
-      <AvatarGroup
-        v-if="card.assignedUsers?.length"
-        :users="card.assignedUsers"
-        :max-visible="3"
-        size="sm"
-        class="card-avatars"
-      />
-    </div>
-  </a-card>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useDraggable } from '@vueuse/core'
@@ -77,7 +5,8 @@ import {
   CalendarOutlined,
   MessageOutlined,
   PaperClipOutlined,
-  CheckSquareOutlined
+  CheckSquareOutlined,
+  SettingOutlined, EditOutlined, EllipsisOutlined
 } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
 import { Card } from '../../types/board'
@@ -149,22 +78,108 @@ const startDrag = () => {
 }
 </script>
 
+<template>
+  <a-card
+    class="board-card"
+    :class="{ 'card-dragging': isDragging }"
+    :draggable="true"
+    @dragstart="handleDragStart"
+    @dragend="handleDragEnd"
+    @click="handleClick"
+    :hoverable="true"
+    size="small"
+  >
+    <!-- Labels -->
+    <div v-if="card.labels?.length" class="card-labels">
+      <a-tag
+        v-for="label in card.labels"
+        :key="label.id"
+        class="card-label"
+        :style="{ backgroundColor: label.color, borderColor: label.color }"
+        size="small"
+      >
+        {{ label.name }}
+      </a-tag>
+    </div>
+    <template #actions>
+      <setting-outlined key="setting" />
+      <edit-outlined key="edit" />
+      <ellipsis-outlined key="ellipsis" />
+    </template>
+    <a-card-meta class="board-card__meta" :title="card.title" :description="card.description">
+
+    </a-card-meta>
+
+    <!-- Title -->
+    <!-- <h4 class="card-title">{{ card.title }}</h4> -->
+
+    <!-- Description -->
+    <!-- <p v-if="card.description" class="card-description">
+      {{ card.description }}
+    </p> -->
+
+    <!-- Footer with badges -->
+    <div v-if="hasFooterContent" class="card-footer">
+      <div class="card-badges">
+        <!-- Due date -->
+        <div v-if="card.dueDate" class="card-badge due-date">
+          <ClockCircleOutlined />
+          <span>{{ formatDueDate(card.dueDate) }}</span>
+        </div>
+
+        <!-- Comments count -->
+        <div v-if="card.commentsCount" class="card-badge comments">
+          <MessageOutlined />
+          <span>{{ card.commentsCount }}</span>
+        </div>
+
+        <!-- Attachments count -->
+        <div v-if="card.attachmentsCount" class="card-badge attachments">
+          <PaperClipOutlined />
+          <span>{{ card.attachmentsCount }}</span>
+        </div>
+
+        <!-- Checklist progress -->
+        <div v-if="card.checklistsCount" class="card-badge checklist">
+          <CheckSquareOutlined />
+          <span>{{ card.completedChecklistsCount }}/{{ card.checklistsCount }}</span>
+        </div>
+      </div>
+
+      <!-- Assigned users -->
+      <AvatarGroup
+        v-if="card.assignedUsers?.length"
+        :users="card.assignedUsers"
+        :max-visible="3"
+        size="sm"
+        class="card-avatars"
+      />
+    </div>
+  </a-card>
+</template>
+
 <style scoped lang="scss">
 // Cards within a column use the same surface and hover treatment as boards
 // overview cards.  Removing the blur effect improves clarity against the
 // lighter page background and aligns with the rest of the application.
 .board-card {
   width: 100%;
-  background: var(--color-surface);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  // background: var(--color-surface);
+  // border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 10px;
   box-shadow: var(--shadow-light);
   transition: var(--transition-smooth);
   cursor: pointer;
   margin-bottom: 12px;
 
+  &__meta {
+    :deep(.ant-card-meta-title) {
+      font-weight: 400;
+    }
+  }
+
   &:hover {
-    box-shadow: var(--shadow-medium);
+    box-shadow: var(--shadow-light-plus);
     transform: translateY(-2px);
     border-color: var(--color-primary-200, #bae7ff);
   }
@@ -174,9 +189,9 @@ const startDrag = () => {
     transform: rotate(5deg);
   }
 
-  :deep(.ant-card-body) {
-    padding: 16px;
-  }
+  // :deep(.ant-card-body) {
+  //   padding: 16px;
+  // }
 }
 
 .card-labels {

@@ -20,6 +20,7 @@
     "@microsoft/signalr": "^8.0.7",
     "@types/lodash": "^4.17.16",
     "@types/qs": "^6.9.18",
+    "@vueuse/components": "^13.6.0",
     "@vueuse/core": "^13.2.0",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.9.0",

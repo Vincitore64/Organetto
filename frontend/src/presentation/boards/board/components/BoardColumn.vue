@@ -1,70 +1,3 @@
-<template>
-  <div
-    class="board-column"
-    :data-column-id="list.id"
-    @dragover.prevent
-    @drop="handleDrop"
-  >
-    <div class="column-header">
-      <div class="header-content">
-        <h3 class="column-title">{{ list.title }}</h3>
-        <div class="column-badge">{{ list.cards.length }}</div>
-      </div>
-      <a-dropdown :trigger="['click']" placement="bottomRight">
-        <a-button
-          type="text"
-          size="small"
-          class="menu-button"
-          :aria-label="t('board.column.menu')"
-        >
-          <template #icon>
-            <MoreOutlined />
-          </template>
-        </a-button>
-        <template #overlay>
-          <a-menu class="column-menu">
-            <a-menu-item key="edit" @click="handleEdit">
-              <EditOutlined />
-              {{ t('board.column.edit') }}
-            </a-menu-item>
-            <a-menu-item key="archive" @click="handleArchive">
-              <InboxOutlined />
-              {{ t('board.column.archive') }}
-            </a-menu-item>
-            <a-menu-divider />
-            <a-menu-item key="delete" danger @click="handleDelete">
-              <DeleteOutlined />
-              {{ t('board.column.delete') }}
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
-    </div>
-    
-    <div class="column-content">
-      <VirtualList
-        :items="list.cards"
-        :item-height="120"
-        :container-height="600"
-        class="cards-list"
-      >
-        <template #default="{ item }">
-          <CardItem
-            :card="item"
-            class="card-item"
-            @click="handleCardClick(item)"
-          />
-        </template>
-      </VirtualList>
-      
-      <AddCardButton
-        :column-id="list.id"
-        @add-card="handleAddCard"
-      />
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useDraggable } from '@vueuse/core'
@@ -75,10 +8,9 @@ import {
   InboxOutlined
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
-// import { List, Card } from '../../types/board'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
-import VirtualList from './VirtualList.vue'
+import { UseVirtualList } from '@vueuse/components'
 import type { ColumnDto } from '@/dataAccess/columns/models'
 
 interface Props {
@@ -150,6 +82,71 @@ const handleAddCard = () => {
 }
 </script>
 
+<template>
+  <div
+    class="board-column"
+    :data-column-id="list.id"
+    @dragover.prevent
+    @drop="handleDrop"
+  >
+    <div class="column-header">
+      <div class="header-content">
+        <h3 class="column-title">{{ list.title }}</h3>
+        <div class="column-badge">{{ list.cards.length }}</div>
+      </div>
+      <a-dropdown :trigger="['click']" placement="bottomRight">
+        <a-button
+          type="text"
+          size="small"
+          class="menu-button"
+          :aria-label="t('board.column.menu')"
+        >
+          <template #icon>
+            <MoreOutlined />
+          </template>
+        </a-button>
+        <template #overlay>
+          <a-menu class="column-menu">
+            <a-menu-item key="edit" @click="handleEdit">
+              <EditOutlined />
+              {{ t('board.column.edit') }}
+            </a-menu-item>
+            <a-menu-item key="archive" @click="handleArchive">
+              <InboxOutlined />
+              {{ t('board.column.archive') }}
+            </a-menu-item>
+            <a-menu-divider />
+            <a-menu-item key="delete" danger @click="handleDelete">
+              <DeleteOutlined />
+              {{ t('board.column.delete') }}
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+    </div>
+    
+    <div class="column-content">
+      <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 141 }" height="100%">
+        <template #default="{ data }">
+          <section class="card-item__wrapper">
+            <CardItem
+              :card="data"
+              class="card-item"
+              @click="handleCardClick(data)"
+            />
+          </section>
+        </template>
+      </UseVirtualList>
+      <section class="add-card-button__wrapper">
+        <AddCardButton
+          :column-id="list.id"
+          @add-card="handleAddCard"
+        />
+      </section>
+    </div>
+  </div>
+</template>
+
 <style scoped lang="scss">
 // Columns in the board adopt the same surface treatment as cards on the boards
 // overview page: a clean white panel with a subtle stroke and shadow.  The glass
@@ -159,7 +156,8 @@ const handleAddCard = () => {
   width: 300px;
   min-width: 300px;
   max-width: 300px;
-  background: var(--color-surface);
+  // background: var(--color-surface);
+  background: linear-gradient(135deg, #ffffff, #fff7eb);;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   box-shadow: var(--shadow-light);
@@ -191,8 +189,8 @@ const handleAddCard = () => {
   }
   
   .column-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 22px;
+    // font-weight: 600;
     color: var(--color-text);
     margin: 0;
     font-family: 'Sofia Sans Extra Condensed', sans-serif;
@@ -227,33 +225,38 @@ const handleAddCard = () => {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 12px 16px 16px;
-  gap: 12px;
   overflow: hidden;
 }
 
-.cards-list {
-  flex: 1;
-  overflow-y: auto;
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.02);
-    border-radius: 3px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
-    
-    &:hover {
-      background: rgba(0, 0, 0, 0.15);
-    }
-  }
+.card-item__wrapper {
+  padding: 8px 16px;
 }
+.add-card-button__wrapper {
+  padding: 16px;
+}
+
+// .cards-list {
+//   flex: 1;
+//   overflow-y: auto;
+  
+//   &::-webkit-scrollbar {
+//     width: 6px;
+//   }
+  
+//   &::-webkit-scrollbar-track {
+//     background: rgba(0, 0, 0, 0.02);
+//     border-radius: 3px;
+//   }
+  
+//   &::-webkit-scrollbar-thumb {
+//     background: rgba(0, 0, 0, 0.1);
+//     border-radius: 3px;
+    
+//     &:hover {
+//       background: rgba(0, 0, 0, 0.15);
+//     }
+//   }
+// }
 
 .card-item {
   margin-bottom: 12px;
