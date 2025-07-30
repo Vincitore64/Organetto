@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@microsoft/signalr": "^8.0.7",
+    "@tanstack/vue-query": "^5.83.0",
     "@types/lodash": "^4.17.16",
     "@types/qs": "^6.9.18",
     "@vueuse/components": "^13.6.0",
