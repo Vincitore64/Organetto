@@ -37,6 +37,7 @@ export function createCrudHooks<
   DetailArg = any,
   CreateVars = any,
   UpdateVars = any,
+  DeleteVars = any,
 >(opts: CrudOptions<Client, ListArgs, DetailArg, TResp, TData, TDetailResp, TDetailData, CreateVars, UpdateVars>) {
   const { resourceKey, client: clientFn, methods, mappers, listOptions, detailOptions } = opts
 
@@ -85,7 +86,7 @@ export function createCrudHooks<
 
   function useRemove() {
     return useApiMutation(
-      (id: DetailArg) => (client()[methods.remove] as (id: DetailArg) => Promise<any>)(id),
+      (deleteArgs: DeleteVars) => (client()[methods.remove] as (v: DeleteVars) => Promise<any>)(deleteArgs),
       [defaultListKey]
     )
   }
