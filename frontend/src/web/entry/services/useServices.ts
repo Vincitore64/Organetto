@@ -9,6 +9,7 @@ import { ApiClient } from '@/dataAccess/services/ApiClient'
 import { useAuthStore } from '@/application/authentication/stores/authStore'
 import { useUsersStore } from '@/application/users/stores/usersStore'
 import { useDayJs } from './useDayJs'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 
 /**
  * Initializes app with pinia and router
@@ -19,6 +20,7 @@ export function useServices(app: App) {
   useDayJs()
   app.use(createPinia())
   app.use(router)
+  app.use(VueQueryPlugin)
   const localization = createLocalization()
   app.use(localization)
 

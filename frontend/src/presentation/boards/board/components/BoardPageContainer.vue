@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="board-page-container">
+  <a-layout class="board-page-container image-bg">
     <div v-if="isLoading" class="loading-container">
       <a-spin size="large" />
       <div class="loading-text">{{ t('board.loading') }}</div>
@@ -24,6 +24,7 @@ import { tryInjectServices } from '@/shared'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 import type { BoardDetailedDto } from '@/dataAccess/boards/models'
 import _ from 'lodash'
+import { useBoardDetail } from '@/application/boards/hooks/useBoardCrud'
 // import { useBoardStore } from '../../stores/boardStore'
 // import { useListStore } from '../../stores/listStore'
 // import { useBoardHub } from '../../hooks/useBoardHub'
@@ -37,12 +38,14 @@ const client = tryInjectServices().resolve(ApiClient)
 
 const { t } = useI18n()
 
-const { state: activeBoard, isLoading, execute } = useApiState<ApiClient, BoardDetailedDto, [number]>(client)
-  (client => client.boards.getById.bind(client.boards))
-  (_.parseInt(props.boardId))
-  ()
+const { isLoading, data: activeBoard } = useBoardDetail(props.boardId)
 
-execute()
+// const { state: activeBoard, isLoading, execute } = useApiState<ApiClient, BoardDetailedDto, [number]>(client)
+//   (client => client.boards.getById.bind(client.boards))
+//   (_.parseInt(props.boardId))
+//   ()
+
+// execute()
 
 // const boardStore = useBoardStore()
 // const listStore = useListStore()
@@ -84,7 +87,8 @@ execute()
 // secondary gradient defined in the global colour palette.
 .board-page-container {
   min-height: 100vh;
-  background: var(--color-bg-gradient);
+  // background: var(--color-bg-gradient);
+  background-position-y: top;
   position: relative;
 
   // &::before {

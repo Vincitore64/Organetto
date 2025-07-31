@@ -4,7 +4,7 @@ import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
 
 interface CrudOptions<Client, ListArgs extends any[], DetailArg, CreateVars, UpdateVars> {
   resourceKey: string
-  client: Client
+  client: Client | (() => Client),
   methods: {
     list: keyof Client
     detail: keyof Client
@@ -25,26 +25,28 @@ export function createCrudHooks<
   CreateVars = any,
   UpdateVars = any,
 >(opts: CrudOptions<Client, ListArgs, DetailArg, CreateVars, UpdateVars>) {
-  const { resourceKey, client, methods, listOptions, detailOptions } = opts
+  const { resourceKey, client: clientFn, methods, listOptions, detailOptions } = opts
 
   // Stable key generators
   const listKey = (...args: ListArgs) => [resourceKey, 'list', ...args] as const
   const defaultListKey = [resourceKey, 'list']
   const detailKey = (id: DetailArg) => [resourceKey, 'detail', id] as const
+  const client = typeof clientFn === 'function' ? clientFn : () => clientFn
 
   function useList(...args: ListArgs) {
     return useApiQuery(
       listKey(...args),
-      () => (client[methods.list] as (...a: ListArgs) => Promise<any>)(...args),
+      () => (client()[methods.list] as (...a: ListArgs) => Promise<any>)(...args),
       undefined,
       { staleTime: 1000 * 60 * 2, ...listOptions }
     )
   }
 
   function useDetail(id: DetailArg) {
+    debugger
     return useApiQuery(
       detailKey(id),
-      () => (client[methods.detail] as (id: DetailArg) => Promise<any>)(id),
+      () => (client()[methods.detail] as (id: DetailArg) => Promise<any>)(id),
       undefined,
       { enabled: !!id, staleTime: 1000 * 60 * 2, ...detailOptions }
     )
@@ -52,21 +54,21 @@ export function createCrudHooks<
 
   function useCreate() {
     return useApiMutation(
-      (vars: CreateVars) => (client[methods.create] as (v: CreateVars) => Promise<any>)(vars),
+      (vars: CreateVars) => (client()[methods.create] as (v: CreateVars) => Promise<any>)(vars),
       [defaultListKey]
     )
   }
 
   function useUpdate() {
     return useApiMutation(
-      (vars: UpdateVars & { id: DetailArg }) => (client[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(vars),
+      (vars: UpdateVars & { id: DetailArg }) => (client()[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(vars),
       [defaultListKey, detailKey(({} as any as UpdateVars & { id: DetailArg }).id)]
     )
   }
 
   function useRemove() {
     return useApiMutation(
-      (id: DetailArg) => (client[methods.remove] as (id: DetailArg) => Promise<any>)(id),
+      (id: DetailArg) => (client()[methods.remove] as (id: DetailArg) => Promise<any>)(id),
       [defaultListKey]
     )
   }
