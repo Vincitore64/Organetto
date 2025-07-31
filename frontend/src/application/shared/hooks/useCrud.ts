@@ -1,8 +1,16 @@
-// src/composables/crud.ts
+import type { TwoWayMappers } from '../models'
 import { useApiQuery, useApiMutation } from './useApi'
 import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
 
-interface CrudOptions<Client, ListArgs extends any[], DetailArg, CreateVars, UpdateVars> {
+interface CrudOptions<Client,
+  ListArgs extends any[],
+  DetailArg,
+  TListResp,
+  TListData,
+  TDetailResp,
+  TDetailData,
+  TCreateVars,
+  TUpdateVars> {
   resourceKey: string
   client: Client | (() => Client),
   methods: {
@@ -12,6 +20,7 @@ interface CrudOptions<Client, ListArgs extends any[], DetailArg, CreateVars, Upd
     update: keyof Client
     remove: keyof Client
   }
+  mappers?: TwoWayMappers<TListResp, TListData, TDetailResp, TDetailData, TCreateVars, TUpdateVars>
   /** default options for list query */
   listOptions?: UseQueryOptions<any, unknown, any, QueryKey>
   /** default options for detail query */
@@ -21,11 +30,15 @@ interface CrudOptions<Client, ListArgs extends any[], DetailArg, CreateVars, Upd
 export function createCrudHooks<
   Client extends Record<string, any>,
   ListArgs extends any[] = any[],
+  TResp = any,
+  TData = any,
+  TDetailResp = any,
+  TDetailData = any,
   DetailArg = any,
   CreateVars = any,
   UpdateVars = any,
->(opts: CrudOptions<Client, ListArgs, DetailArg, CreateVars, UpdateVars>) {
-  const { resourceKey, client: clientFn, methods, listOptions, detailOptions } = opts
+>(opts: CrudOptions<Client, ListArgs, DetailArg, TResp, TData, TDetailResp, TDetailData, CreateVars, UpdateVars>) {
+  const { resourceKey, client: clientFn, methods, mappers, listOptions, detailOptions } = opts
 
   // Stable key generators
   const listKey = (...args: ListArgs) => [resourceKey, 'list', ...args] as const
@@ -37,7 +50,7 @@ export function createCrudHooks<
     return useApiQuery(
       listKey(...args),
       () => (client()[methods.list] as (...a: ListArgs) => Promise<any>)(...args),
-      undefined,
+      mappers?.list,
       { staleTime: 1000 * 60 * 2, ...listOptions }
     )
   }
@@ -47,21 +60,25 @@ export function createCrudHooks<
     return useApiQuery(
       detailKey(id),
       () => (client()[methods.detail] as (id: DetailArg) => Promise<any>)(id),
-      undefined,
+      mappers?.detail,
       { enabled: !!id, staleTime: 1000 * 60 * 2, ...detailOptions }
     )
   }
 
   function useCreate() {
     return useApiMutation(
-      (vars: CreateVars) => (client()[methods.create] as (v: CreateVars) => Promise<any>)(vars),
+      (vars: CreateVars) => (client()[methods.create] as (v: CreateVars) => Promise<any>)(
+        mappers?.create ? mappers.create(vars) : vars
+      ),
       [defaultListKey]
     )
   }
 
   function useUpdate() {
     return useApiMutation(
-      (vars: UpdateVars & { id: DetailArg }) => (client()[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(vars),
+      (vars: UpdateVars & { id: DetailArg }) => (client()[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(
+        mappers?.update ? mappers.update(vars) : vars
+      ),
       [defaultListKey, detailKey(({} as any as UpdateVars & { id: DetailArg }).id)]
     )
   }
