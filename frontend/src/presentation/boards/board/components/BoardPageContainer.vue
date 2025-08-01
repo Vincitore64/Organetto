@@ -1,7 +1,7 @@
 <template>
   <a-layout class="board-page-container image-bg">
     <div v-if="isLoading" class="loading-container">
-      <a-spin size="large" />
+      <Spinner size="large" :spinning="true"/>
       <div class="loading-text">{{ t('board.loading') }}</div>
     </div>
     
@@ -16,15 +16,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BoardPageLayout from './BoardPageLayout.vue'
-import { useApiState } from '@/application/shared/hooks/useApiHandler'
 import { tryInjectServices } from '@/shared'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
-import type { BoardDetailedDto } from '@/dataAccess/boards/models'
 import _ from 'lodash'
 import { useBoardDetail } from '@/application/boards/hooks/useBoardCrud'
+import { Spinner } from '@/presentation/shared'
 // import { useBoardStore } from '../../stores/boardStore'
 // import { useListStore } from '../../stores/listStore'
 // import { useBoardHub } from '../../hooks/useBoardHub'
