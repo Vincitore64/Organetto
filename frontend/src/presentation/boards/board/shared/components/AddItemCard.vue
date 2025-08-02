@@ -75,7 +75,7 @@ const startAdding = async () => {
 .add-item-container {
   width: 100%;
   // min-width: 300px;
-  max-width: 300px;
+  max-width: 360px;
 }
 
 // Customize the FeatureCard for add list functionality

@@ -1,27 +1,3 @@
-<template>
-  <div class="avatar-group">
-    <a-avatar
-      v-for="(user, index) in visibleUsers"
-      :key="user.id"
-      :size="avatarSize"
-      :src="user.avatar"
-      :class="['avatar', { 'stacked': isStacked }]"
-      :style="{ zIndex: visibleUsers.length - index }"
-    >
-      {{ user.name.charAt(0).toUpperCase() }}
-    </a-avatar>
-    
-    <a-tooltip v-if="remainingCount > 0" :title="moreUsersTooltip">
-      <a-avatar
-        :size="avatarSize"
-        :class="['avatar', 'more-avatar', { 'stacked': isStacked }]"
-      >
-        +{{ remainingCount }}
-      </a-avatar>
-    </a-tooltip>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Avatar as AAvatar } from 'ant-design-vue'
@@ -29,9 +5,9 @@ import { useI18n } from 'vue-i18n'
 
 
 interface User {
-  id: string
+  id: number
   name: string
-  avatar: string
+  avatar: string | null
 }
 
 interface Props {
@@ -74,6 +50,30 @@ const avatarSize = computed(() => {
   }
 })
 </script>
+
+<template>
+  <div class="avatar-group">
+    <a-avatar
+      v-for="(user, index) in visibleUsers"
+      :key="user.id"
+      :size="avatarSize"
+      :src="user.avatar ?? undefined"
+      :class="['avatar', { 'stacked': isStacked }]"
+      :style="{ zIndex: visibleUsers.length - index }"
+    >
+      {{ user.name.charAt(0).toUpperCase() }}
+    </a-avatar>
+    
+    <a-tooltip v-if="remainingCount > 0" :title="moreUsersTooltip">
+      <a-avatar
+        :size="avatarSize"
+        :class="['avatar', 'more-avatar', { 'stacked': isStacked }]"
+      >
+        +{{ remainingCount }}
+      </a-avatar>
+    </a-tooltip>
+  </div>
+</template>
 
 <style scoped lang="scss">
 // The avatar group is rendered on a light surface similar to other cards.

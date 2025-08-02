@@ -1,14 +1,149 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import {
+  FileTextOutlined,
+  MessageOutlined,
+  UserOutlined,
+  TagOutlined,
+  CalendarOutlined,
+  PaperClipOutlined,
+  ArrowRightOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+  CloseOutlined
+} from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+import dayjs from 'dayjs'
+import AvatarGroup from './AvatarGroup.vue'
+import type { CardVm } from '@/application'
+import ModalContainer from '@/presentation/shared/components/ModalContainer.vue'
+
+
+interface Props {
+  card: CardVm
+  listName: string,
+  visible: boolean
+}
+
+interface Emits {
+  close: []
+  update: [card: Partial<CardVm>]
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+const { t } = useI18n()
+
+const isVisible = computed({
+  get: () => props.visible,
+  set: (value) => {
+    if (!value) {
+      emit('close')
+    }
+  }
+})
+
+const title = ref(props.card.title)
+const description = ref(props.card.description || '')
+const newComment = ref('')
+
+const currentUser = ref({
+  id: 'current-user',
+  name: 'Current User',
+  avatar: '/api/placeholder/32/32'
+})
+
+const cardLabels = ref<string[]>(['critical'])
+
+const cardUsers = computed(() => 
+  // props.card.assignees.map(id => ({
+  //   id,
+  //   name: `User ${id}`,
+  //   avatar: '/api/placeholder/32/32'
+  // }))
+  []
+)
+
+const formatDate = (date: Date) => {
+  return dayjs(date).format('MMM DD, YYYY')
+}
+
+const handleClose = () => {
+  emit('close')
+}
+
+const updateTitle = () => {
+  if (title.value !== props.card.title) {
+    emit('update', { title: title.value })
+  }
+}
+
+const updateDescription = () => {
+  if (description.value !== props.card.description) {
+    emit('update', { description: description.value })
+  }
+}
+
+const removeLabel = (index: number) => {
+  // const newLabels = [...props.card.]
+  // newLabels.splice(index, 1)
+  // emit('update', { labels: newLabels })
+}
+
+const addComment = () => {
+  if (newComment.value.trim()) {
+    // Handle comment addition logic here
+    console.log('Adding comment:', newComment.value)
+    newComment.value = ''
+  }
+}
+
+const removeDueDate = () => {
+  emit('update', { dueDate: undefined })
+}
+
+// Action handlers
+const openMembersModal = () => {
+  console.log('Open members modal')
+}
+
+const openLabelsModal = () => {
+  console.log('Open labels modal')
+}
+
+const openDatePicker = () => {
+  console.log('Open date picker')
+}
+
+const openAttachmentModal = () => {
+  console.log('Open attachment modal')
+}
+
+const moveCard = () => {
+  console.log('Move card')
+}
+
+const copyCard = () => {
+  console.log('Copy card')
+}
+
+const archiveCard = () => {
+  console.log('Archive card')
+}
+</script>
+
 <template>
-  <a-modal
+  <ModalContainer
     v-model:open="isVisible"
-    :title="null"
+    :title="props.card.title"
     :footer="null"
-    :width="900"
+    width="900px"
     class="card-modal"
+    wrap-class-name="card-modal"
     @cancel="handleClose"
   >
     <div class="modal-content">
-      <header class="modal-header">
+      <!-- <header class="modal-header">
         <div class="title-section">
           <a-input
             v-model:value="title"
@@ -18,22 +153,22 @@
             @blur="updateTitle"
           />
           <span class="list-name">
-            {{ t('board.cardModal.inList', { listName: 'To Do' }) }}
+            {{ t('board.cardModal.inList', { listName: listName }) }}
           </span>
         </div>
-      </header>
-
+      </header> -->
+      <!-- <Divider bottom top/> -->
       <main class="modal-main">
         <div class="left-column">
           <!-- Labels -->
-          <section v-if="card.labels.length > 0" class="modal-section">
+          <section v-if="cardLabels.length > 0" class="modal-section">
             <h3 class="section-title">
               <TagOutlined />
               {{ t('board.cardModal.labels') }}
             </h3>
             <div class="labels-container">
               <a-tag
-                v-for="(label, index) in card.labels"
+                v-for="(label, index) in cardLabels"
                 :key="index"
                 class="label-tag"
                 closable
@@ -172,8 +307,9 @@
                 {{ t('board.cardModal.copy') }}
               </a-button>
               <a-button
-                class="action-button danger"
+                type="primary"
                 block
+                danger
                 @click="archiveCard"
               >
                 <template #icon>
@@ -185,12 +321,12 @@
           </section>
 
           <!-- Members -->
-          <section v-if="mockUsers.length > 0" class="modal-section">
+          <section v-if="cardUsers.length > 0" class="modal-section">
             <h3 class="section-title">
               {{ t('board.cardModal.members') }}
             </h3>
             <AvatarGroup
-              :users="mockUsers"
+              :users="cardUsers"
               :max-visible="5"
               size="md"
             />
@@ -218,189 +354,63 @@
         </aside>
       </main>
     </div>
-  </a-modal>
+  </ModalContainer>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import {
-  FileTextOutlined,
-  MessageOutlined,
-  UserOutlined,
-  TagOutlined,
-  CalendarOutlined,
-  PaperClipOutlined,
-  ArrowRightOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  CloseOutlined
-} from '@ant-design/icons-vue'
-import { useI18n } from 'vue-i18n'
-import dayjs from 'dayjs'
-import AvatarGroup from './AvatarGroup.vue'
-
-
-interface Props {
-  card: Card
-  visible: boolean
-}
-
-interface Emits {
-  close: []
-  update: [card: Partial<Card>]
-}
-
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
-const { t } = useI18n()
-
-const isVisible = computed({
-  get: () => props.visible,
-  set: (value) => {
-    if (!value) {
-      emit('close')
-    }
-  }
-})
-
-const title = ref(props.card.title)
-const description = ref(props.card.description || '')
-const newComment = ref('')
-
-const currentUser = ref({
-  id: 'current-user',
-  name: 'Current User',
-  avatar: '/api/placeholder/32/32'
-})
-
-const mockUsers = computed(() => 
-  props.card.assignees.map(id => ({
-    id,
-    name: `User ${id}`,
-    avatar: '/api/placeholder/32/32'
-  }))
-)
-
-const formatDate = (date: Date) => {
-  return dayjs(date).format('MMM DD, YYYY')
-}
-
-const handleClose = () => {
-  emit('close')
-}
-
-const updateTitle = () => {
-  if (title.value !== props.card.title) {
-    emit('update', { title: title.value })
-  }
-}
-
-const updateDescription = () => {
-  if (description.value !== props.card.description) {
-    emit('update', { description: description.value })
-  }
-}
-
-const removeLabel = (index: number) => {
-  const newLabels = [...props.card.labels]
-  newLabels.splice(index, 1)
-  emit('update', { labels: newLabels })
-}
-
-const addComment = () => {
-  if (newComment.value.trim()) {
-    // Handle comment addition logic here
-    console.log('Adding comment:', newComment.value)
-    newComment.value = ''
-  }
-}
-
-const removeDueDate = () => {
-  emit('update', { dueDate: undefined })
-}
-
-// Action handlers
-const openMembersModal = () => {
-  console.log('Open members modal')
-}
-
-const openLabelsModal = () => {
-  console.log('Open labels modal')
-}
-
-const openDatePicker = () => {
-  console.log('Open date picker')
-}
-
-const openAttachmentModal = () => {
-  console.log('Open attachment modal')
-}
-
-const moveCard = () => {
-  console.log('Move card')
-}
-
-const copyCard = () => {
-  console.log('Copy card')
-}
-
-const archiveCard = () => {
-  console.log('Archive card')
-}
-</script>
-
 <style scoped lang="scss">
-:deep(.card-modal) {
-  .ant-modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+.card-modal {
+  .item-modal-title {
+    font-size: 2rem;
   }
+  // .ant-modal-content {
+  //   background: rgba(255, 255, 255, 0.95);
+  //   backdrop-filter: blur(20px);
+  //   border-radius: 16px;
+  //   border: 1px solid rgba(0, 0, 0, 0.06);
+  //   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  // }
   
-  .ant-modal-body {
-    padding: 24px;
-  }
+  // .ant-modal-body {
+  //   padding: 24px;
+  // }
   
-  .ant-modal-close {
-    top: 16px;
-    right: 16px;
+  // .ant-modal-close {
+  //   top: 16px;
+  //   right: 16px;
     
-    .ant-modal-close-x {
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
-      border-radius: 8px;
-      transition: var(--transition-smooth);
+  //   .ant-modal-close-x {
+  //     width: 32px;
+  //     height: 32px;
+  //     line-height: 32px;
+  //     border-radius: 8px;
+  //     transition: var(--transition-smooth);
       
-      &:hover {
-        background: rgba(0, 0, 0, 0.04);
-      }
-    }
-  }
+  //     &:hover {
+  //       background: rgba(0, 0, 0, 0.04);
+  //     }
+  //   }
+  // }
 }
 
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  // gap: 20px;
   max-height: 80vh;
 }
 
 .modal-header {
   .title-section {
     .title-input {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 600;
       color: var(--color-text);
       font-family: 'Sofia Sans Extra Condensed', sans-serif;
       letter-spacing: 0px;
+      padding: 0 12px;
       
       :deep(.ant-input) {
         font-size: 20px;
         font-weight: 700;
-        padding: 8px 0;
         background: transparent;
         
         &:focus {
@@ -410,10 +420,11 @@ const archiveCard = () => {
     }
     
     .list-name {
-      font-size: 14px;
+      font-size: 12px;
       color: var(--color-text-weak);
-      margin-top: 4px;
       display: block;
+      padding: 0 12px;
+      font-weight: 400;
     }
   }
 }
@@ -440,8 +451,8 @@ const archiveCard = () => {
 
 .modal-section {
   .section-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 400;
     color: var(--color-text);
     margin: 0 0 12px 0;
     display: flex;
@@ -541,27 +552,28 @@ const archiveCard = () => {
   
   .action-button {
     justify-content: flex-start;
-    background: rgba(255, 255, 255, 0.8);
+    // background: rgba(255, 255, 255, 0.8);
+    // background: var(--color-white-gradient);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 8px;
+    // border-radius: 8px;
     transition: var(--transition-smooth);
     
     &:hover {
       background: rgba(255, 255, 255, 0.95);
-      border-color: var(--color-primary-400);
+      // border-color: var(--color-primary-400);
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
-    &.danger {
-      color: var(--color-red-600);
+    // &.danger {
+    //   color: var(--color-red-600);
       
-      &:hover {
-        color: var(--color-red-700);
-        background: rgba(var(--color-red-rgb), 0.04);
-        border-color: var(--color-red-300);
-      }
-    }
+    //   &:hover {
+    //     color: var(--color-red-700);
+    //     background: rgba(var(--color-red-rgb), 0.04);
+    //     border-color: var(--color-red-300);
+    //   }
+    // }
   }
 }
 

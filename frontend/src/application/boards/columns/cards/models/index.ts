@@ -1,0 +1,1 @@
+export type { CardVm } from './Card'

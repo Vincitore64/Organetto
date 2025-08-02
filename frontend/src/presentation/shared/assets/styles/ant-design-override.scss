@@ -21,7 +21,19 @@
     background: var(--color-blue-gradient) !important;
     filter: brightness(0.9) !important;
   }
+  &.ant-btn-dangerous {
+    background: var(--color-red-gradient) !important;
+    &:active,
+    &.ant-btn-active {
+      transform: translateY(1px) !important;
+      box-shadow: var(--shadow-small) !important;
+      background: var(--color-red-gradient) !important;
+      filter: brightness(0.9) !important;
+    }
+  }
 }
+
+
 
 .ant-btn:disabled,
 .ant-btn[disabled] {

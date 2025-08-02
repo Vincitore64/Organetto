@@ -1,5 +1,2 @@
-export type MapperFn<TIn, TOut> = (input: TIn) => TOut
-
-export interface IMapper<TIn, TOut> {
-  map: MapperFn<TIn, TOut>
-}
+export type { IMapper, MapperFn } from './models'
+export * from './hooks'

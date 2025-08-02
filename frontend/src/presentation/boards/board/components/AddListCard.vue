@@ -76,9 +76,9 @@ const startAdding = async () => {
 
 <style scoped lang="scss">
 .add-list-container {
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+  width: 360px;
+  min-width: 360px;
+  max-width: 360px;
 }
 
 // Customize the FeatureCard for add list functionality

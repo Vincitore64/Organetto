@@ -11,21 +11,19 @@ import { useI18n } from 'vue-i18n'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
 import { UseVirtualList } from '@vueuse/components'
-import type { ColumnDto } from '@/dataAccess/columns/models'
-
-interface Props {
-  list: ColumnDto
-}
+import type { CardVm, ColumnVm } from '@/application'
 
 interface Emits {
-  cardClick: [card: Card]
-  columnDragStart: [listId: string]
-  columnDragEnd: [listId: string]
-  cardDragStart: [cardId: string, listId: string]
-  cardDragEnd: [cardId: string, listId: string]
+  cardClick: [card: CardVm]
+  columnDragStart: [listId: number]
+  columnDragEnd: [listId: number]
+  cardDragStart: [cardId: number, listId: number]
+  cardDragEnd: [cardId: number, listId: number]
 }
 
-const props = defineProps<Props>()
+const props = defineProps<{
+  list: ColumnVm
+}>()
 const emit = defineEmits<Emits>()
 const { t } = useI18n()
 
@@ -49,15 +47,15 @@ const startColumnDrag = () => {
   // Additional column drag logic if needed
 }
 
-const handleCardClick = (card: Card) => {
+const handleCardClick = (card: CardVm) => {
   emit('cardClick', card)
 }
 
-const handleCardDragStart = (cardId: string) => {
+const handleCardDragStart = (cardId: number) => {
   emit('cardDragStart', cardId, props.list.id)
 }
 
-const handleCardDragEnd = (cardId: string) => {
+const handleCardDragEnd = (cardId: number) => {
   emit('cardDragEnd', cardId, props.list.id)
 }
 
@@ -126,7 +124,7 @@ const handleAddCard = () => {
     </div>
     
     <div class="column-content">
-      <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 141 }" height="100%">
+      <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 180 }" height="100%">
         <template #default="{ data }">
           <section class="card-item__wrapper">
             <CardItem
@@ -139,7 +137,7 @@ const handleAddCard = () => {
       </UseVirtualList>
       <section class="add-card-button__wrapper">
         <AddCardButton
-          :column-id="list.id"
+          :listId="list.id"
           @add-card="handleAddCard"
         />
       </section>
@@ -153,9 +151,9 @@ const handleAddCard = () => {
 // blur effect is removed to improve contrast against the lighter page
 // background.
 .board-column {
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+  width: 360px;
+  min-width: 360px;
+  max-width: 360px;
   // background: var(--color-surface);
   background: linear-gradient(135deg, #ffffff, #fff7eb);;
   border: 1px solid rgba(0, 0, 0, 0.06);

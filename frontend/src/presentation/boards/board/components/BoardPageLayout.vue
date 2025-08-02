@@ -1,60 +1,3 @@
-<template>
-  <a-layout class="board-page-layout">
-    <BoardHeader 
-      :board="board"
-      :show-filters="showFilters"
-      @toggle-filters="toggleFilters"
-    />
-    
-    <FilterPanel v-if="showFilters" @filter-change="handleFilterChange" />
-    
-    <a-layout-content class="board-main">
-      <div class="board-content">
-        <div 
-          ref="listsContainerRef"
-          class="lists-container"
-        >
-          <BoardColumn
-            v-for="list in board.columns"
-            :key="list.id"
-            :list="list"
-            :draggable="true"
-            @card-click="handleCardClick"
-          />
-          <AddListCard :board-id="board.id" />
-        </div>
-      </div>
-    </a-layout-content>
-    
-    <!-- Drag overlay for visual feedback -->
-    <div 
-      v-if="activeCard || activeList"
-      class="drag-overlay"
-      :style="dragOverlayStyle"
-    >
-      <DragGhost
-        v-if="activeCard"
-        type="card"
-        :item="activeCard"
-      />
-      <DragGhost
-        v-if="activeList"
-        type="list"
-        :item="activeList"
-      />
-    </div>
-
-    <CardModal 
-      v-if="selectedCard"
-      :card="selectedCard"
-      @close="handleCardModalClose"
-    />
-    
-    <!-- Screen reader announcements for drag operations -->
-    <div id="drag-announcements" class="sr-only" aria-live="polite" />
-  </a-layout>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useMouse } from '@vueuse/core'
@@ -64,15 +7,10 @@ import AddListCard from './AddListCard.vue'
 import CardModal from './CardModal.vue'
 import FilterPanel from './FilterPanel.vue'
 import DragGhost from './DragGhost.vue'
-// import { useBoardDrag } from '../../hooks/useBoardDrag'
-// import { useCardDrag } from '../../hooks/useCardDrag'
-// Removed SCSS module import
-import type { BoardDetailedDto } from '@/dataAccess/boards/models'
-import type { CardDto } from '@/dataAccess/cards/models'
-import type { ColumnDto } from '@/dataAccess/columns/models'
+import type { BoardVm, CardVm, ColumnVm } from '@/application'
 
 interface Props {
-  board: BoardDetailedDto
+  board: BoardVm
 }
 
 const props = defineProps<Props>()
@@ -80,15 +18,16 @@ const props = defineProps<Props>()
 const { x: mouseX, y: mouseY } = useMouse()
 const listsContainerRef = ref<HTMLElement>()
 
-const activeCard = ref<CardDto | null>(null)
-const activeList = ref<ColumnDto | null>(null)
-const selectedCard = ref<CardDto | null>(null)
+const activeCard = ref<CardVm | null>(null)
+const activeList = ref<ColumnVm | null>(null)
+const selectedCard = ref<CardVm | null>(null)
+const listOfSelectedCard = ref<ColumnVm | null>(null)
 const showFilters = ref(false)
 
 // const { handleDragStart: handleListDragStart, handleDragEnd: handleListDragEnd } = useBoardDrag()
 // const { handleCardDragStart, handleCardDragEnd } = useCardDrag()
 
-const dragOverlayStyle = computed(() => ({
+const dragOverlayStyle = computed<Record<string, any>>(() => ({
   position: 'fixed',
   left: `${mouseX.value}px`,
   top: `${mouseY.value}px`,
@@ -101,12 +40,14 @@ const toggleFilters = () => {
   showFilters.value = !showFilters.value
 }
 
-const handleCardClick = (card: CardDto) => {
+const handleCardClick = (card: CardVm, column: ColumnVm) => {
   selectedCard.value = card
+  listOfSelectedCard.value = column
 }
 
 const handleCardModalClose = () => {
   selectedCard.value = null
+  listOfSelectedCard.value = null
 }
 
 const handleFilterChange = (filters: any) => {
@@ -162,6 +103,65 @@ const handleFilterChange = (filters: any) => {
 //   handleCardDragEnd(event)
 // }
 </script>
+
+<template>
+  <a-layout class="board-page-layout">
+    <BoardHeader 
+      :board="board"
+      :show-filters="showFilters"
+      @toggle-filters="toggleFilters"
+    />
+    
+    <FilterPanel v-if="showFilters" @filter-change="handleFilterChange" />
+    
+    <a-layout-content class="board-main">
+      <div class="board-content">
+        <div 
+          ref="listsContainerRef"
+          class="lists-container"
+        >
+          <BoardColumn
+            v-for="list in board.columns"
+            :key="list.id"
+            :list="list"
+            :draggable="true"
+            @card-click="(card) => handleCardClick(card, list)"
+          />
+          <AddListCard :board-id="board.id" />
+        </div>
+      </div>
+    </a-layout-content>
+    
+    <!-- Drag overlay for visual feedback -->
+    <div 
+      v-if="activeCard || activeList"
+      class="drag-overlay"
+      :style="dragOverlayStyle"
+    >
+      <DragGhost
+        v-if="activeCard"
+        type="card"
+        :item="activeCard"
+      />
+      <DragGhost
+        v-if="activeList"
+        type="list"
+        :item="activeList"
+      />
+    </div>
+
+    <CardModal
+      v-if="selectedCard && listOfSelectedCard"
+      :card="selectedCard"
+      :list-name="listOfSelectedCard.title"
+      :visible="selectedCard != null"
+      @close="handleCardModalClose"
+    />
+    
+    <!-- Screen reader announcements for drag operations -->
+    <div id="drag-announcements" class="sr-only" aria-live="polite" />
+  </a-layout>
+</template>
 
 <style scoped lang="scss">
 // Mirror the boards overview page by switching from a dark purple gradient to the

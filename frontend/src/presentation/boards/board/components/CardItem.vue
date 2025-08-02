@@ -3,24 +3,25 @@ import { ref, computed } from 'vue'
 import { useDraggable } from '@vueuse/core'
 import {
   CalendarOutlined,
+  ClockCircleOutlined,
   MessageOutlined,
   PaperClipOutlined,
   CheckSquareOutlined,
   SettingOutlined, EditOutlined, EllipsisOutlined
 } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
-import { Card } from '../../types/board'
-import AvatarGroup from './AvatarGroup.vue'
+// import AvatarGroup from './AvatarGroup.vue'
+import type { CardVm } from '@/application'
 
 
 interface Props {
-  card: Card
+  card: CardVm
 }
 
 interface Emits {
-  click: [card: Card]
-  dragStart: [cardId: string]
-  dragEnd: [cardId: string]
+  click: [card: CardVm]
+  dragStart: [cardId: number]
+  dragEnd: [cardId: number]
 }
 
 const props = defineProps<Props>()
@@ -44,12 +45,19 @@ const { style: dragStyle } = useDraggable(cardRef, {
 
 // Mock data for demonstration
 const mockUsers = computed(() => 
-  props.card.assignees.map(id => ({
-    id,
-    name: `User ${id}`,
-    avatar: '/api/placeholder/24/24'
-  }))
+  []
+  // props.card.assignees.map(id => ({
+  //   id,
+  //   name: `User ${id}`,
+  //   avatar: '/api/placeholder/24/24'
+  // }))
 )
+
+const cardLabels = ref<{ name: string, color: string }[]>([{ name: 'critical', color: 'red' }])
+
+const commentsCount = ref(1)
+
+const hasFooterContent = ref(true)
 
 const hasAttachments = computed(() => Math.random() > 0.7)
 const hasComments = computed(() => Math.random() > 0.6)
@@ -63,7 +71,7 @@ const checklistProgress = computed(() => {
   return `${completed}/${total}`
 })
 
-const formatDate = (date: Date) => {
+const formatDueDate = (date: Date) => {
   return dayjs(date).format('MMM DD')
 }
 
@@ -73,9 +81,14 @@ const handleClick = () => {
   }
 }
 
-const startDrag = () => {
-  // Additional drag start logic if needed
+function handleDragStart() {
+
 }
+
+function handleDragEnd() {
+
+}
+
 </script>
 
 <template>
@@ -85,15 +98,14 @@ const startDrag = () => {
     :draggable="true"
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
-    @click="handleClick"
     :hoverable="true"
     size="small"
   >
     <!-- Labels -->
-    <div v-if="card.labels?.length" class="card-labels">
+    <div v-if="cardLabels.length" class="card-labels">
       <a-tag
-        v-for="label in card.labels"
-        :key="label.id"
+        v-for="(label, index) in cardLabels"
+        :key="index"
         class="card-label"
         :style="{ backgroundColor: label.color, borderColor: label.color }"
         size="small"
@@ -103,7 +115,7 @@ const startDrag = () => {
     </div>
     <template #actions>
       <setting-outlined key="setting" />
-      <edit-outlined key="edit" />
+      <edit-outlined key="edit" @click="handleClick()"/>
       <ellipsis-outlined key="ellipsis" />
     </template>
     <a-card-meta class="board-card__meta" :title="card.title" :description="card.description">
@@ -121,39 +133,34 @@ const startDrag = () => {
     <!-- Footer with badges -->
     <div v-if="hasFooterContent" class="card-footer">
       <div class="card-badges">
-        <!-- Due date -->
         <div v-if="card.dueDate" class="card-badge due-date">
           <ClockCircleOutlined />
           <span>{{ formatDueDate(card.dueDate) }}</span>
         </div>
 
-        <!-- Comments count -->
-        <div v-if="card.commentsCount" class="card-badge comments">
+        <div v-if="commentsCount" class="card-badge comments">
           <MessageOutlined />
-          <span>{{ card.commentsCount }}</span>
+          <span>{{ commentsCount }}</span>
         </div>
 
-        <!-- Attachments count -->
-        <div v-if="card.attachmentsCount" class="card-badge attachments">
+        <div v-if="attachmentCount" class="card-badge attachments">
           <PaperClipOutlined />
-          <span>{{ card.attachmentsCount }}</span>
+          <span>{{ attachmentCount }}</span>
         </div>
 
-        <!-- Checklist progress -->
-        <div v-if="card.checklistsCount" class="card-badge checklist">
+        <div v-if="hasChecklist" class="card-badge checklist">
           <CheckSquareOutlined />
-          <span>{{ card.completedChecklistsCount }}/{{ card.checklistsCount }}</span>
+          <span>{{ checklistProgress }}</span>
         </div>
       </div>
 
-      <!-- Assigned users -->
-      <AvatarGroup
+      <!-- <AvatarGroup
         v-if="card.assignedUsers?.length"
         :users="card.assignedUsers"
         :max-visible="3"
         size="sm"
         class="card-avatars"
-      />
+      /> -->
     </div>
   </a-card>
 </template>
@@ -175,6 +182,12 @@ const startDrag = () => {
   &__meta {
     :deep(.ant-card-meta-title) {
       font-weight: 400;
+      margin-bottom: 0 !important;
+    }
+  }
+  :deep(.ant-card-actions) {
+    li {
+      margin: 4px 0;
     }
   }
 
@@ -198,15 +211,15 @@ const startDrag = () => {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   
   .card-label {
     color: white;
     border: none;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 12px;
+    padding: 0px 8px;
+    border-radius: 6px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 }

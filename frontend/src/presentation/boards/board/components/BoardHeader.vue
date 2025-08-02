@@ -1,3 +1,67 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import {
+  StarOutlined,
+  StarFilled,
+  FilterOutlined,
+  ShareAltOutlined,
+  MoreOutlined,
+  SettingOutlined,
+  ExportOutlined,
+  DeleteOutlined,
+  InboxOutlined
+} from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+import AvatarGroup from './AvatarGroup.vue'
+import type { BoardVm } from '@/application'
+
+interface Props {
+  board: BoardVm
+  showFilters: boolean
+}
+
+interface Emits {
+  toggleFilters: []
+  share: []
+  star: [starred: boolean]
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+const { t } = useI18n()
+
+const isStarred = ref(false)
+
+// const users = ref([
+//   { id: '1', name: 'John Doe', avatar: '/api/placeholder/32/32' },
+//   { id: '2', name: 'Jane Smith', avatar: '/api/placeholder/32/32' },
+//   { id: '3', name: 'Bob Johnson', avatar: '/api/placeholder/32/32' },
+// ])
+const users = computed(() => props.board.members)
+
+
+const visibilityColor = computed(() => {
+  switch ('Personal') {
+    case 'Personal': return 'blue'
+    // case 'Team': return 'green'
+    // case 'Public': return 'orange'
+    default: return 'default'
+  }
+})
+
+const toggleStar = () => {
+  isStarred.value = !isStarred.value
+  emit('star', isStarred.value)
+}
+
+const handleToggleFilters = () => {
+  emit('toggleFilters')
+}
+
+const handleShare = () => {
+  emit('share')
+}
+</script>
 <template>
   <a-layout-header class="board-header glass">
     <div class="header-content">
@@ -37,7 +101,7 @@
         </a-button>
         
         <AvatarGroup
-          :users="mockUsers"
+          :users="users"
           :max-visible="3"
           size="md"
         />
@@ -92,69 +156,6 @@
     </div>
   </a-layout-header>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import {
-  StarOutlined,
-  StarFilled,
-  FilterOutlined,
-  ShareAltOutlined,
-  MoreOutlined,
-  SettingOutlined,
-  ExportOutlined,
-  DeleteOutlined,
-  InboxOutlined
-} from '@ant-design/icons-vue'
-import { useI18n } from 'vue-i18n'
-import AvatarGroup from './AvatarGroup.vue'
-import type { BoardDetailedDto } from '@/dataAccess/boards/models'
-
-interface Props {
-  board: BoardDetailedDto
-  showFilters: boolean
-}
-
-interface Emits {
-  toggleFilters: []
-  share: []
-  star: [starred: boolean]
-}
-
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
-const { t } = useI18n()
-
-const isStarred = ref(false)
-
-const mockUsers = ref([
-  { id: '1', name: 'John Doe', avatar: '/api/placeholder/32/32' },
-  { id: '2', name: 'Jane Smith', avatar: '/api/placeholder/32/32' },
-  { id: '3', name: 'Bob Johnson', avatar: '/api/placeholder/32/32' },
-])
-
-const visibilityColor = computed(() => {
-  switch ('Personal') {
-    case 'Personal': return 'blue'
-    // case 'Team': return 'green'
-    // case 'Public': return 'orange'
-    default: return 'default'
-  }
-})
-
-const toggleStar = () => {
-  isStarred.value = !isStarred.value
-  emit('star', isStarred.value)
-}
-
-const handleToggleFilters = () => {
-  emit('toggleFilters')
-}
-
-const handleShare = () => {
-  emit('share')
-}
-</script>
 
 <style scoped lang="scss">
 // Use the shared header height variable so that the board header aligns with
