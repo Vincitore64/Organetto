@@ -7,11 +7,13 @@ import {
   MessageOutlined,
   PaperClipOutlined,
   CheckSquareOutlined,
-  SettingOutlined, EditOutlined, EllipsisOutlined
+  SettingOutlined, EditOutlined, EllipsisOutlined,
+  InboxOutlined, DeleteOutlined,
 } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
 // import AvatarGroup from './AvatarGroup.vue'
 import type { CardVm } from '@/application'
+import { useI18n } from 'vue-i18n'
 
 
 interface Props {
@@ -26,6 +28,8 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+const { t } = useI18n()
 
 const cardRef = ref<HTMLElement>()
 const isDragging = ref(false)
@@ -89,6 +93,18 @@ function handleDragEnd() {
 
 }
 
+const handleDelete = () => {
+  // Handle delete logic
+}
+
+const handleEdit = () => {
+  handleClick()
+}
+
+const handleArchive = () => {
+  // Handle archive logic
+}
+
 </script>
 
 <template>
@@ -116,7 +132,35 @@ function handleDragEnd() {
     <template #actions>
       <setting-outlined key="setting" />
       <edit-outlined key="edit" @click="handleClick()"/>
-      <ellipsis-outlined key="ellipsis" />
+      <a-dropdown :trigger="['click']" placement="bottom">
+        <a-button
+          type="text"
+          size="small"
+          class="menu-button"
+          :aria-label="t('board.column.menu')"
+        >
+          <template #icon>
+            <ellipsis-outlined key="ellipsis" />
+          </template>
+        </a-button>
+        <template #overlay>
+          <a-menu class="column-menu">
+            <a-menu-item key="edit" @click="handleEdit">
+              <EditOutlined />
+              {{ t('board.column.edit') }}
+            </a-menu-item>
+            <a-menu-item key="archive" @click="handleArchive">
+              <InboxOutlined />
+              {{ t('board.column.archive') }}
+            </a-menu-item>
+            <a-menu-divider />
+            <a-menu-item key="delete" danger @click="handleDelete">
+              <DeleteOutlined />
+              {{ t('board.column.delete') }}
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
     </template>
     <a-card-meta class="board-card__meta" :title="card.title" :description="card.description">
 
