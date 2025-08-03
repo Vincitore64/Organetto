@@ -29,7 +29,7 @@ const emit = defineEmits<{ (e: 'submit', values: CreateBoardState): void, (e: 'u
 
 const { t } = useI18n()
 
-const { name, description } = useVModelFields(props, emit)
+const { name, description } = useVModelFields(props, 'modelValue', emit)
 
 const onFinish = (values: unknown) => {
   emit('submit', values as CreateBoardState)

@@ -1,36 +1,70 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { PlusOutlined } from '@ant-design/icons-vue'
+import { useForm } from '@/presentation/shared'
+import { useCreateColumn, type ColumnVm } from '@/application'
+import type { CreateColumnCommand } from '@/dataAccess/columns/models'
 
 const props = defineProps<{
-  boardId: number
+  boardId: number,
+  position: number,
 }>()
+
+const emit = defineEmits<{
+  (e: 'created', v: ColumnVm): void,
+}>()
+
 const { t } = useI18n()
 // const listStore = useListStore()
 
 const isAdding = ref(false)
-const title = ref('')
-const inputRef = ref<HTMLInputElement>()
+
+const createColumnState = useCreateColumn()
+
+const { form, antdForm, reset, submit } = useForm({
+  initialValues: { title: '' },
+  transform: (p) => ({
+    boardId: props.boardId,
+    position: props.position,
+    title: p.title,
+  }),
+  action: createColumnAction,
+  rules: {
+    title: [{ required: true, message: t('board.addList.createForm.titleRequired') }],
+  },
+  useAntd: true,
+  onSuccess(response) {
+    debugger
+    reset()
+    isAdding.value = false
+    emit('created', response as ColumnVm)
+  }
+})
+
+async function createColumnAction({ boardId, position, title }: CreateColumnCommand) {
+  return await createColumnState.mutateAsync({ boardId, position, title })
+}
 
 const handleSubmit = async (e: Event) => {
   e.preventDefault()
-  if (title.value.trim()) {
-    // await listStore.createList({ boardId: props.boardId, title: title.value.trim() })
-    title.value = ''
-    isAdding.value = false
-  }
+  submit()
+  // if (title.value.trim()) {
+  //   // await listStore.createList({ boardId: props.boardId, title: title.value.trim() })
+  //   title.value = ''
+  //   isAdding.value = false
+  // }
 }
 
 const handleCancel = () => {
-  title.value = ''
+  reset()
   isAdding.value = false
 }
 
 const startAdding = async () => {
   isAdding.value = true
-  await nextTick()
-  inputRef.value?.focus()
+  // await nextTick()
+  // inputRef.value?.focus()
 }
 </script>
 
@@ -50,18 +84,27 @@ const startAdding = async () => {
         {{ t('board.addList.title') }}
       </header>
       <a-divider class="add-list-title-divider"></a-divider>
-      <a-input
+      <a-form layout="vertical"><!-- :rules="formInstance.rulesRef" @finish="onFinish" -->
+        <a-form-item name="title" v-bind="antdForm!.validateInfos.title"><!-- :label="t('board.addList.createForm.titleLabel')"  -->
+          <a-input v-model:value="form.title" :placeholder="t('board.addList.placeholder')" />
+        </a-form-item>
+        <!-- <a-form-item>
+          <a-button type="primary" :loading="createColumnState.isPending.value" block @click.prevent="onFinish">
+            {{ t('board.addList.addButton') }}
+          </a-button>
+        </a-form-item> -->
+      </a-form>
+      <!-- <a-input
         ref="inputRef"
         v-model:value="title"
         :placeholder="t('board.addList.placeholder')"
-        @keydown.enter="handleSubmit"
-        @keydown.esc="handleCancel"
-      />
+      /> -->
       
       <div class="form-actions">
         <a-button
           block
           type="primary"
+          :loading="createColumnState.isPending.value"
           @click="handleSubmit"
         >
           {{ t('board.addList.addButton') }}

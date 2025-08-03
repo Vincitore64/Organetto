@@ -11,10 +11,12 @@ import { useI18n } from 'vue-i18n'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
 import { UseVirtualList } from '@vueuse/components'
-import type { CardVm, ColumnVm } from '@/application'
+import { useRemoveColumn, type CardVm, type ColumnVm } from '@/application'
+import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
 
 interface Emits {
   cardClick: [card: CardVm]
+  columnDeleted: [list: ColumnVm]
   columnDragStart: [listId: number]
   columnDragEnd: [listId: number]
   cardDragStart: [cardId: number, listId: number]
@@ -23,9 +25,12 @@ interface Emits {
 
 const props = defineProps<{
   list: ColumnVm
+  boardId: number,
 }>()
 const emit = defineEmits<Emits>()
 const { t } = useI18n()
+
+const removeState = useRemoveColumn()
 
 const columnRef = ref<HTMLElement>()
 const isDragging = ref(false)
@@ -71,8 +76,9 @@ const handleArchive = () => {
   // Handle archive logic
 }
 
-const handleDelete = () => {
-  // Handle delete logic
+const handleDelete = async () => {
+  await removeState.mutateAsync({ boardId: props.boardId, id: props.list.id })
+  emit('columnDeleted', props.list)
 }
 
 const handleAddCard = () => {
@@ -81,68 +87,72 @@ const handleAddCard = () => {
 </script>
 
 <template>
-  <div
-    class="board-column"
-    :data-column-id="list.id"
-    @dragover.prevent
-    @drop="handleDrop"
-  >
-    <div class="column-header">
-      <div class="header-content">
-        <h3 class="column-title">{{ list.title }}</h3>
-        <div class="column-badge">{{ list.cards.length }}</div>
-      </div>
-      <a-dropdown :trigger="['click']" placement="bottomRight">
-        <a-button
-          type="text"
-          size="small"
-          class="menu-button"
-          :aria-label="t('board.column.menu')"
-        >
-          <template #icon>
-            <MoreOutlined />
-          </template>
-        </a-button>
-        <template #overlay>
-          <a-menu class="column-menu">
-            <a-menu-item key="edit" @click="handleEdit">
-              <EditOutlined />
-              {{ t('board.column.edit') }}
-            </a-menu-item>
-            <a-menu-item key="archive" @click="handleArchive">
-              <InboxOutlined />
-              {{ t('board.column.archive') }}
-            </a-menu-item>
-            <a-menu-divider />
-            <a-menu-item key="delete" danger @click="handleDelete">
-              <DeleteOutlined />
-              {{ t('board.column.delete') }}
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
-    </div>
-    
-    <div class="column-content">
-      <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 180 }" height="100%">
-        <template #default="{ data }">
-          <section class="card-item__wrapper">
-            <CardItem
-              :card="data"
-              class="card-item"
-              @click="handleCardClick(data)"
+  <main class="board-column__wrapper">
+    <Spinner :spinning="removeState.isPending.value">
+      <div
+        class="board-column"
+        :data-column-id="list.id"
+        @dragover.prevent
+        @drop="handleDrop"
+      >
+        <div class="column-header">
+          <div class="header-content">
+            <h3 class="column-title">{{ list.title }}</h3>
+            <div class="column-badge">{{ list.cards.length }}</div>
+          </div>
+          <a-dropdown :trigger="['click']" placement="bottomRight">
+            <a-button
+              type="text"
+              size="small"
+              class="menu-button"
+              :aria-label="t('board.column.menu')"
+            >
+              <template #icon>
+                <MoreOutlined />
+              </template>
+            </a-button>
+            <template #overlay>
+              <a-menu class="column-menu">
+                <a-menu-item key="edit" @click="handleEdit">
+                  <EditOutlined />
+                  {{ t('board.column.edit') }}
+                </a-menu-item>
+                <a-menu-item key="archive" @click="handleArchive">
+                  <InboxOutlined />
+                  {{ t('board.column.archive') }}
+                </a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="delete" danger @click="handleDelete">
+                  <DeleteOutlined />
+                  {{ t('board.column.delete') }}
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
+        
+        <div class="column-content">
+          <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 180 }" height="100%">
+            <template #default="{ data }">
+              <section class="card-item__wrapper">
+                <CardItem
+                  :card="data"
+                  class="card-item"
+                  @click="handleCardClick(data)"
+                />
+              </section>
+            </template>
+          </UseVirtualList>
+          <section class="add-card-button__wrapper">
+            <AddCardButton
+              :listId="list.id"
+              @add-card="handleAddCard"
             />
           </section>
-        </template>
-      </UseVirtualList>
-      <section class="add-card-button__wrapper">
-        <AddCardButton
-          :listId="list.id"
-          @add-card="handleAddCard"
-        />
-      </section>
-    </div>
-  </div>
+        </div>
+      </div>
+    </Spinner>
+  </main>
 </template>
 
 <style scoped lang="scss">

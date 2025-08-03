@@ -1,6 +1,6 @@
 import type { ApiException } from '@/dataAccess/shared'
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { ColumnDto, CreateColumnCommand, UpdateColumnCommand } from '../models'
+import type { ColumnDto, CreateColumnCommand, DeleteColumnCommand, UpdateColumnCommand } from '../models'
 
 /**
  * Client for Columns-related endpoints.
@@ -81,9 +81,9 @@ export class ColumnsClient {
    * Deletes the column with the given ID.
    * @param id - Column identifier.
    */
-  public async delete(boardId: number, id: number): Promise<void> {
+  public async delete(payload: DeleteColumnCommand): Promise<void> {
     try {
-      await this.http.delete<void>(`/api/boards/${boardId}/columns/${id}`)
+      await this.http.delete<void>(`/api/boards/${payload.boardId}/columns/${payload.id}`)
     } catch (err) {
       const error = err as AxiosError<ApiException>
       if (error.response?.data) {

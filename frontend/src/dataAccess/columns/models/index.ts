@@ -13,6 +13,11 @@ export interface UpdateColumnCommand {
   position?: number
 }
 
+export interface DeleteColumnCommand {
+  boardId: number
+  id: number
+}
+
 /**
  * Data Transfer Object for a board column.
  */

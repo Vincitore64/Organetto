@@ -2,11 +2,12 @@
 import {
   useQuery,
   useMutation,
-  useQueryClient,
   type UseQueryOptions,
   type UseMutationOptions,
   type QueryKey,
+  QueryClient,
 } from '@tanstack/vue-query'
+import { container } from 'tsyringe'
 
 /**
  * Generic wrapper for GET-style calls with explicit mapping
@@ -24,7 +25,7 @@ export function useApiQuery<TResp, TData = TResp>(
       const resp = await fetcher()
       return mapper ? mapper(resp) : (resp as unknown as TData)
     },
-  })
+  }, container.resolve(QueryClient))
 }
 
 /**
@@ -35,12 +36,13 @@ export function useApiMutation<TResp, TVars = void>(
   invalidateKeys: QueryKey[],
   options?: UseMutationOptions<TResp, unknown, TVars, unknown>
 ) {
+  const qc = container.resolve(QueryClient)
+
   return useMutation<TResp, unknown, TVars>(
     {
       ...options,
       mutationFn,
       async onSuccess(data, vars, ctx) {
-        const qc = useQueryClient()
         for (const key of invalidateKeys) {
           qc.invalidateQueries({
             queryKey: key
@@ -48,6 +50,7 @@ export function useApiMutation<TResp, TVars = void>(
         }
         (options as any)?.onSuccess?.(data, vars, ctx)
       },
-    }
+    },
+    qc
   )
 }

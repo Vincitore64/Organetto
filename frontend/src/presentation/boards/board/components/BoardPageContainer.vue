@@ -11,18 +11,18 @@
       </div>
     </div>
     
-    <BoardPageLayout v-else :board="activeBoard" />
+    <BoardPageLayout v-else v-model:board="activeBoard" />
   </a-layout>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import BoardPageLayout from './BoardPageLayout.vue'
-import { tryInjectServices } from '@/shared'
-import { ApiClient } from '@/dataAccess/services/ApiClient'
 import _ from 'lodash'
 import { useBoardDetail } from '@/application/boards/hooks/useBoardCrud'
 import { Spinner } from '@/presentation/shared'
+import { computed, reactive, ref, watch } from 'vue'
+import type { BoardVm } from '@/application'
 // import { useBoardStore } from '../../stores/boardStore'
 // import { useListStore } from '../../stores/listStore'
 // import { useBoardHub } from '../../hooks/useBoardHub'
@@ -32,11 +32,21 @@ const props = defineProps<{
   boardId: string
 }>()
 
-const client = tryInjectServices().resolve(ApiClient)
-
 const { t } = useI18n()
 
-const { isLoading, data: activeBoard } = useBoardDetail(props.boardId)
+const { isLoading, data: board, } = useBoardDetail(props.boardId)
+
+const activeBoard = ref<BoardVm | null>(null)
+
+watch(
+  board,
+  (newBoard) => {
+    if (newBoard) {
+      activeBoard.value = newBoard
+    }
+  },
+  { immediate: true }
+)
 
 // const { state: activeBoard, isLoading, execute } = useApiState<ApiClient, BoardDetailedDto, [number]>(client)
 //   (client => client.boards.getById.bind(client.boards))

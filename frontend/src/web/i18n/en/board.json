@@ -27,7 +27,10 @@
     "addButton": "Create",
     "addAnother": "Add another list",
     "title": "Create a new list",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "createForm": {
+      "titleRequired": "List title is required"
+    }
   },
   "item": {
     "addButton": "Create",

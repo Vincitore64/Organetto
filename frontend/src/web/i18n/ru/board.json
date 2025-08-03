@@ -27,7 +27,10 @@
     "addButton": "Добавить список",
     "addAnother": "Добавить ещё список",
     "title": "Создать новый список",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "createForm": {
+      "titleRequired": "Название списка обязательно"
+    }
   },
   "item": {
     "addButton": "Добавить",

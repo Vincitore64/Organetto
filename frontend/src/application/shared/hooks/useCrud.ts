@@ -10,7 +10,9 @@ interface CrudOptions<Client,
   TDetailResp,
   TDetailData,
   TCreateVars,
-  TUpdateVars> {
+  TUpdateVars,
+  TCreateResp,
+  TCreateData> {
   resourceKey: string
   client: Client | (() => Client),
   methods: {
@@ -20,7 +22,7 @@ interface CrudOptions<Client,
     update: keyof Client
     remove: keyof Client
   }
-  mappers?: TwoWayMappers<TListResp, TListData, TDetailResp, TDetailData, TCreateVars, TUpdateVars>
+  mappers?: TwoWayMappers<TListResp, TListData, TDetailResp, TDetailData, TCreateVars, TUpdateVars, TCreateResp, TCreateData>
   /** default options for list query */
   listOptions?: UseQueryOptions<any, unknown, any, QueryKey>
   /** default options for detail query */
@@ -38,7 +40,9 @@ export function createCrudHooks<
   CreateVars = any,
   UpdateVars = any,
   DeleteVars = any,
->(opts: CrudOptions<Client, ListArgs, DetailArg, TResp, TData, TDetailResp, TDetailData, CreateVars, UpdateVars>) {
+  TCreateResp = any,
+  TCreateData = any,
+>(opts: CrudOptions<Client, ListArgs, DetailArg, TResp, TData, TDetailResp, TDetailData, CreateVars, UpdateVars, TCreateResp, TCreateData>) {
   const { resourceKey, client: clientFn, methods, mappers, listOptions, detailOptions } = opts
 
   // Stable key generators
@@ -68,9 +72,9 @@ export function createCrudHooks<
 
   function useCreate() {
     return useApiMutation(
-      (vars: CreateVars) => (client()[methods.create] as (v: CreateVars) => Promise<any>)(
+      (vars: CreateVars) => (client()[methods.create] as (v: CreateVars) => Promise<TCreateResp>)(
         mappers?.create ? mappers.create(vars) : vars
-      ),
+      ).then(r => mappers?.created ? mappers.created(r) : r),
       [defaultListKey]
     )
   }

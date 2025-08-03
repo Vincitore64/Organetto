@@ -9,7 +9,7 @@ import { ApiClient } from '@/dataAccess/services/ApiClient'
 import { useAuthStore } from '@/application/authentication/stores/authStore'
 import { useUsersStore } from '@/application/users/stores/usersStore'
 import { useDayJs } from './useDayJs'
-import { VueQueryPlugin } from '@tanstack/vue-query'
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 
 /**
  * Initializes app with pinia and router
@@ -33,6 +33,7 @@ export function useServices(app: App) {
   container.registerInstance(ProvidedService.AxiosInstance, axiosInstance)
 
   container.registerSingleton(ApiClient)
+  container.registerInstance(QueryClient, new QueryClient())
 
   container.register(ProvidedService.UsersStore, {
     useFactory: () => useUsersStore(),

@@ -44,8 +44,8 @@ export interface UseFormReturn<TParams extends object, TReturn> {
   rules?: Ref<Record<keyof TParams, FormRule[]>>
 }
 
-export function useForm<TParams extends object, TReturn = unknown>(
-  options: UseFormOptions<TParams, TReturn>,
+export function useForm<TParams extends object, TActionParams extends object = TParams, TReturn = unknown>(
+  options: UseFormOptions<TParams, TReturn, TActionParams>,
 ): UseFormReturn<TParams, TReturn> {
   const {
     initialValues,

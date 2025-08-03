@@ -8,13 +8,20 @@ import CardModal from './CardModal.vue'
 import FilterPanel from './FilterPanel.vue'
 import DragGhost from './DragGhost.vue'
 import type { BoardVm, CardVm, ColumnVm } from '@/application'
+import _ from 'lodash'
+import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
 
 interface Props {
   board: BoardVm
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits<{
+  (e: 'update:board', v: BoardVm): void
+}>()
 
+// const board = useVModel(props, 'board')
+const boardFields = useVModelFields<BoardVm, keyof BoardVm, 'update:board', Props>(props, 'board', emit)
 const { x: mouseX, y: mouseY } = useMouse()
 const listsContainerRef = ref<HTMLElement>()
 
@@ -23,6 +30,20 @@ const activeList = ref<ColumnVm | null>(null)
 const selectedCard = ref<CardVm | null>(null)
 const listOfSelectedCard = ref<ColumnVm | null>(null)
 const showFilters = ref(false)
+
+const boardColumns = computed({
+  get() {
+    return _(boardFields.columns.value).sortBy(c => c.position).value()
+  },
+  set(v) {
+    boardFields.columns.value = v
+  }
+})
+
+const newBoardColumnPosition = computed(() => {
+  const last = _(boardColumns.value).last()
+  return last?.position ? last.position + 1 : boardColumns.value.length
+})
 
 // const { handleDragStart: handleListDragStart, handleDragEnd: handleListDragEnd } = useBoardDrag()
 // const { handleCardDragStart, handleCardDragEnd } = useCardDrag()
@@ -35,6 +56,19 @@ const dragOverlayStyle = computed<Record<string, any>>(() => ({
   zIndex: 1000,
   transform: 'translate(-50%, -50%)'
 }))
+
+function onCreated(c: ColumnVm) {
+  debugger
+  const updatedColumns = [...boardColumns.value, c]
+  boardColumns.value = updatedColumns
+}
+
+function onDelete(c: ColumnVm) {
+  debugger
+  const updatedColumns = boardColumns.value.filter(col => col.id !== c.id)
+  const isEqual = updatedColumns === boardColumns.value
+  boardColumns.value = updatedColumns
+}
 
 const toggleFilters = () => {
   showFilters.value = !showFilters.value
@@ -121,13 +155,15 @@ const handleFilterChange = (filters: any) => {
           class="lists-container"
         >
           <BoardColumn
-            v-for="list in board.columns"
+            v-for="list in boardColumns"
             :key="list.id"
             :list="list"
+            :board-id="board.id"
             :draggable="true"
             @card-click="(card) => handleCardClick(card, list)"
+            @column-deleted="onDelete"
           />
-          <AddListCard :board-id="board.id" />
+          <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/>
         </div>
       </div>
     </a-layout-content>
