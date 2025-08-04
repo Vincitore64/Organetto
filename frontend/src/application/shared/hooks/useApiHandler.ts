@@ -117,7 +117,7 @@ export function useApiState<TClient, Response, Params extends any[] = any[]>(cli
             if (!next) return r as Result
             return await next(r)
           } catch (ex) {
-            debugger
+            // debugger
             throw ex
           }
         }, null, { onError: fallback, immediate: false })

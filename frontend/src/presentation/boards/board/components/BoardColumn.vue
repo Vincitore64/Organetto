@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useDraggable } from '@vueuse/core'
 import {
   MoreOutlined,
@@ -13,9 +13,12 @@ import AddCardButton from './AddCardButton.vue'
 import { UseVirtualList } from '@vueuse/components'
 import { useRemoveColumn, type CardVm, type ColumnVm } from '@/application'
 import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
+import _ from 'lodash'
 
 interface Emits {
   cardClick: [card: CardVm]
+  cardCreated: [card: CardVm, list: ColumnVm]
+  cardDeleted: [card: CardVm, list: ColumnVm]
   columnDeleted: [list: ColumnVm]
   columnDragStart: [listId: number]
   columnDragEnd: [listId: number]
@@ -25,7 +28,7 @@ interface Emits {
 
 const props = defineProps<{
   list: ColumnVm
-  boardId: number,
+  boardId: number
 }>()
 const emit = defineEmits<Emits>()
 const { t } = useI18n()
@@ -46,6 +49,13 @@ const { style: dragStyle } = useDraggable(columnRef, {
     isDragging.value = false
     emit('columnDragEnd', props.list.id)
   }
+})
+
+const cards = computed(() => _(props.list.cards).sortBy(c => c.position).value())
+
+const newCardPosition = computed(() => {
+  const last = _(cards.value).last()
+  return last?.position ? last.position + 1 : cards.value.length
 })
 
 const startColumnDrag = () => {
@@ -81,8 +91,8 @@ const handleDelete = async () => {
   emit('columnDeleted', props.list)
 }
 
-const handleAddCard = () => {
-  // Handle add card logic
+const handleAddCard = (c: CardVm) => {
+  emit('cardCreated', c, props.list)
 }
 </script>
 
@@ -137,8 +147,10 @@ const handleAddCard = () => {
               <section class="card-item__wrapper">
                 <CardItem
                   :card="data"
+                  :column-id="list.id"
                   class="card-item"
                   @click="handleCardClick(data)"
+                  @card-deleted="emit('cardDeleted', data, list)"
                 />
               </section>
             </template>
@@ -146,7 +158,8 @@ const handleAddCard = () => {
           <section class="add-card-button__wrapper">
             <AddCardButton
               :listId="list.id"
-              @add-card="handleAddCard"
+              :position="newCardPosition"
+              @created="handleAddCard"
             />
           </section>
         </div>

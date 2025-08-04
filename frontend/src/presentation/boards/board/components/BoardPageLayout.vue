@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import { useMouse } from '@vueuse/core'
 import BoardHeader from './BoardHeader.vue'
 import BoardColumn from './BoardColumn.vue'
@@ -10,6 +10,7 @@ import DragGhost from './DragGhost.vue'
 import type { BoardVm, CardVm, ColumnVm } from '@/application'
 import _ from 'lodash'
 import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
+import { updateCollectionItem } from '@/shared'
 
 interface Props {
   board: BoardVm
@@ -66,9 +67,65 @@ function onCreated(c: ColumnVm) {
 function onDelete(c: ColumnVm) {
   debugger
   const updatedColumns = boardColumns.value.filter(col => col.id !== c.id)
-  const isEqual = updatedColumns === boardColumns.value
   boardColumns.value = updatedColumns
 }
+
+function onCardCreated(c: CardVm, list: ColumnVm) {
+  updateCollectionItem(boardColumns,
+    col => col.id === list.id,
+    colClone => colClone.cards.push(c))
+}
+
+function onCardDeleted(c: CardVm, list: ColumnVm) {
+  debugger
+  updateCollectionItem(boardColumns,
+    col => col.id === list.id,
+    colClone => {
+      const idx = colClone.cards.findIndex(x => x.id === c.id)
+      if (idx >= 0) colClone.cards.splice(idx, 1)
+    })
+}
+
+function onCardUpdated(c: CardVm, list: ColumnVm) {
+  debugger
+  updateCollectionItem(boardColumns,
+    col => col.id === list.id,
+    colClone => {
+      const idx = colClone.cards.findIndex(x => x.id === c.id)
+      if (idx >= 0) colClone.cards[idx] = c
+    })
+}
+
+// function onCardCreated(c: CardVm, list: ColumnVm) {
+//   debugger
+//   const columnClone = _.cloneDeep(list)
+//   columnClone.cards.push(c)
+//   const columnIndex = _(boardColumns.value).findIndex(col => col.id === list.id)
+//   const updatedColumns = [...boardColumns.value]
+//   updatedColumns[columnIndex] = columnClone
+//   boardColumns.value = updatedColumns
+// }
+
+// function onCardDeleted(c: CardVm, list: ColumnVm) {
+//   debugger
+//   const columnClone = _.cloneDeep(list)
+//   columnClone.cards = columnClone.cards.filter(card => card.id !== c.id)
+//   const columnIndex = _(boardColumns.value).findIndex(col => col.id === list.id)
+//   const updatedColumns = [...boardColumns.value]
+//   updatedColumns[columnIndex] = columnClone
+//   boardColumns.value = updatedColumns
+// }
+
+// function onCardUpdated(c: CardVm, list: ColumnVm) {
+//   debugger
+//   const columnClone = _.cloneDeep(list)
+//   const cardIndex = columnClone.cards.findIndex(card => card.id === c.id)
+//   columnClone.cards[cardIndex] = c
+//   const columnIndex = _(boardColumns.value).findIndex(col => col.id === list.id)
+//   const updatedColumns = [...boardColumns.value]
+//   updatedColumns[columnIndex] = columnClone
+//   boardColumns.value = updatedColumns
+// }
 
 const toggleFilters = () => {
   showFilters.value = !showFilters.value
@@ -162,6 +219,8 @@ const handleFilterChange = (filters: any) => {
             :draggable="true"
             @card-click="(card) => handleCardClick(card, list)"
             @column-deleted="onDelete"
+            @card-created="onCardCreated"
+            @card-deleted="onCardDeleted"
           />
           <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/>
         </div>
@@ -188,9 +247,11 @@ const handleFilterChange = (filters: any) => {
 
     <CardModal
       v-if="selectedCard && listOfSelectedCard"
-      :card="selectedCard"
+      v-model:card="selectedCard"
+      :column-id="listOfSelectedCard.id"
       :list-name="listOfSelectedCard.title"
       :visible="selectedCard != null"
+      @card-updated="(c) => onCardUpdated(c, listOfSelectedCard!)"
       @close="handleCardModalClose"
     />
     

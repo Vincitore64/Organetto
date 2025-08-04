@@ -12,16 +12,18 @@ import {
 } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
 // import AvatarGroup from './AvatarGroup.vue'
-import type { CardVm } from '@/application'
+import { useRemoveCard, type CardVm } from '@/application'
 import { useI18n } from 'vue-i18n'
 
 
 interface Props {
-  card: CardVm
+  card: CardVm,
+  columnId: number
 }
 
 interface Emits {
   click: [card: CardVm]
+  cardDeleted: [card: CardVm]
   dragStart: [cardId: number]
   dragEnd: [cardId: number]
 }
@@ -30,6 +32,8 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
+
+const removeState = useRemoveCard()
 
 const cardRef = ref<HTMLElement>()
 const isDragging = ref(false)
@@ -93,8 +97,9 @@ function handleDragEnd() {
 
 }
 
-const handleDelete = () => {
-  // Handle delete logic
+const handleDelete = async () => {
+  await removeState.mutateAsync({ columnId: props.columnId, id: props.card.id })
+  emit('cardDeleted', props.card)
 }
 
 const handleEdit = () => {
@@ -132,7 +137,7 @@ const handleArchive = () => {
     <template #actions>
       <setting-outlined key="setting" />
       <edit-outlined key="edit" @click="handleClick()"/>
-      <a-dropdown :trigger="['click']" placement="bottom">
+      <a-dropdown :trigger="['click']" placement="bottom"><!-- Select to an another component -->
         <a-button
           type="text"
           size="small"

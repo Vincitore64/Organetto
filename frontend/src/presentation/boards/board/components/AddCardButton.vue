@@ -3,43 +3,79 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AddItemCard from '../shared/components/AddItemCard.vue'
 import { useAsyncState } from '@vueuse/core'
+import { useCreateCard, type CardVm } from '@/application'
+import type { CreateCardPayload } from '@/dataAccess/cards/models'
+import { useForm } from '@/presentation/shared'
 
 const props = defineProps<{
-  listId: number
+  listId: number,
+  position: number,
 }>()
+
+const emit = defineEmits<{
+  (e: 'created', v: CardVm): void,
+}>()
+
 const { t } = useI18n()
 
-const title = ref('')
-const textareaRef = ref<HTMLTextAreaElement>()
+const createCardState = useCreateCard()
 
-const asyncState = useAsyncState(handleSubmit, null, { immediate: false })
-
-async function handleSubmit() {
-  if (title.value.trim()) {
-    // await listStore.createCard({ 
-    //   listId: props.listId, 
-    //   title: title.value.trim() 
-    // })
-    title.value = ''
+const { form, antdForm, reset, submit } = useForm({
+  initialValues: { title: '' },
+  transform: (p) => ({
+    columnId: props.listId,
+    position: props.position,
+    title: p.title,
+  }),
+  action: createCardAction,
+  rules: {
+    title: [{ required: true, message: t('board.addCard.createForm.titleRequired') }],
+  },
+  useAntd: true,
+  onSuccess(response) {
+    debugger
+    reset()
+    emit('created', response as CardVm)
   }
+})
+
+async function createCardAction({ columnId, position, title }: CreateCardPayload) {
+  return await createCardState.mutateAsync({ columnId, position, title })
+}
+
+const handleSubmit = async () => {
+  submit()
 }
 
 const handleCancel = () => {
-  title.value = ''
+  reset()
 }
 </script>
 <template>
-  <AddItemCard class="add-card-btn" :async-state="asyncState">
+  <AddItemCard class="add-card-btn" :loading="createCardState.isPending.value" @submit="handleSubmit" @cancel="handleCancel">
     <template :props="{ isAdding }" #default>
-      <a-textarea
+      <a-form layout="vertical"><!-- :rules="formInstance.rulesRef" @finish="onFinish" -->
+        <a-form-item name="title" v-bind="antdForm!.validateInfos.title"><!-- :label="t('board.addList.createForm.titleLabel')"  -->
+          <a-textarea
+            v-model:value="form.title"
+            :placeholder="t('board.addCard.placeholder')"
+            :auto-size="{ minRows: 2, maxRows: 4 }"
+            class="card-textarea"
+            @keydown.enter.prevent="handleSubmit"
+            @keydown.esc="handleCancel"
+          />
+          <!-- <a-input v-model:value="form.title" :placeholder="t('board.addCard.placeholder')" /> -->
+        </a-form-item>
+      </a-form>
+      <!-- <a-textarea
         ref="textareaRef"
-        v-model:value="title"
+        v-model:value="form.title"
         :placeholder="t('board.addCard.placeholder')"
         :auto-size="{ minRows: 2, maxRows: 4 }"
         class="card-textarea"
         @keydown.enter.prevent="handleSubmit"
         @keydown.esc="handleCancel"
-      />
+      /> -->
     </template>
   </AddItemCard>
 </template>

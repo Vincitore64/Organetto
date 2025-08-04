@@ -88,17 +88,7 @@ const startAdding = async () => {
         <a-form-item name="title" v-bind="antdForm!.validateInfos.title"><!-- :label="t('board.addList.createForm.titleLabel')"  -->
           <a-input v-model:value="form.title" :placeholder="t('board.addList.placeholder')" />
         </a-form-item>
-        <!-- <a-form-item>
-          <a-button type="primary" :loading="createColumnState.isPending.value" block @click.prevent="onFinish">
-            {{ t('board.addList.addButton') }}
-          </a-button>
-        </a-form-item> -->
       </a-form>
-      <!-- <a-input
-        ref="inputRef"
-        v-model:value="title"
-        :placeholder="t('board.addList.placeholder')"
-      /> -->
       
       <div class="form-actions">
         <a-button

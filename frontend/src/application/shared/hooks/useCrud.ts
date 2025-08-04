@@ -61,7 +61,7 @@ export function createCrudHooks<
   }
 
   function useDetail(id: DetailArg) {
-    debugger
+    // debugger
     return useApiQuery(
       detailKey(id),
       () => (client()[methods.detail] as (id: DetailArg) => Promise<any>)(id),

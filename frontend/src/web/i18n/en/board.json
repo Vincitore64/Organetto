@@ -20,7 +20,10 @@
   "addCard": {
     "placeholder": "Enter a title for this card...",
     "add": "Add card",
-    "addCard": "Add a card"
+    "addCard": "Add a card",
+    "createForm": {
+      "titleRequired": "Card title is required"
+    }
   },
   "addList": {
     "placeholder": "Enter list title...",

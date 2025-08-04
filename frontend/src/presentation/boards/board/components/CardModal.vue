@@ -15,12 +15,15 @@ import {
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
 import AvatarGroup from './AvatarGroup.vue'
-import type { CardVm } from '@/application'
+import { useUpdateCard, type CardVm } from '@/application'
 import ModalContainer from '@/presentation/shared/components/ModalContainer.vue'
+import { useVModel } from '@vueuse/core'
+import _ from 'lodash'
 
 
 interface Props {
   card: CardVm
+  columnId: number
   listName: string,
   visible: boolean
 }
@@ -28,11 +31,17 @@ interface Props {
 interface Emits {
   close: []
   update: [card: Partial<CardVm>]
+  cardUpdated: [card: CardVm]
+  'update:card': [card: CardVm]
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 const { t } = useI18n()
+
+const updateState = useUpdateCard()
+
+const card = useVModel(props, 'card', emit)
 
 const isVisible = computed({
   get: () => props.visible,
@@ -72,15 +81,27 @@ const handleClose = () => {
   emit('close')
 }
 
-const updateTitle = () => {
+const updateCard = async (updatingCard: CardVm, updater: (c: CardVm) => CardVm) => {
+  debugger
+  const updatedCard = updater(updatingCard)
+  await updateState.mutateAsync({ ...updatedCard, columnId: props.columnId, dueDate: updatedCard.dueDate?.toISOString() })
+  card.value = updatedCard
+  // emit('update', updatedCard)
+  emit('cardUpdated', updatedCard)
+}
+
+const debouncedUpdateCard = _.debounce(updateCard, 500)
+
+const updateTitle = async () => {
   if (title.value !== props.card.title) {
-    emit('update', { title: title.value })
+    await debouncedUpdateCard(card.value, c => ({ ...c, title: title.value }))
   }
 }
 
-const updateDescription = () => {
+const updateDescription = async () => {
+  debugger
   if (description.value !== props.card.description) {
-    emit('update', { description: description.value })
+    await debouncedUpdateCard(card.value, c => ({ ...c, description: description.value }))
   }
 }
 

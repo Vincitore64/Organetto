@@ -18,6 +18,7 @@ const isAdding = ref(false)
 const loading = computed(() => !!props.asyncState ? props.asyncState.isLoading.value : props.loading ?? false)
 
 const handleSubmit = async (e: Event) => {
+  e.preventDefault()
   if (props.asyncState) {
     await props.asyncState.execute()
     isAdding.value = false
@@ -117,7 +118,7 @@ const startAdding = async () => {
 .add-item-form {
   width: 100%;
   min-width: 0px;
-  max-width: 300px;
+  // max-width: 300px;
   // background: rgba(255, 255, 255, 0.98);
   background: linear-gradient(135deg, #ffffff, #fff7eb);
   backdrop-filter: blur(20px);
