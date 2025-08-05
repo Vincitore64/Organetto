@@ -11,7 +11,7 @@ import { container } from 'tsyringe'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
 import { mapColumn, mapColumns } from '../mappers'
 
-const { useCreate: useCreateColumn, useRemove: useRemoveColumn } = createCrudHooks<
+const { useCreate: useCreateColumn, useUpdate: useUpdateColumn, useRemove: useRemoveColumn } = createCrudHooks<
   ColumnsClient,
   [number],
   ColumnDto,
@@ -41,4 +41,4 @@ const { useCreate: useCreateColumn, useRemove: useRemoveColumn } = createCrudHoo
   },
 })
 
-export { useCreateColumn, useRemoveColumn }
+export { useCreateColumn, useUpdateColumn, useRemoveColumn }

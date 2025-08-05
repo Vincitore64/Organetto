@@ -64,6 +64,13 @@ function onCreated(c: ColumnVm) {
   boardColumns.value = updatedColumns
 }
 
+function onUpdated(c: ColumnVm) {
+  debugger
+  updateCollectionItem(boardColumns,
+    col => col.id === c.id,
+    colClone => c)
+}
+
 function onDelete(c: ColumnVm) {
   debugger
   const updatedColumns = boardColumns.value.filter(col => col.id !== c.id)
@@ -73,7 +80,9 @@ function onDelete(c: ColumnVm) {
 function onCardCreated(c: CardVm, list: ColumnVm) {
   updateCollectionItem(boardColumns,
     col => col.id === list.id,
-    colClone => colClone.cards.push(c))
+    colClone => {
+      colClone.cards.push(c)
+    })
 }
 
 function onCardDeleted(c: CardVm, list: ColumnVm) {
@@ -218,6 +227,7 @@ const handleFilterChange = (filters: any) => {
             :board-id="board.id"
             :draggable="true"
             @card-click="(card) => handleCardClick(card, list)"
+            @column-updated="onUpdated"
             @column-deleted="onDelete"
             @card-created="onCardCreated"
             @card-deleted="onCardDeleted"

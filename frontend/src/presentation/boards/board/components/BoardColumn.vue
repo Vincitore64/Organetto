@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useDraggable } from '@vueuse/core'
 import {
   MoreOutlined,
@@ -11,7 +11,7 @@ import { useI18n } from 'vue-i18n'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
 import { UseVirtualList } from '@vueuse/components'
-import { useRemoveColumn, type CardVm, type ColumnVm } from '@/application'
+import { useRemoveColumn, useUpdateColumn, type CardVm, type ColumnVm } from '@/application'
 import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
 import _ from 'lodash'
 
@@ -19,6 +19,7 @@ interface Emits {
   cardClick: [card: CardVm]
   cardCreated: [card: CardVm, list: ColumnVm]
   cardDeleted: [card: CardVm, list: ColumnVm]
+  columnUpdated: [list: ColumnVm]
   columnDeleted: [list: ColumnVm]
   columnDragStart: [listId: number]
   columnDragEnd: [listId: number]
@@ -33,10 +34,14 @@ const props = defineProps<{
 const emit = defineEmits<Emits>()
 const { t } = useI18n()
 
+const updateState = useUpdateColumn()
 const removeState = useRemoveColumn()
 
 const columnRef = ref<HTMLElement>()
 const isDragging = ref(false)
+const isTitleEditing = ref(false)
+
+const titleForEditing = ref(props.list.title)
 
 // Column drag functionality
 const { style: dragStyle } = useDraggable(columnRef, {
@@ -49,6 +54,10 @@ const { style: dragStyle } = useDraggable(columnRef, {
     isDragging.value = false
     emit('columnDragEnd', props.list.id)
   }
+})
+
+watch(() => props.list.id, () => {
+  titleForEditing.value = props.list.title
 })
 
 const cards = computed(() => _(props.list.cards).sortBy(c => c.position).value())
@@ -80,6 +89,7 @@ const handleDrop = () => {
 
 const handleEdit = () => {
   // Handle edit logic
+  isTitleEditing.value = true
 }
 
 const handleArchive = () => {
@@ -94,6 +104,16 @@ const handleDelete = async () => {
 const handleAddCard = (c: CardVm) => {
   emit('cardCreated', c, props.list)
 }
+
+const onTitleBlur = async () => {
+  debugger
+  if (props.list.title === titleForEditing.value) return
+
+  const updatedList = { ...props.list, title: titleForEditing.value }
+  await updateState.mutateAsync({ ...updatedList, boardId: props.boardId })
+  emit('columnUpdated', updatedList)
+  isTitleEditing.value = false
+}
 </script>
 
 <template>
@@ -107,7 +127,17 @@ const handleAddCard = (c: CardVm) => {
       >
         <div class="column-header">
           <div class="header-content">
-            <h3 class="column-title">{{ list.title }}</h3>
+            <h3 class="column-title" v-if="!isTitleEditing">{{ list.title }}</h3>
+            <a-input
+              class="column-title"
+              :bordered="false"
+              v-model:value="titleForEditing"
+              @blur="onTitleBlur()"
+              @drop.prevent=""
+              @drag.prevent=""
+              style="width: min-content;"
+              v-else
+            ></a-input>
             <div class="column-badge">{{ list.cards.length }}</div>
           </div>
           <a-dropdown :trigger="['click']" placement="bottomRight">

@@ -14,12 +14,13 @@ import _ from 'lodash'
 function updateCollectionItem<T>(
   collectionRef: Ref<T[]>,
   predicate: (item: T) => boolean,
-  updater: (clone: T) => void
+  updater: (clone: T) => void | T
 ): void {
   collectionRef.value = collectionRef.value.map(item => {
     if (!predicate(item)) return item
     const clone = _.cloneDeep(item)
-    updater(clone)
+    const updated = updater(clone)
+    if (!!updated) return updated
     return clone
   })
 }
