@@ -13,7 +13,7 @@ import {
   CloseOutlined
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import AvatarGroup from './AvatarGroup.vue'
 import { useUpdateCard, type CardVm } from '@/application'
 import ModalContainer from '@/presentation/shared/components/ModalContainer.vue'
@@ -43,15 +43,6 @@ const updateState = useUpdateCard()
 
 const card = useVModel(props, 'card', emit)
 
-const isVisible = computed({
-  get: () => props.visible,
-  set: (value) => {
-    if (!value) {
-      emit('close')
-    }
-  }
-})
-
 const title = ref(props.card.title)
 const description = ref(props.card.description || '')
 const newComment = ref('')
@@ -63,6 +54,17 @@ const currentUser = ref({
 })
 
 const cardLabels = ref<string[]>(['critical'])
+
+const isVisible = computed({
+  get: () => props.visible,
+  set: (value) => {
+    if (!value) {
+      emit('close')
+    }
+  }
+})
+
+const dueDate = computed(() => props.card.dueDate ? dayjs(props.card.dueDate) : null)
 
 const cardUsers = computed(() => 
   // props.card.assignees.map(id => ({
@@ -77,12 +79,16 @@ const formatDate = (date: Date) => {
   return dayjs(date).format('MMM DD, YYYY')
 }
 
+const formatDueDate = (date?: Date | null) => {
+  return date ? `${t('board.cardModal.dueDate')}: ${dayjs(date).format('MMM DD, YYYY')}` : 'Due date'
+}
+
 const handleClose = () => {
   emit('close')
 }
 
 const updateCard = async (updatingCard: CardVm, updater: (c: CardVm) => CardVm) => {
-  debugger
+  // debugger
   const updatedCard = updater(updatingCard)
   await updateState.mutateAsync({ ...updatedCard, columnId: props.columnId, dueDate: updatedCard.dueDate?.toISOString() })
   card.value = updatedCard
@@ -99,9 +105,16 @@ const updateTitle = async () => {
 }
 
 const updateDescription = async () => {
-  debugger
+  // debugger
   if (description.value !== props.card.description) {
     await debouncedUpdateCard(card.value, c => ({ ...c, description: description.value }))
+  }
+}
+
+const updateDueDate = async (date: Dayjs) => {
+  console.log('updateDueDate', date)
+  if (date.toDate() !== props.card.dueDate) {
+    await debouncedUpdateCard(card.value, c => ({ ...c, dueDate: date.toDate() }))
   }
 }
 
@@ -281,16 +294,6 @@ const archiveCard = () => {
               <a-button
                 class="action-button"
                 block
-                @click="openDatePicker"
-              >
-                <template #icon>
-                  <CalendarOutlined />
-                </template>
-                {{ t('board.cardModal.dueDate') }}
-              </a-button>
-              <a-button
-                class="action-button"
-                block
                 @click="openAttachmentModal"
               >
                 <template #icon>
@@ -298,6 +301,13 @@ const archiveCard = () => {
                 </template>
                 {{ t('board.cardModal.attachment') }}
               </a-button>
+              <a-date-picker
+                class="action-button due-date-picker"
+                :value="dueDate"
+                :format="formatDueDate"
+                @change="updateDueDate"
+                allowClear
+              />
             </div>
           </section>
 
@@ -354,7 +364,7 @@ const archiveCard = () => {
           </section>
 
           <!-- Due Date -->
-          <section v-if="card.dueDate" class="modal-section">
+          <!-- <section v-if="card.dueDate" class="modal-section">
             <h3 class="section-title">
               {{ t('board.cardModal.dueDate') }}
             </h3>
@@ -371,7 +381,7 @@ const archiveCard = () => {
                 </template>
               </a-button>
             </div>
-          </section>
+          </section> -->
         </aside>
       </main>
     </div>
@@ -585,6 +595,26 @@ const archiveCard = () => {
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+    &.due-date-picker {
+      :deep(>.ant-picker-input) {
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-columns: 18px auto;
+        gap: 8px;
+        margin: 0 auto;
+        padding-left: 16px;
+        min-width: 0;
+        width: fit-content;
+        .ant-picker-suffix {
+          grid-column: 1;
+          color: inherit;
+        }
+        input {
+          grid-column: 2;
+          width: min-content;
+        }
+      }
+    }
     
     // &.danger {
     //   color: var(--color-red-600);
@@ -599,10 +629,12 @@ const archiveCard = () => {
 }
 
 .due-date {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 18px 80px 56px;
+  justify-content: end;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 4px 16px;
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 8px;
@@ -611,6 +643,9 @@ const archiveCard = () => {
     flex: 1;
     font-weight: 500;
     color: var(--color-text);
+  }
+  :deep(>.ant-btn) {
+    justify-self: end;
   }
 }
 

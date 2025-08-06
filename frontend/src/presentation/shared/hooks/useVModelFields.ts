@@ -10,14 +10,14 @@ export function useVModelFields<TModel extends Record<string, any>, K extends ke
   keys?: K[],
 ): { [P in K]: WritableComputedRef<TModel[P]> } {
   const model = useVModel(props, key, emit)
-  debugger
+  // debugger
   const fields = {} as { [P in K]: WritableComputedRef<TModel[P]> }
   ;(keys ?? (_.keys(props[key]) as K[])).forEach((key) => {
     fields[key] = computed<TModel[typeof key]>({
       get: () => (model.value as TModel)[key],
       set: (val) => {
-        debugger
-        console.log(key, val)
+        // debugger
+        // console.log(key, val)
         const updatedModel = { ...model.value, [key]: val }
         // _.set(updatedModel, key, val)
         model.value = updatedModel

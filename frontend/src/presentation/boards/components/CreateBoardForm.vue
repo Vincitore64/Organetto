@@ -34,7 +34,7 @@ const { t } = useI18n()
 const { name, description } = useVModelFields<CreateBoardState, keyof CreateBoardState, 'update:modelValue', Props>(props, 'modelValue', emit)
 
 const onFinish = (values: unknown) => {
-  debugger
+  // debugger
   emit('submit', values as CreateBoardState)
 }
 </script>

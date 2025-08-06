@@ -1,6 +1,9 @@
+import type { AxiosError } from 'axios'
 import type { TwoWayMappers } from '../models'
 import { useApiQuery, useApiMutation } from './useApi'
 import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
+import type { ApiException } from '@/dataAccess/shared'
+import { notification } from 'ant-design-vue'
 
 interface CrudOptions<Client,
   ListArgs extends any[],
@@ -81,9 +84,22 @@ export function createCrudHooks<
 
   function useUpdate() {
     return useApiMutation(
-      (vars: UpdateVars & { id: DetailArg }) => (client()[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(
-        mappers?.update ? mappers.update(vars) : vars
-      ),
+      async (vars: UpdateVars & { id: DetailArg }) => {
+        try {
+          return await (client()[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(
+            mappers?.update ? mappers.update(vars) : vars
+          )
+        } catch (ex) { // TODO: Rework to notification provider
+          const error = ex as AxiosError<ApiException>
+          if (error.response?.data) {
+            notification.error({
+              message: error.response.data.title ?? 'Unknown error',
+              description: error.response.data.detail,
+            })
+          }
+          throw ex
+        }
+      },
       [defaultListKey, detailKey(({} as any as UpdateVars & { id: DetailArg }).id)]
     )
   }

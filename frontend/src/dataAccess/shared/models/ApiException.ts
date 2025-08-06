@@ -7,6 +7,7 @@ export interface ApiException {
   instance?: string
   errors?: Record<string, string[]>
   message?: string
+  detail?: string
   data?: Record<string, unknown>
   helpLink?: string
   source?: string

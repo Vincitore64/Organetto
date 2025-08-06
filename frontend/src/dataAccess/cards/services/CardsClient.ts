@@ -68,10 +68,10 @@ export class CardsClient {
       )
       return response.data
     } catch (err) {
-      const error = err as AxiosError<ApiException>
-      if (error.response?.data) {
-        throw new Error(error.response.data.message || `API Error: ${error.response.status}`)
-      }
+      // const error = err as AxiosError<ApiException>
+      // if (error.response?.data) {
+      //   throw new Error(error.response.data.message || `API Error: ${error.response.status}`)
+      // }
       throw err
     }
   }

@@ -31,7 +31,8 @@ namespace Organetto.Infrastructure.Data.Boards.Services
                 .Include(b => b.Members)
                     .ThenInclude(m => m.User)
                 .Include(b => b.Lists)
-                .ThenInclude(l => l.Cards)
+                    .ThenInclude(l => l.Cards)
+                        .ThenInclude(l => l.DueDates)
                 .FirstOrDefaultAsync(b => b.Id == boardId, cancellationToken) ?? throw new EntityNotFoundException(400, nameof(Board));
         }
 
