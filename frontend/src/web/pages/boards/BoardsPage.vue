@@ -205,7 +205,7 @@
     <ModalContainer :open="isCreateBoardModalVisible" :title="t('boards.createModal.title')"
       :description="t('boards.createModal.description')" iconUrl="https://trello.com/assets/14cda5dc635d1f13bc48.svg"
       width="450px" @close="isCreateBoardModalVisible = false">
-      <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="submit"
+      <CreateBoardForm v-if="antdForm" v-model:modelValue="form" :form-instance="antdForm" @submit="submit()"
         :loading="isCreatingBoard" />
     </ModalContainer>
   </a-layout>

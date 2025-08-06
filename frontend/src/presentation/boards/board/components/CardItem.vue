@@ -256,6 +256,14 @@ const handleArchive = () => {
   // }
 }
 
+.board-card__meta {
+  :deep(.ant-card-meta-description) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 .card-labels {
   display: flex;
   flex-wrap: wrap;
