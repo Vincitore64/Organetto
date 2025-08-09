@@ -52,14 +52,14 @@ namespace Organetto.Web.Controllers
         /// Rename or reorder an existing column.
         /// </summary>
         [HttpPut("move")]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(BoardListDto[]), 200)]
         public async Task<IActionResult> MoveColumn(
             [FromRoute] long boardId,
             [FromBody] MoveColumnCommand command,
             CancellationToken cancellationToken)
         {
-            await _mediator.Send(command, cancellationToken);
-            return NoContent();
+            var result = await _mediator.Send(command, cancellationToken);
+            return Ok(result);
         }
 
         /// <summary>

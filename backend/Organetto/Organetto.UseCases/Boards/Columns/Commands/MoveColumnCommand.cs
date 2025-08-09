@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Shared.Databases;
+using Organetto.UseCases.Boards.Columns.Data;
 
 namespace Organetto.UseCases.Boards.Columns.Commands
 {
@@ -9,22 +12,24 @@ namespace Organetto.UseCases.Boards.Columns.Commands
         long TargetBoardId,
         long? LeftSiblingId,
         long? RightSiblingId
-    ) : IRequest<Unit>;
+    ) : IRequest<BoardListDto[]>;
 
-    public sealed class MoveColumnCommandHandler : IRequestHandler<MoveColumnCommand, Unit>
+    public sealed class MoveColumnCommandHandler : IRequestHandler<MoveColumnCommand, BoardListDto[]>
     {
         private readonly IColumnRepository _columns;
         private readonly IBoardRepository _boardRepository;
         private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-        public MoveColumnCommandHandler(IColumnRepository columns, IBoardRepository boardRepository, IUnitOfWork uow)
+        public MoveColumnCommandHandler(IColumnRepository columns, IBoardRepository boardRepository, IUnitOfWork uow, IMapper mapper)
         {
             _columns = columns;
             this._boardRepository = boardRepository;
             _uow = uow;
+            this._mapper = mapper;
         }
 
-        public async Task<Unit> Handle(MoveColumnCommand cmd, CancellationToken ct)
+        public async Task<BoardListDto[]> Handle(MoveColumnCommand cmd, CancellationToken ct)
         {
             var list = await _columns.GetByIdAsync(cmd.ListId, ct)
                            ?? throw new InvalidOperationException("List not found.");
@@ -48,7 +53,9 @@ namespace Organetto.UseCases.Boards.Columns.Commands
 
             await _uow.SaveChangesAsync(ct);
 
-            return Unit.Value;
+            var result = _mapper.Map<BoardListDto[]>(targetBoard.Lists);
+
+            return result;
 
             //var dbTransaction = await _uow.BeginTransactionAsync(ct);
             //try
