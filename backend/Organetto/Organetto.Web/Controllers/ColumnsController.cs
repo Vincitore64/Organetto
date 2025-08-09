@@ -51,6 +51,20 @@ namespace Organetto.Web.Controllers
         /// <summary>
         /// Rename or reorder an existing column.
         /// </summary>
+        [HttpPut("move")]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> MoveColumn(
+            [FromRoute] long boardId,
+            [FromBody] MoveColumnCommand command,
+            CancellationToken cancellationToken)
+        {
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Rename or reorder an existing column.
+        /// </summary>
         [HttpPatch]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

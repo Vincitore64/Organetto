@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
+using Organetto.Core.Boards.Shared.Models;
 using Organetto.Core.Shared.Databases;
 using Organetto.UseCases.Boards.Columns.Data;
 using Organetto.UseCases.Boards.Columns.IntergationEvents;
@@ -53,7 +54,7 @@ namespace Organetto.UseCases.Boards.Columns.Commands
             {
                 BoardId = request.BoardId,
                 Title = request.Title,
-                Position = request.Position
+                Position = Position.From(request.Position)
             };
 
             // Persist via repository

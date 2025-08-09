@@ -1,4 +1,5 @@
 ﻿using Organetto.Core.Boards.Cards.Data;
+using Organetto.Core.Boards.Shared.Models;
 using Organetto.Core.Shared.Models;
 
 namespace Organetto.Core.Boards.Data
@@ -16,7 +17,7 @@ namespace Organetto.Core.Boards.Data
 
         public long BoardId { get; set; }                               // FK to Board (внешний ключ к Board)
         public string Title { get; set; }                               // List title (название списка)
-        public int Position { get; set; }                                // Order index (позиция)
+        public Position Position { get; set; }                                // Order index (позиция)
 
         // Navigation properties
         public Board? Board { get; set; }                                 // Board navigation (связь с доской)

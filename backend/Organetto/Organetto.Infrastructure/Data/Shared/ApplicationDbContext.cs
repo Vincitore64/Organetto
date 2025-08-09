@@ -4,6 +4,7 @@ using Organetto.Core.Boards.Data;
 using Organetto.Core.Shared.Databases;
 using Organetto.Core.Shared.Databases.Transactions;
 using Organetto.Core.Users.Data;
+using Organetto.Infrastructure.Data.Boards.Shared.Services;
 using Organetto.Infrastructure.Data.Shared.Transactions;
 using Organetto.UseCases.Shared.Outbox.Models;
 
@@ -123,7 +124,10 @@ namespace Organetto.Infrastructure.Data.Shared
                       .IsRequired()
                       .HasMaxLength(256);
                 entity.Property(l => l.Position)
-                      .IsRequired();
+                    .HasConversion(BoardValueConverters.PositionConverter)
+                    .IsRequired()
+                    .HasColumnType("bigint")
+                    .Metadata.SetValueComparer(BoardValueConverters.PositionComparer);
 
                 entity.Ignore(l => l.Events);
 

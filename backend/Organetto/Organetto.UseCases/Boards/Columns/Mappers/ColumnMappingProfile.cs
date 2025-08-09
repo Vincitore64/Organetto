@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Events;
-using Organetto.UseCases.Boards.Columns.Cards.IntegrationEvents;
+using Organetto.Core.Boards.Shared.Models;
 using Organetto.UseCases.Boards.Columns.Commands;
 using Organetto.UseCases.Boards.Columns.IntergationEvents;
 
@@ -17,7 +17,7 @@ namespace Organetto.UseCases.Boards.Columns.Mappers
             // Map only Title and Position from UpdateColumnMetadataCommand to BoardList
             CreateMap<UpdateColumnMetadataCommand, BoardList>()
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position))
+                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => Position.From(src.Position)))
                 // Ignore all other properties to prevent accidental overwrites
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.BoardId, opt => opt.Ignore())
@@ -30,6 +30,10 @@ namespace Organetto.UseCases.Boards.Columns.Mappers
 
             CreateMap<BoardListDeletedDomainEvent, BoardListDeletedIntegrationEvent>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<Position, long>().ConvertUsing(src => src.Value);
+
+            CreateMap<long, Position>().ConstructUsing(src => Position.From(src));
 
             // Optionally, if you have a CreateColumnCommand, map its properties as well:
             // CreateMap<CreateColumnCommand, BoardList>()
