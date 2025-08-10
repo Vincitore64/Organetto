@@ -42,13 +42,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Card, List } from '../../types/board'
 import CardItem from './CardItem.vue'
-import type { CardDto } from '@/dataAccess/boards/models'
+import type { CardVm, ColumnVm } from '@/application'
 
 interface Props {
   type: 'card' | 'list'
-  item: Card | List
+  item: CardVm | ColumnVm
 }
 
 const props = defineProps<Props>()
@@ -56,7 +55,7 @@ const { t } = useI18n()
 
 const previewCards = computed(() => {
   if (props.type === 'list') {
-    const list = props.item as List
+    const list = props.item as ColumnVm
     return list.cards.slice(0, 3)
   }
   return []
@@ -64,7 +63,7 @@ const previewCards = computed(() => {
 
 const remainingCardsCount = computed(() => {
   if (props.type === 'list') {
-    const list = props.item as List
+    const list = props.item as ColumnVm
     return Math.max(0, list.cards.length - 3)
   }
   return 0

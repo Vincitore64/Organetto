@@ -14,6 +14,7 @@ import { UseVirtualList } from '@vueuse/components'
 import { useRemoveColumn, useUpdateColumn, type CardVm, type ColumnVm } from '@/application'
 import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
 import _ from 'lodash'
+import type { UseDndReturn } from '@/application/shared/dnd/hooks/useDnd'
 
 interface Emits {
   cardClick: [card: CardVm]
@@ -29,6 +30,7 @@ interface Emits {
 
 const props = defineProps<{
   list: ColumnVm
+  dnd: UseDndReturn
   boardId: number
 }>()
 const emit = defineEmits<Emits>()
@@ -171,16 +173,23 @@ const onTitleBlur = async () => {
           </a-dropdown>
         </div>
         
-        <div class="column-content">
+        <div class="column-content" :data-col-id="list.id">
           <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 180 }" height="100%">
-            <template #default="{ data }">
-              <section class="card-item__wrapper">
+            <template #default="{ data, index }">
+              <section class="card-item__wrapper" >
                 <CardItem
                   :card="data"
                   :column-id="list.id"
+                  :ref="(el) => {
+                    // collect refs per column for hit-testing
+                    const arr = Array.from((($refs['cards-'+list.id] as any) ?? [])) as (HTMLElement | null)[];
+                    dnd.registerCardEls(list.id, arr);
+                  }"
+                  :ref-key="'cards-'+list.id"
                   class="card-item"
                   @click="handleCardClick(data)"
                   @card-deleted="emit('cardDeleted', data, list)"
+                  @pointerdown.stop="(e: any) => dnd.onPointerDown(e as PointerEvent, 'card', { columnId: list.id, cardIndex: index }, e.currentTarget as HTMLElement)"
                 />
               </section>
             </template>

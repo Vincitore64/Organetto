@@ -49,14 +49,15 @@ namespace Organetto.Web.Controllers
         }
 
         /// <summary>
-        /// Rename or reorder an existing column.
+        /// Reorder an existing column.
         /// </summary>
         [HttpPut("move")]
         [ProducesResponseType(typeof(BoardListDto[]), 200)]
         public async Task<IActionResult> MoveColumn(
             [FromRoute] long boardId,
             [FromBody] MoveColumnCommand command,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken
+        )
         {
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(result);

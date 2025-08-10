@@ -41,3 +41,25 @@ export interface ColumnDto {
    */
   cards: CardDto[]
 }
+
+/**
+ * Command for moving a column to a new position.
+ */
+export interface MoveColumnCommand {
+  /**
+   * Column identifier.
+   */
+  listId: number
+  /**
+   * Target board identifier.
+   */
+  targetBoardId: number
+  /**
+   * Left sibling identifier.
+   */
+  leftSiblingId: number
+  /**
+   * Right sibling identifier.
+   */
+  rightSiblingId: number
+}

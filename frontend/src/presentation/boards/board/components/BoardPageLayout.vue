@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef } from 'vue'
+import { ref, computed, shallowRef, nextTick } from 'vue'
 import { useMouse } from '@vueuse/core'
 import BoardHeader from './BoardHeader.vue'
 import BoardColumn from './BoardColumn.vue'
@@ -11,6 +11,7 @@ import type { BoardVm, CardVm, ColumnVm } from '@/application'
 import _ from 'lodash'
 import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
 import { updateCollectionItem } from '@/shared'
+import { useDnd } from '@/application/shared/dnd/hooks/useDnd'
 
 interface Props {
   board: BoardVm
@@ -40,6 +41,17 @@ const boardColumns = computed({
     boardFields.columns.value = v
   }
 })
+
+const dnd = useDnd(boardColumns, () => props.board.id);
+const {
+  registerContainer,
+  registerColumnEl,
+  registerCardEls,
+  onPointerDown,
+  state,
+  ghostStyle,
+} = dnd;
+
 
 const newBoardColumnPosition = computed(() => {
   const last = _(boardColumns.value).last()
@@ -202,6 +214,10 @@ const handleFilterChange = (filters: any) => {
 //   activeCard.value = null
 //   handleCardDragEnd(event)
 // }
+async function afterRender() {
+  await nextTick();
+  // no-op; placeholder if you need to re-calc anything post DOM update
+}
 </script>
 
 <template>
@@ -215,23 +231,30 @@ const handleFilterChange = (filters: any) => {
     <FilterPanel v-if="showFilters" @filter-change="handleFilterChange" />
     
     <a-layout-content class="board-main">
-      <div class="board-content">
+      <div class="board-content" ref="registerContainer">
         <div 
           ref="listsContainerRef"
           class="lists-container"
+          @vue:updated="afterRender"
         >
-          <BoardColumn
-            v-for="list in boardColumns"
+          <section
+            v-for="(list, i) in boardColumns"
             :key="list.id"
-            :list="list"
-            :board-id="board.id"
-            :draggable="true"
-            @card-click="(card) => handleCardClick(card, list)"
-            @column-updated="onUpdated"
-            @column-deleted="onDelete"
-            @card-created="onCardCreated"
-            @card-deleted="onCardDeleted"
-          />
+            :ref="(el) => registerColumnEl(i, el as HTMLElement)"
+            @pointerdown="(e: any) => onPointerDown(e as PointerEvent, 'column', { columnId: list.id, columnIndex: i }, e.currentTarget as HTMLElement)"
+          >
+            <BoardColumn
+              :list="list"
+              :board-id="board.id"
+              :draggable="true"
+              :dnd="dnd"
+              @card-click="(card) => handleCardClick(card, list)"
+              @column-updated="onUpdated"
+              @column-deleted="onDelete"
+              @card-created="onCardCreated"
+              @card-deleted="onCardDeleted"
+            />
+          </section>
           <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/>
         </div>
       </div>

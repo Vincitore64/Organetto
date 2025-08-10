@@ -1,6 +1,6 @@
 import type { ApiException } from '@/dataAccess/shared'
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { ColumnDto, CreateColumnCommand, DeleteColumnCommand, UpdateColumnCommand } from '../models'
+import type { ColumnDto, CreateColumnCommand, DeleteColumnCommand, MoveColumnCommand, UpdateColumnCommand } from '../models'
 
 /**
  * Client for Columns-related endpoints.
@@ -66,6 +66,24 @@ export class ColumnsClient {
         `/api/boards/${column.boardId}/columns`,
         column,
       )
+      return response.data
+    } catch (err) {
+      const error = err as AxiosError<ApiException>
+      if (error.response?.data) {
+        throw new Error(error.response.data.message || `API Error: ${error.response.status}`)
+      }
+      throw err
+    }
+  }
+
+  /**
+   * PUT /api/boards/${targetBoardId}/columns/move
+   * Moves a column to a new position.
+   * @param payload - Payload with listId, targetBoardId, leftSiblingId, rightSiblingId.
+   */
+  public async move(payload: MoveColumnCommand): Promise<ColumnDto[]> {
+    try {
+      const response = await this.http.put<ColumnDto[]>(`/api/boards/${payload.targetBoardId}/columns/move`, payload)
       return response.data
     } catch (err) {
       const error = err as AxiosError<ApiException>

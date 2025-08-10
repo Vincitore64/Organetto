@@ -90,7 +90,7 @@
         </member>
         <member name="M:Organetto.Web.Controllers.ColumnsController.MoveColumn(System.Int64,Organetto.UseCases.Boards.Columns.Commands.MoveColumnCommand,System.Threading.CancellationToken)">
             <summary>
-            Rename or reorder an existing column.
+            Reorder an existing column.
             </summary>
         </member>
         <member name="M:Organetto.Web.Controllers.ColumnsController.UpdateColumn(System.Int64,Organetto.UseCases.Boards.Columns.Commands.UpdateColumnMetadataCommand,System.Threading.CancellationToken)">
