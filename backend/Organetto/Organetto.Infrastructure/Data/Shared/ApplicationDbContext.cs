@@ -152,8 +152,11 @@ namespace Organetto.Infrastructure.Data.Shared
                       .HasMaxLength(256);
                 entity.Property(c => c.Description)
                       .HasColumnType("text");
-                entity.Property(c => c.Position)
-                      .IsRequired();
+                entity.Property(l => l.Position)
+                    .HasConversion(BoardValueConverters.PositionConverter)
+                    .IsRequired()
+                    .HasColumnType("bigint")
+                    .Metadata.SetValueComparer(BoardValueConverters.PositionComparer);
                 entity.Property(c => c.CreatedAt)
                       .IsRequired()
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");

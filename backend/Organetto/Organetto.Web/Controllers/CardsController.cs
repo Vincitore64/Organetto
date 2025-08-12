@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Organetto.UseCases.Boards.Columns.Cards.Commands;
 using Organetto.UseCases.Boards.Columns.Cards.Queries;
 using Organetto.UseCases.Boards.Data;
+using System.Reflection.Metadata;
 
 namespace Organetto.Web.Controllers
 {
@@ -63,6 +64,13 @@ namespace Organetto.Web.Controllers
                 return BadRequest("Route parameters and command payload must match.");
 
             var updated = await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPut("move")]
+        public async Task<IActionResult> Move([FromBody] MoveCardCommand req, CancellationToken ct)
+        {
+            await _mediator.Send(req, ct);
             return Ok();
         }
 

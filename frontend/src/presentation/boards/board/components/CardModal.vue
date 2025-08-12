@@ -174,7 +174,7 @@ const archiveCard = () => {
     width="900px"
     class="card-modal"
     wrap-class-name="card-modal"
-    @cancel="handleClose"
+    @close="handleClose"
   >
     <div class="modal-content">
       <!-- <header class="modal-header">
@@ -249,8 +249,7 @@ const archiveCard = () => {
                 class="comment-input"
                 :rows="2"
                 :auto-size="{ minRows: 2, maxRows: 4 }"
-                @keydown.ctrl.enter="addComment"
-              />
+              /><!-- @keydown.ctrl.enter="addComment" -->
               <a-button
                 v-if="newComment.trim()"
                 type="primary"

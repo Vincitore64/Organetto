@@ -61,8 +61,6 @@ const handleCancel = () => {
             :placeholder="t('board.addCard.placeholder')"
             :auto-size="{ minRows: 2, maxRows: 4 }"
             class="card-textarea"
-            @keydown.enter.prevent="handleSubmit"
-            @keydown.esc="handleCancel"
           />
           <!-- <a-input v-model:value="form.title" :placeholder="t('board.addCard.placeholder')" /> -->
         </a-form-item>
