@@ -12,7 +12,16 @@ type Rect = DOMRect
 export function useDnd(columnsRef: { value: ColumnVm[] }, boardIdFn: () => number) {
   const containerRef = ref<HTMLElement | null>(null) // horizontal scroll area for columns
   const columnEls = ref<HTMLElement[]>([])
-  const cardElsMap = ref<Map<Id, HTMLElement[]>>(new Map())
+  const cardElsMap = ref<Map<Id, Record<number, HTMLElement>>>(new Map())
+  const cardElsArrMap = computed(() => {
+    const r: Map<Id, HTMLElement[]> = new Map()
+    cardElsMap.value.forEach((v, k) => {
+      r.set(k, _.map(v, el => el))
+    })
+    return r
+  })
+
+
   const moveState = useMoveColumn()
 
   const state = reactive({
@@ -42,12 +51,21 @@ export function useDnd(columnsRef: { value: ColumnVm[] }, boardIdFn: () => numbe
     cardElsMap.value.set(columnId, arr)
   }
 
+  function registerCardEl(columnId: Id, i: number, el: HTMLElement | null) {
+    // debugger
+    if (!el) return
+    const arr = cardElsMap.value.get(columnId) ?? {}
+    arr[i] = el
+    cardElsMap.value.set(columnId, arr)
+  }
+
   function getColumnRects(): Rect[] {
     return _(columnEls.value).map((el) => el?.getBoundingClientRect?.()).compact().value()
   }
   function getCardRects(columnId: Id): Rect[] {
-    const arr = cardElsMap.value.get(columnId) ?? []
-    return _(arr).map((el) => el?.getBoundingClientRect?.()).compact().value()
+    const arr = cardElsArrMap.value.get(columnId) ?? []
+    const r = _(arr).map((el) => el?.getBoundingClientRect?.()).compact().value()
+    return r
   }
 
   function findColumnIndexByX(x: number): number {
@@ -114,9 +132,10 @@ export function useDnd(columnsRef: { value: ColumnVm[] }, boardIdFn: () => numbe
         }
       }
     } else if (state.kind === 'card') {
+      // debugger
+      // console.log(state)
       const toColumnIdx = findColumnIndexByX(state.pointerX)
       state.overColumnIndex = toColumnIdx
-
       if (toColumnIdx !== -1) {
         const toColumnId = columnsRef.value[toColumnIdx].id
         const insertAt = findCardInsertIndex(toColumnId, state.pointerY)
@@ -153,7 +172,8 @@ export function useDnd(columnsRef: { value: ColumnVm[] }, boardIdFn: () => numbe
   ) {
     // debugger
     // Allow text selection with long press on mobile? For simplicity we start immediately.
-    e.preventDefault();
+    // e.preventDefault();
+    // e.stopPropagation();
     (e.target as HTMLElement).setPointerCapture?.(e.pointerId)
 
     state.dragging = true
@@ -202,6 +222,8 @@ export function useDnd(columnsRef: { value: ColumnVm[] }, boardIdFn: () => numbe
     registerContainer: containerRef,
     registerColumnEl,
     registerCardEls,
+    registerCardEl,
+
     // actions
     onPointerDown,
     // state

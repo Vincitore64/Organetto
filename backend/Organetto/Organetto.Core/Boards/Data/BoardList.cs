@@ -37,6 +37,7 @@ namespace Organetto.Core.Boards.Data
             {
                 card.BoardListId = Id;
                 card.Position = between.Value;
+                return;
                 //return MoveOutcome.Single(card);
             }
 

@@ -266,11 +266,11 @@ async function afterRender() {
       class="drag-overlay"
       :style="dragOverlayStyle"
     >
-      <DragGhost
+      <!-- <DragGhost
         v-if="activeCard"
         type="card"
         :item="activeCard"
-      />
+      /> -->
       <DragGhost
         v-if="activeList"
         type="list"

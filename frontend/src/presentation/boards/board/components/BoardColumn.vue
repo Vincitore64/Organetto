@@ -127,7 +127,7 @@ const onTitleBlur = async () => {
         @dragover.prevent
         @drop="handleDrop"
       >
-        <div class="column-header">
+        <div class="column-header" @pointerdown.prevent="">
           <div class="header-content">
             <h3 class="column-title" v-if="!isTitleEditing">{{ list.title }}</h3>
             <a-input
@@ -174,23 +174,29 @@ const onTitleBlur = async () => {
         </div>
         
         <div class="column-content" :data-col-id="list.id">
-          <UseVirtualList class="virtual-card-list" :list="list.cards" :options="{ itemHeight: 180 }" height="100%">
+          <UseVirtualList class="virtual-card-list" :list="cards" :options="{ itemHeight: 180 }" height="100%">
             <template #default="{ data, index }">
-              <section class="card-item__wrapper" >
-                <CardItem
-                  :card="data"
-                  :column-id="list.id"
-                  :ref="(el) => {
-                    // collect refs per column for hit-testing
-                    const arr = Array.from((($refs['cards-'+list.id] as any) ?? [])) as (HTMLElement | null)[];
-                    dnd.registerCardEls(list.id, arr);
-                  }"
+              <section class="card-item__wrapper">
+                <section
+                  class="card-item__dnd-wrapper"
                   :ref-key="'cards-'+list.id"
-                  class="card-item"
-                  @click="handleCardClick(data)"
-                  @card-deleted="emit('cardDeleted', data, list)"
+                  :ref="(el) => {
+                    // debugger
+                    // collect refs per column for hit-testing
+                    // const arr = Array.from((($refs['cards-'+list.id] as any) ?? [])) as (HTMLElement | null)[];
+                    // dnd.registerCardEls(list.id, arr);
+                    dnd.registerCardEl(list.id, index, el as (HTMLElement | null))
+                  }"
                   @pointerdown.stop="(e: any) => dnd.onPointerDown(e as PointerEvent, 'card', { columnId: list.id, cardIndex: index }, e.currentTarget as HTMLElement)"
-                />
+                >                  
+                  <CardItem
+                    :card="data"
+                    :column-id="list.id"
+                    class="card-item"
+                    @click="handleCardClick(data)"
+                    @card-deleted="emit('cardDeleted', data, list)"
+                  />
+                </section>
               </section>
             </template>
           </UseVirtualList>
