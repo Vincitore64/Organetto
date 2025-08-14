@@ -109,7 +109,7 @@ const handleAddCard = (c: CardVm) => {
 }
 
 const onTitleBlur = async () => {
-  debugger
+  // debugger
   if (props.list.title === titleForEditing.value) return
 
   const updatedList = { ...props.list, title: titleForEditing.value }

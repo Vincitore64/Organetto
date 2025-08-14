@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef, nextTick } from 'vue'
-import { useMouse } from '@vueuse/core'
+import { ref, computed } from 'vue'
 import BoardHeader from './BoardHeader.vue'
 import BoardColumn from './BoardColumn.vue'
 import AddListCard from './AddListCard.vue'
 import CardModal from './CardModal.vue'
 import FilterPanel from './FilterPanel.vue'
-import DragGhost from './DragGhost.vue'
 import type { BoardVm, CardVm, ColumnVm } from '@/application'
 import _ from 'lodash'
 import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
 import { updateCollectionItem } from '@/shared'
-import { useDnd } from '@/application/shared/dnd/hooks/useDnd'
 import draggable from 'vuedraggable'
-import { useKanbanDnd } from '@/application/shared/dnd/hooks/useKanbanDnd'
+import { useKanbanDnd, useMoveCard, useMoveColumn } from '@/application'
 
 interface Props {
   board: BoardVm
@@ -24,13 +21,15 @@ const emit = defineEmits<{
   (e: 'update:board', v: BoardVm): void
 }>()
 
-// const board = useVModel(props, 'board')
-const boardFields = useVModelFields<BoardVm, keyof BoardVm, 'update:board', Props>(props, 'board', emit)
-const { x: mouseX, y: mouseY } = useMouse()
-const listsContainerRef = ref<HTMLElement>()
+const moveColumnState = useMoveColumn()
+const moveCardState = useMoveCard()
 
-const activeCard = ref<CardVm | null>(null)
-const activeList = ref<ColumnVm | null>(null)
+const boardFields = useVModelFields<BoardVm, keyof BoardVm, 'update:board', Props>(props, 'board', emit)
+// const { x: mouseX, y: mouseY } = useMouse()
+// const listsContainerRef = ref<HTMLElement>()
+
+// const activeCard = ref<CardVm | null>(null)
+// const activeList = ref<ColumnVm | null>(null)
 const selectedCard = ref<CardVm | null>(null)
 const listOfSelectedCard = ref<ColumnVm | null>(null)
 const showFilters = ref(false)
@@ -42,29 +41,28 @@ const boardColumns = computed({
   },
   set(v) {
     // debugger
-    console.log('boardColumns set', v)
-    console.trace('boardColumns set caller')
     boardFields.columns.value = v
   }
 })
 
-// const dnd = useDnd(boardColumns, () => props.board.id);
-const dnd = useKanbanDnd(boardColumns, { // { value: boardColumns.value }
+const boardId = computed(() => props.board.id)
+
+const dnd = useKanbanDnd(boardColumns, boardId, {
   debounceMs: 400,
+  onPersistColumns: async (payload) => {
+    // debugger
+    console.log('onPersistColumns', payload)
+    await moveColumnState.mutateAsync(payload)
+  },
+  onPersistCardMove: async (payload) => {
+    // debugger
+    console.log('onPersistCardMove', payload)
+    await moveCardState.mutateAsync(payload)
+  },
 })
 const {
   columnDraggableBind,
-  cardDraggableBind,
-  cardListAttrs
 } = dnd
-// const {
-//   registerContainer,
-//   registerColumnEl,
-//   registerCardEls,
-//   onPointerDown,
-//   state,
-//   ghostStyle,
-// } = dnd;
 
 
 const newBoardColumnPosition = computed(() => {
@@ -75,14 +73,14 @@ const newBoardColumnPosition = computed(() => {
 // const { handleDragStart: handleListDragStart, handleDragEnd: handleListDragEnd } = useBoardDrag()
 // const { handleCardDragStart, handleCardDragEnd } = useCardDrag()
 
-const dragOverlayStyle = computed<Record<string, any>>(() => ({
-  position: 'fixed',
-  left: `${mouseX.value}px`,
-  top: `${mouseY.value}px`,
-  pointerEvents: 'none',
-  zIndex: 1000,
-  transform: 'translate(-50%, -50%)'
-}))
+// const dragOverlayStyle = computed<Record<string, any>>(() => ({
+//   position: 'fixed',
+//   left: `${mouseX.value}px`,
+//   top: `${mouseY.value}px`,
+//   pointerEvents: 'none',
+//   zIndex: 1000,
+//   transform: 'translate(-50%, -50%)'
+// }))
 
 function onCreated(c: ColumnVm) {
   debugger
@@ -227,36 +225,9 @@ const handleFilterChange = (filters: any) => {
                 @card-created="onCardCreated"
                 @card-deleted="onCardDeleted"
               />
-              
             </template>
           </draggable>
-          <!-- <section>
-                <BoardColumn
-                  :list="list"
-                  :board-id="board.id"
-                  :draggable="true"
-                  @card-click="(card) => handleCardClick(card, list)"
-                  @column-updated="onUpdated"
-                  @column-deleted="onDelete"
-                  @card-created="onCardCreated"
-                  @card-deleted="onCardDeleted"
-                />
-              </section> -->
-          <!-- <section
-            v-for="(list, i) in boardColumns"
-            :key="list.id"
-          >
-            <BoardColumn
-              :list="list"
-              :board-id="board.id"
-              @card-click="(card) => handleCardClick(card, list)"
-              @column-updated="onUpdated"
-              @column-deleted="onDelete"
-              @card-created="onCardCreated"
-              @card-deleted="onCardDeleted"
-            />
-          </section> -->
-          <!-- <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/> -->
+          <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/>
         </div>
       </div>
     </a-layout-content>

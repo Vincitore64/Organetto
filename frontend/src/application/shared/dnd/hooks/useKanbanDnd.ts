@@ -1,24 +1,48 @@
 import { computed, onBeforeUnmount, reactive, type Ref, ref, watch } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { CardVm, ColumnVm } from '@/application/boards'
-// import { addCard, moveCard, moveColumn, removeCard } from '../utils'
 import _ from 'lodash'
-import { updateCollectionItem } from '@/shared'
 
 // REMEMBER: FOR DRAGABLE ALWAYS NEED A LOCAL STATE!!!!!!!!!
 
-export type Id = number
+type Id = number
 
-export interface UseKanbanDndOptions {
+interface MoveColumnPayload {
+  /**
+   * Column identifier.
+   */
+  listId: number
+  /**
+   * Target board identifier.
+   */
+  targetBoardId: number
+  /**
+   * Left sibling identifier.
+   */
+  leftSiblingId: number
+  /**
+   * Right sibling identifier.
+   */
+  rightSiblingId: number
+}
+
+interface MoveCardPayload {
+  cardId: number
+  targetColumnId: number
+  leftSiblingId: number
+  rightSiblingId: number
+}
+
+interface UseKanbanDndOptions {
   debounceMs?: number
   columnHandle?: string
   cardHandle?: string
-  onPersistColumns?: (cols: ColumnVm[]) => Promise<unknown> | void
-  onPersistCardMove?: (p: { cardId: Id; fromColumnId: Id; toColumnId: Id; toIndex: number; columns: ColumnVm[] }) => Promise<unknown> | void
+  onPersistColumns?: (payload: MoveColumnPayload) => Promise<unknown> | void
+  onPersistCardMove?: (payload: MoveCardPayload) => Promise<unknown> | void
   onErrorRollback?: (prev: ColumnVm[]) => void
 }
 
-export interface UseKanbanDndReturn {
+interface UseKanbanDndReturn {
   // Bindings for <draggable> at columns level:
   columnDraggableBind: Ref<Record<string, unknown>>;
   // Bindings for each column's card list:
@@ -29,12 +53,11 @@ export interface UseKanbanDndReturn {
   flushPending(): void;  // flush debounced saves
 }
 
-export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanDndOptions = {}) : UseKanbanDndReturn {
+function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, boardId: Ref<number>, opts: UseKanbanDndOptions) : UseKanbanDndReturn {
   // local state
   const columns = ref(originColumnsRef.value)
 
   watch(originColumnsRef, (v) => {
-    debugger
     columns.value = v
   })
 
@@ -66,11 +89,17 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
   }
 
   // --- debounced persistence ---
-  const persistColumns = useDebounceFn(async () => {
+  const persistColumns = useDebounceFn(async (columnIndex: number) => {
     // normalizeColumns(columns.value)
-    console.log(_.cloneDeep(columns.value))
+    const column = columns.value[columnIndex]
+    const payload: MoveColumnPayload = {
+      listId: column.id,
+      targetBoardId: boardId.value,
+      leftSiblingId: columns.value[columnIndex - 1]?.id ?? null,
+      rightSiblingId: columns.value[columnIndex + 1]?.id ?? null,
+    }
     try {
-      await opts.onPersistColumns?.(columns.value)
+      await opts.onPersistColumns?.(payload)
     } catch {
       // rollback
       if (opts.onErrorRollback) opts.onErrorRollback(state.snapshot)
@@ -78,11 +107,21 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
     }
   }, conf.debounceMs)
 
-  const persistCardMove = useDebounceFn(async (payload: { cardId: Id; fromColumnId: Id; toColumnId: Id; toIndex: number }) => {
+  const persistCardMove = useDebounceFn(async (p: { toColumnId: Id; toIndex: number }) => { // cardId: Id; fromColumnId: Id; 
     try {
-      await opts.onPersistCardMove?.({ ...payload, columns: columns.value })
+      // debugger
+      const column = _(columns.value).find(c => c.id === p.toColumnId)
+      if (!column) return
+      const payload: MoveCardPayload = {
+        cardId: column.cards[p.toIndex].id,
+        targetColumnId: p.toColumnId,
+        leftSiblingId: column.cards[p.toIndex - 1]?.id ?? null,
+        rightSiblingId: column.cards[p.toIndex + 1]?.id ?? null,
+      }
+
+      await opts.onPersistCardMove?.(payload)
     } catch {
-      debugger
+      // debugger
       if (opts.onErrorRollback) opts.onErrorRollback(state.snapshot)
       else columns.value = cloneBoard(state.snapshot)
     }
@@ -106,7 +145,7 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
     onStart: () => takeSnapshot(),
     onEnd: (e: CustomEvent & { oldIndex: number, newIndex: number }) => {
       console.log('onEnd', e)
-      persistColumns()
+      persistColumns(e.newIndex)
       originColumnsRef.value = columns.value
     }, // ensure final call
     onMove(...params: unknown[]) {
@@ -114,7 +153,7 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
     },
     // tip: @change for columns exists but @end is sufficient to persist new order
     tag: 'ul', // keep list semantics
-    class: 'columns-grid lists-container', // lists-container
+    class: 'kanban-columns-grid', // lists-container
   }))
 
   function cardListAttrs(col: ColumnVm) {
@@ -133,18 +172,6 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
       get modelValue() { return columnState.cards },
       'onUpdate:modelValue': (v: CardVm[]) => {
         columnState.cards = v
-        // columnState.cards = v
-        // columns.value = columns.value.map(c =>
-        //   c.id === col.id ? { ...c, cards: v.slice() } : c
-        // )
-        // updateCollectionItem(columns,
-        //   column => column.id === col.id,
-        //   colClone => {
-        //     colClone.cards = v
-        //   })
-        // columns.value = _.cloneDeep(columns.value)
-
-
       },
       itemKey: 'id',
       group: 'cards',
@@ -161,22 +188,22 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
       onChange: (e: any) => {
         // Normalize only changed lists for perf
         if (e?.moved) {
-          normalizeCards(columnState)
-          persistColumns() // positions changed within same column (optional)
-          // const moved = moveCard(columns.value, col.id, e.moved.oldIndex, col.id, e.moved.newIndex)
-          // columns.value = moved
+          // normalizeCards(columnState)
+          const toIndex: number = e.moved.newIndex
+          const toColumnId: Id = columnState.id
+          persistCardMove({ toColumnId, toIndex })
         }
         if (e?.added) {
-          const card: CardVm = e.added.element
+          // const card: CardVm = e.added.element
           const toIndex: number = e.added.newIndex
           const toColumnId: Id = columnState.id
           // find fromColumnId using DOM containers (reliable with Sortable)
-          const fromColumn = state.snapshot.find(c => c.cards.some(k => k.id === card.id))
-          if (!fromColumn) throw new Error()
-          const fromColumnId = fromColumn?.id
-          const fromIndex = fromColumn?.cards.findIndex(k => k.id === card.id)
+          // const fromColumn = state.snapshot.find(c => c.cards.some(k => k.id === card.id))
+          // if (!fromColumn) throw new Error()
+          // const fromColumnId = fromColumn?.id
+          // const fromIndex = fromColumn?.cards.findIndex(k => k.id === card.id)
           // normalizeCards(col)
-          persistCardMove({ cardId: card.id, fromColumnId: Number(fromColumnId ?? ''), toColumnId, toIndex })
+          persistCardMove({ toColumnId, toIndex })
           // const added = addCard(columns.value, card, toColumnId, toIndex)
           // columns.value = moveCard(columns.value, fromColumnId, fromIndex, toColumnId, toIndex)
 
@@ -208,3 +235,6 @@ export function useKanbanDnd(originColumnsRef: Ref<ColumnVm[]>, opts: UseKanbanD
 
   return { columnDraggableBind, cardDraggableBind, cardListAttrs, flushPending }
 }
+
+export { useKanbanDnd, type UseKanbanDndOptions, type UseKanbanDndReturn }
+

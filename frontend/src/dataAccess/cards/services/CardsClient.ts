@@ -1,6 +1,6 @@
 import type { ApiException } from '@/dataAccess/shared'
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { CardDto, CreateCardPayload, DeleteCardPayload, UpdateCardPayload } from '../models'
+import type { CardDto, CreateCardPayload, DeleteCardPayload, MoveCardCommand, UpdateCardPayload } from '../models'
 
 /**
  * Client for Columns-related endpoints.
@@ -75,6 +75,21 @@ export class CardsClient {
       throw err
     }
   }
+
+  /**
+   * POST /api/columns/${listId}/cards/move
+   * Moves a card to a new list.
+   * @param command - Payload with listId, targetBoardId, leftSiblingId, rightSiblingId.
+   */
+  public async move(command: MoveCardCommand): Promise<void> {
+    try {
+      await this.http.put<void>(`/api/columns/${command.targetColumnId}/cards/move`, command)
+
+    } catch (err) {
+      throw err
+    }
+  }
+
 
   /**
    * DELETE /api/columns/${columnId}/cards/${id}

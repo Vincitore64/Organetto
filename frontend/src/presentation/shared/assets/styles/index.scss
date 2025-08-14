@@ -4,6 +4,8 @@
 @use './vars.scss';
 @use './utilities.scss';
 @use './modal.scss';
+@use './kanban.scss';
+
 
 .glass {
   backdrop-filter: blur(33px);

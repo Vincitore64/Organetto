@@ -27,3 +27,10 @@ export interface DeleteCardPayload {
   columnId: number
   id: number
 }
+
+export interface MoveCardCommand {
+  cardId: number
+  targetColumnId: number
+  leftSiblingId: number
+  rightSiblingId: number
+}

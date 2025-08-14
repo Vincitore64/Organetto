@@ -292,7 +292,7 @@ function showCreateBoardModal() {
 }
 
 async function createBoard(state: CreateBoardState) {
-  debugger
+  // debugger
   console.log('Creating board with:', state)
   const created = await executeBoardCreation(0, state)
   if (!created) {
@@ -335,7 +335,7 @@ function startUp() {
 startUp()
 
 const openBoard = (id: number) => {
-  debugger
+  // debugger
   router.push({ name: 'Board', params: { id: id, userId: props.userId } })
 }
 
