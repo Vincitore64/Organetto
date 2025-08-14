@@ -12,6 +12,8 @@ import _ from 'lodash'
 import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
 import { updateCollectionItem } from '@/shared'
 import { useDnd } from '@/application/shared/dnd/hooks/useDnd'
+import draggable from 'vuedraggable'
+import { useKanbanDnd } from '@/application/shared/dnd/hooks/useKanbanDnd'
 
 interface Props {
   board: BoardVm
@@ -35,22 +37,34 @@ const showFilters = ref(false)
 
 const boardColumns = computed({
   get() {
-    return _(boardFields.columns.value).sortBy(c => c.position).value()
+    return boardFields.columns.value
+    // return _(boardFields.columns.value).sortBy(c => c.position).value()
   },
   set(v) {
+    // debugger
+    console.log('boardColumns set', v)
+    console.trace('boardColumns set caller')
     boardFields.columns.value = v
   }
 })
 
-const dnd = useDnd(boardColumns, () => props.board.id);
+// const dnd = useDnd(boardColumns, () => props.board.id);
+const dnd = useKanbanDnd(boardColumns, { // { value: boardColumns.value }
+  debounceMs: 400,
+})
 const {
-  registerContainer,
-  registerColumnEl,
-  registerCardEls,
-  onPointerDown,
-  state,
-  ghostStyle,
-} = dnd;
+  columnDraggableBind,
+  cardDraggableBind,
+  cardListAttrs
+} = dnd
+// const {
+//   registerContainer,
+//   registerColumnEl,
+//   registerCardEls,
+//   onPointerDown,
+//   state,
+//   ghostStyle,
+// } = dnd;
 
 
 const newBoardColumnPosition = computed(() => {
@@ -90,6 +104,7 @@ function onDelete(c: ColumnVm) {
 }
 
 function onCardCreated(c: CardVm, list: ColumnVm) {
+  debugger
   updateCollectionItem(boardColumns,
     col => col.id === list.id,
     colClone => {
@@ -116,37 +131,6 @@ function onCardUpdated(c: CardVm, list: ColumnVm) {
       if (idx >= 0) colClone.cards[idx] = c
     })
 }
-
-// function onCardCreated(c: CardVm, list: ColumnVm) {
-//   debugger
-//   const columnClone = _.cloneDeep(list)
-//   columnClone.cards.push(c)
-//   const columnIndex = _(boardColumns.value).findIndex(col => col.id === list.id)
-//   const updatedColumns = [...boardColumns.value]
-//   updatedColumns[columnIndex] = columnClone
-//   boardColumns.value = updatedColumns
-// }
-
-// function onCardDeleted(c: CardVm, list: ColumnVm) {
-//   debugger
-//   const columnClone = _.cloneDeep(list)
-//   columnClone.cards = columnClone.cards.filter(card => card.id !== c.id)
-//   const columnIndex = _(boardColumns.value).findIndex(col => col.id === list.id)
-//   const updatedColumns = [...boardColumns.value]
-//   updatedColumns[columnIndex] = columnClone
-//   boardColumns.value = updatedColumns
-// }
-
-// function onCardUpdated(c: CardVm, list: ColumnVm) {
-//   debugger
-//   const columnClone = _.cloneDeep(list)
-//   const cardIndex = columnClone.cards.findIndex(card => card.id === c.id)
-//   columnClone.cards[cardIndex] = c
-//   const columnIndex = _(boardColumns.value).findIndex(col => col.id === list.id)
-//   const updatedColumns = [...boardColumns.value]
-//   updatedColumns[columnIndex] = columnClone
-//   boardColumns.value = updatedColumns
-// }
 
 const toggleFilters = () => {
   showFilters.value = !showFilters.value
@@ -214,10 +198,6 @@ const handleFilterChange = (filters: any) => {
 //   activeCard.value = null
 //   handleCardDragEnd(event)
 // }
-async function afterRender() {
-  await nextTick();
-  // no-op; placeholder if you need to re-calc anything post DOM update
-}
 </script>
 
 <template>
@@ -231,52 +211,72 @@ async function afterRender() {
     <FilterPanel v-if="showFilters" @filter-change="handleFilterChange" />
     
     <a-layout-content class="board-main">
-      <div class="board-content" ref="registerContainer">
+      <div class="board-content">
         <div 
-          ref="listsContainerRef"
           class="lists-container"
-          @vue:updated="afterRender"
         >
-          <section
+          <draggable v-bind="columnDraggableBind">
+            <template #item="{ element: list }">
+              <BoardColumn
+                :list="list"
+                :dnd="dnd"
+                :board-id="board.id"
+                @card-click="(card) => handleCardClick(card, list)"
+                @column-updated="onUpdated"
+                @column-deleted="onDelete"
+                @card-created="onCardCreated"
+                @card-deleted="onCardDeleted"
+              />
+              
+            </template>
+          </draggable>
+          <!-- <section>
+                <BoardColumn
+                  :list="list"
+                  :board-id="board.id"
+                  :draggable="true"
+                  @card-click="(card) => handleCardClick(card, list)"
+                  @column-updated="onUpdated"
+                  @column-deleted="onDelete"
+                  @card-created="onCardCreated"
+                  @card-deleted="onCardDeleted"
+                />
+              </section> -->
+          <!-- <section
             v-for="(list, i) in boardColumns"
             :key="list.id"
-            :ref="(el) => registerColumnEl(i, el as HTMLElement)"
-            @pointerdown="(e: any) => onPointerDown(e as PointerEvent, 'column', { columnId: list.id, columnIndex: i }, e.currentTarget as HTMLElement)"
           >
             <BoardColumn
               :list="list"
               :board-id="board.id"
-              :draggable="true"
-              :dnd="dnd"
               @card-click="(card) => handleCardClick(card, list)"
               @column-updated="onUpdated"
               @column-deleted="onDelete"
               @card-created="onCardCreated"
               @card-deleted="onCardDeleted"
             />
-          </section>
-          <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/>
+          </section> -->
+          <!-- <AddListCard :board-id="board.id" :position="newBoardColumnPosition" @created="onCreated"/> -->
         </div>
       </div>
     </a-layout-content>
     
     <!-- Drag overlay for visual feedback -->
-    <div 
+    <!-- <div 
       v-if="activeCard || activeList"
       class="drag-overlay"
-      :style="dragOverlayStyle"
     >
-      <!-- <DragGhost
+      <DragGhost
         v-if="activeCard"
         type="card"
         :item="activeCard"
-      /> -->
+      />
       <DragGhost
         v-if="activeList"
         type="list"
         :item="activeList"
       />
-    </div>
+    </div> -->
 
     <CardModal
       v-if="selectedCard && listOfSelectedCard"

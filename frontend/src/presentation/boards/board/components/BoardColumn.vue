@@ -14,7 +14,8 @@ import { UseVirtualList } from '@vueuse/components'
 import { useRemoveColumn, useUpdateColumn, type CardVm, type ColumnVm } from '@/application'
 import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
 import _ from 'lodash'
-import type { UseDndReturn } from '@/application/shared/dnd/hooks/useDnd'
+import type { UseKanbanDndReturn } from '@/application/shared/dnd/hooks/useKanbanDnd'
+import draggable from 'vuedraggable'
 
 interface Emits {
   cardClick: [card: CardVm]
@@ -30,7 +31,7 @@ interface Emits {
 
 const props = defineProps<{
   list: ColumnVm
-  dnd: UseDndReturn
+  dnd: UseKanbanDndReturn,
   boardId: number
 }>()
 const emit = defineEmits<Emits>()
@@ -124,10 +125,8 @@ const onTitleBlur = async () => {
       <div
         class="board-column"
         :data-column-id="list.id"
-        @dragover.prevent
-        @drop="handleDrop"
       >
-        <div class="column-header" @pointerdown.prevent="">
+        <div class="column-header">
           <div class="header-content">
             <h3 class="column-title" v-if="!isTitleEditing">{{ list.title }}</h3>
             <a-input
@@ -173,21 +172,27 @@ const onTitleBlur = async () => {
           </a-dropdown>
         </div>
         
-        <div class="column-content" :data-col-id="list.id">
-          <UseVirtualList class="virtual-card-list" :list="cards" :options="{ itemHeight: 180 }" height="100%">
+        <div class="column-content"> <!-- :data-col-id="list.id" -->
+          <pre>{{ list.cards }}</pre>
+          <draggable v-bind="dnd.cardDraggableBind(list)">
+            <template #item="{ element: data }">
+              <section class="card-item__wrapper">
+                <CardItem
+                  :card="data"
+                  :column-id="list.id"
+                  class="card-item"
+                  @click="handleCardClick(data)"
+                  @card-deleted="emit('cardDeleted', data, list)"
+                />
+              </section>
+            </template>
+
+          </draggable>
+          <!-- <UseVirtualList class="virtual-card-list" :list="cards" :options="{ itemHeight: 180 }" height="100%">
             <template #default="{ data, index }">
               <section class="card-item__wrapper">
                 <section
                   class="card-item__dnd-wrapper"
-                  :ref-key="'cards-'+list.id"
-                  :ref="(el) => {
-                    // debugger
-                    // collect refs per column for hit-testing
-                    // const arr = Array.from((($refs['cards-'+list.id] as any) ?? [])) as (HTMLElement | null)[];
-                    // dnd.registerCardEls(list.id, arr);
-                    dnd.registerCardEl(list.id, index, el as (HTMLElement | null))
-                  }"
-                  @pointerdown.stop="(e: any) => dnd.onPointerDown(e as PointerEvent, 'card', { columnId: list.id, cardIndex: index }, e.currentTarget as HTMLElement)"
                 >                  
                   <CardItem
                     :card="data"
@@ -199,7 +204,7 @@ const onTitleBlur = async () => {
                 </section>
               </section>
             </template>
-          </UseVirtualList>
+          </UseVirtualList> -->
           <section class="add-card-button__wrapper">
             <AddCardButton
               :listId="list.id"
@@ -292,6 +297,9 @@ const onTitleBlur = async () => {
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+  .cards,ol {
+    padding: 0;
+  }
 }
 
 .card-item__wrapper {

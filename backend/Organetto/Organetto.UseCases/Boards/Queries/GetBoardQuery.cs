@@ -29,6 +29,8 @@ namespace Organetto.UseCases.Boards.Queries
 
             // Map domain entity to DTO
             var dto = _mapper.Map<BoardDetailDto>(board);
+            dto.Columns.Sort();
+            dto.Columns.ForEach(column => column.Cards.Sort());
             return dto;
         }
     }
