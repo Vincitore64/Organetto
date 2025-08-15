@@ -10,7 +10,6 @@ import {
 import { useI18n } from 'vue-i18n'
 import CardItem from './CardItem.vue'
 import AddCardButton from './AddCardButton.vue'
-import { UseVirtualList } from '@vueuse/components'
 import { useRemoveColumn, useUpdateColumn, type CardVm, type ColumnVm } from '@/application'
 import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
 import _ from 'lodash'
@@ -173,7 +172,7 @@ const onTitleBlur = async () => {
         </div>
         
         <div class="column-content"> <!-- :data-col-id="list.id" -->
-          <pre>{{ list.cards }}</pre>
+          <!-- <pre>{{ list.cards }}</pre> -->
           <draggable v-bind="dnd.cardDraggableBind(list)">
             <template #item="{ element: data }">
               <section class="card-item__wrapper">

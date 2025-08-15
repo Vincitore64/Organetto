@@ -45,7 +45,7 @@
 
     <p class="footer">
       {{ t('login.page.noAccount') }}
-      <router-link to="/signup">{{ t('login.page.signup') }}</router-link>
+      <router-link to="/register">{{ t('login.page.signup') }}</router-link>
     </p>
   </a-card>
 </template>

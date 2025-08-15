@@ -1,3 +1,5 @@
+export * from './Attachment'
+
 export interface CardDto {
   id: number
   title: string

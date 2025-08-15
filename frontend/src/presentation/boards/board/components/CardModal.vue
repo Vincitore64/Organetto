@@ -10,15 +10,17 @@ import {
   ArrowRightOutlined,
   CopyOutlined,
   DeleteOutlined,
-  CloseOutlined
+  CloseOutlined,
 } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
 import dayjs, { Dayjs } from 'dayjs'
 import AvatarGroup from './AvatarGroup.vue'
-import { useUpdateCard, type CardVm } from '@/application'
+import { useUpdateCard, type AttachmentVm, type CardVm } from '@/application'
 import ModalContainer from '@/presentation/shared/components/ModalContainer.vue'
 import { useVModel } from '@vueuse/core'
 import _ from 'lodash'
+import AttachmentsList from './AttachmentsList.vue'
+// import Attachment from './Attachment.vue'
 
 
 interface Props {
@@ -54,6 +56,13 @@ const currentUser = ref({
 })
 
 const cardLabels = ref<string[]>(['critical'])
+const cardAttachments = ref<AttachmentVm[]>([{
+  id: 1,
+  filename: 'test.txt',
+  fileUrl: '/api/placeholder/32/32',
+  uploadedAt: new Date(),
+  uploaderId: 2,
+}])
 
 const isVisible = computed({
   get: () => props.visible,
@@ -177,20 +186,6 @@ const archiveCard = () => {
     @close="handleClose"
   >
     <div class="modal-content">
-      <!-- <header class="modal-header">
-        <div class="title-section">
-          <a-input
-            v-model:value="title"
-            class="title-input"
-            :bordered="false"
-            size="large"
-            @blur="updateTitle"
-          />
-          <span class="list-name">
-            {{ t('board.cardModal.inList', { listName: listName }) }}
-          </span>
-        </div>
-      </header> -->
       <!-- <Divider bottom top/> -->
       <main class="modal-main">
         <div class="left-column">
@@ -227,6 +222,17 @@ const archiveCard = () => {
               :auto-size="{ minRows: 4, maxRows: 8 }"
               @blur="updateDescription"
             />
+          </section>
+
+          <section class="modal-section">
+            <h3 class="section-title">
+              <PaperClipOutlined />
+              {{ t('board.cardModal.attachments') }}
+            </h3>
+            <AttachmentsList :items="cardAttachments" />
+            <!-- <section class="attachments-container">
+              <Attachment v-for="attachment in cardAttachments" :key="attachment.id" :attachment="attachment" />
+            </section> -->
           </section>
 
           <!-- Comments/Activity -->
@@ -361,26 +367,6 @@ const archiveCard = () => {
               size="md"
             />
           </section>
-
-          <!-- Due Date -->
-          <!-- <section v-if="card.dueDate" class="modal-section">
-            <h3 class="section-title">
-              {{ t('board.cardModal.dueDate') }}
-            </h3>
-            <div class="due-date">
-              <CalendarOutlined />
-              <span>{{ formatDate(card.dueDate) }}</span>
-              <a-button
-                type="text"
-                size="small"
-                @click="removeDueDate"
-              >
-                <template #icon>
-                  <CloseOutlined />
-                </template>
-              </a-button>
-            </div>
-          </section> -->
         </aside>
       </main>
     </div>
@@ -535,6 +521,10 @@ const archiveCard = () => {
       box-shadow: none;
     }
   }
+}
+
+.attachments-container {
+  display: grid;
 }
 
 .comment-form {
