@@ -1,6 +1,6 @@
 import type { ApiException } from '@/dataAccess/shared'
 import type { AxiosError, AxiosInstance } from 'axios'
-import type { CardDto, CreateCardPayload, DeleteCardPayload, MoveCardCommand, UpdateCardPayload } from '../models'
+import type { CardDetailDto, CardDetailPayload, CardDto, CreateCardPayload, DeleteCardPayload, MoveCardCommand, UpdateCardPayload } from '../models'
 
 /**
  * Client for Columns-related endpoints.
@@ -32,6 +32,17 @@ export class CardsClient {
       throw err
     }
   }
+
+  /**
+   * GET /api/columns/${payload.columnId}/cards/${payload.id}
+   * Retrieves a single card by ID.
+   * @param payload - Payload with columnId and id.
+   */
+  public async getById(payload: CardDetailPayload): Promise<CardDetailDto> {
+    const response = await this.http.get<CardDetailDto>(`/api/columns/${payload.columnId}/cards/${payload.id}`)
+    return response.data
+  }
+
 
   /**
    * POST /api/columns/${columnId}/cards

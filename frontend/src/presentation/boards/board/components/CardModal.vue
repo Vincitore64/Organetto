@@ -1,26 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import {
-  FileTextOutlined,
-  MessageOutlined,
-  UserOutlined,
-  TagOutlined,
-  CalendarOutlined,
-  PaperClipOutlined,
-  ArrowRightOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  CloseOutlined,
-} from '@ant-design/icons-vue'
-import { useI18n } from 'vue-i18n'
-import dayjs, { Dayjs } from 'dayjs'
-import AvatarGroup from './AvatarGroup.vue'
-import { useUpdateCard, type AttachmentVm, type CardVm } from '@/application'
+import { computed, ref, watch } from 'vue'
+import { useGetCardDetail, type CardVm } from '@/application'
 import ModalContainer from '@/presentation/shared/components/ModalContainer.vue'
 import { useVModel } from '@vueuse/core'
 import _ from 'lodash'
-import AttachmentsList from './AttachmentsList.vue'
-// import Attachment from './Attachment.vue'
+import CardModalContent from './CardModalContent.vue'
+import Spinner from '@/presentation/shared/ui/components/Spinner.vue'
+import type { CardDetailVm } from '@/application/boards/columns/cards/models/Card'
 
 
 interface Props {
@@ -39,30 +25,12 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
-const { t } = useI18n()
 
-const updateState = useUpdateCard()
+const { data: cardDetail, isLoading } = useGetCardDetail({ id: props.card.id, columnId: props.columnId })
+
+const activeCard = ref<CardDetailVm | null>(null)
 
 const card = useVModel(props, 'card', emit)
-
-const title = ref(props.card.title)
-const description = ref(props.card.description || '')
-const newComment = ref('')
-
-const currentUser = ref({
-  id: 'current-user',
-  name: 'Current User',
-  avatar: '/api/placeholder/32/32'
-})
-
-const cardLabels = ref<string[]>(['critical'])
-const cardAttachments = ref<AttachmentVm[]>([{
-  id: 1,
-  filename: 'test.txt',
-  fileUrl: '/api/placeholder/32/32',
-  uploadedAt: new Date(),
-  uploaderId: 2,
-}])
 
 const isVisible = computed({
   get: () => props.visible,
@@ -73,105 +41,17 @@ const isVisible = computed({
   }
 })
 
-const dueDate = computed(() => props.card.dueDate ? dayjs(props.card.dueDate) : null)
 
-const cardUsers = computed(() => 
-  // props.card.assignees.map(id => ({
-  //   id,
-  //   name: `User ${id}`,
-  //   avatar: '/api/placeholder/32/32'
-  // }))
-  []
-)
-
-const formatDate = (date: Date) => {
-  return dayjs(date).format('MMM DD, YYYY')
-}
-
-const formatDueDate = (date?: Date | null) => {
-  return date ? `${t('board.cardModal.dueDate')}: ${dayjs(date).format('MMM DD, YYYY')}` : 'Due date'
-}
+watch(cardDetail, (newCard) => {
+  activeCard.value = newCard
+})
 
 const handleClose = () => {
   emit('close')
 }
 
-const updateCard = async (updatingCard: CardVm, updater: (c: CardVm) => CardVm) => {
-  // debugger
-  const updatedCard = updater(updatingCard)
-  await updateState.mutateAsync({ ...updatedCard, columnId: props.columnId, dueDate: updatedCard.dueDate?.toISOString() })
-  card.value = updatedCard
-  // emit('update', updatedCard)
+const updateCard = (updatedCard: CardVm) => {
   emit('cardUpdated', updatedCard)
-}
-
-const debouncedUpdateCard = _.debounce(updateCard, 500)
-
-const updateTitle = async () => {
-  if (title.value !== props.card.title) {
-    await debouncedUpdateCard(card.value, c => ({ ...c, title: title.value }))
-  }
-}
-
-const updateDescription = async () => {
-  // debugger
-  if (description.value !== props.card.description) {
-    await debouncedUpdateCard(card.value, c => ({ ...c, description: description.value }))
-  }
-}
-
-const updateDueDate = async (date: Dayjs) => {
-  console.log('updateDueDate', date)
-  if (date.toDate() !== props.card.dueDate) {
-    await debouncedUpdateCard(card.value, c => ({ ...c, dueDate: date.toDate() }))
-  }
-}
-
-const removeLabel = (index: number) => {
-  // const newLabels = [...props.card.]
-  // newLabels.splice(index, 1)
-  // emit('update', { labels: newLabels })
-}
-
-const addComment = () => {
-  if (newComment.value.trim()) {
-    // Handle comment addition logic here
-    console.log('Adding comment:', newComment.value)
-    newComment.value = ''
-  }
-}
-
-const removeDueDate = () => {
-  emit('update', { dueDate: undefined })
-}
-
-// Action handlers
-const openMembersModal = () => {
-  console.log('Open members modal')
-}
-
-const openLabelsModal = () => {
-  console.log('Open labels modal')
-}
-
-const openDatePicker = () => {
-  console.log('Open date picker')
-}
-
-const openAttachmentModal = () => {
-  console.log('Open attachment modal')
-}
-
-const moveCard = () => {
-  console.log('Move card')
-}
-
-const copyCard = () => {
-  console.log('Copy card')
-}
-
-const archiveCard = () => {
-  console.log('Archive card')
 }
 </script>
 
@@ -185,197 +65,27 @@ const archiveCard = () => {
     wrap-class-name="card-modal"
     @close="handleClose"
   >
-    <div class="modal-content">
-      <!-- <Divider bottom top/> -->
-      <main class="modal-main">
-        <div class="left-column">
-          <!-- Labels -->
-          <section v-if="cardLabels.length > 0" class="modal-section">
-            <h3 class="section-title">
-              <TagOutlined />
-              {{ t('board.cardModal.labels') }}
-            </h3>
-            <div class="labels-container">
-              <a-tag
-                v-for="(label, index) in cardLabels"
-                :key="index"
-                class="label-tag"
-                closable
-                @close="removeLabel(index)"
-              >
-                {{ label }}
-              </a-tag>
-            </div>
-          </section>
-
-          <!-- Description -->
-          <section class="modal-section">
-            <h3 class="section-title">
-              <FileTextOutlined />
-              {{ t('board.cardModal.description') }}
-            </h3>
-            <a-textarea
-              v-model:value="description"
-              :placeholder="t('board.cardModal.descriptionPlaceholder')"
-              class="description-textarea"
-              :rows="4"
-              :auto-size="{ minRows: 4, maxRows: 8 }"
-              @blur="updateDescription"
-            />
-          </section>
-
-          <section class="modal-section">
-            <h3 class="section-title">
-              <PaperClipOutlined />
-              {{ t('board.cardModal.attachments') }}
-            </h3>
-            <AttachmentsList :items="cardAttachments" />
-            <!-- <section class="attachments-container">
-              <Attachment v-for="attachment in cardAttachments" :key="attachment.id" :attachment="attachment" />
-            </section> -->
-          </section>
-
-          <!-- Comments/Activity -->
-          <section class="modal-section">
-            <h3 class="section-title">
-              <MessageOutlined />
-              {{ t('board.cardModal.activity') }}
-            </h3>
-            <div class="comment-form">
-              <a-avatar
-                :src="currentUser.avatar"
-                :alt="currentUser.name"
-                class="user-avatar"
-              >
-                {{ currentUser.name.charAt(0).toUpperCase() }}
-              </a-avatar>
-              <a-textarea
-                v-model:value="newComment"
-                :placeholder="t('board.cardModal.commentPlaceholder')"
-                class="comment-input"
-                :rows="2"
-                :auto-size="{ minRows: 2, maxRows: 4 }"
-              /><!-- @keydown.ctrl.enter="addComment" -->
-              <a-button
-                v-if="newComment.trim()"
-                type="primary"
-                size="small"
-                class="add-comment-btn"
-                @click="addComment"
-              >
-                {{ t('board.cardModal.addComment') }}
-              </a-button>
-            </div>
-          </section>
-        </div>
-
-        <aside class="sidebar">
-          <!-- Add to card -->
-          <section class="modal-section">
-            <h3 class="section-title">
-              {{ t('board.cardModal.addToCard') }}
-            </h3>
-            <div class="action-buttons">
-              <a-button
-                class="action-button"
-                block
-                @click="openMembersModal"
-              >
-                <template #icon>
-                  <UserOutlined />
-                </template>
-                {{ t('board.cardModal.members') }}
-              </a-button>
-              <a-button
-                class="action-button"
-                block
-                @click="openLabelsModal"
-              >
-                <template #icon>
-                  <TagOutlined />
-                </template>
-                {{ t('board.cardModal.labels') }}
-              </a-button>
-              <a-button
-                class="action-button"
-                block
-                @click="openAttachmentModal"
-              >
-                <template #icon>
-                  <PaperClipOutlined />
-                </template>
-                {{ t('board.cardModal.attachment') }}
-              </a-button>
-              <a-date-picker
-                class="action-button due-date-picker"
-                :value="dueDate"
-                :format="formatDueDate"
-                @change="updateDueDate"
-                allowClear
-              />
-            </div>
-          </section>
-
-          <!-- Actions -->
-          <section class="modal-section">
-            <h3 class="section-title">
-              {{ t('board.cardModal.actions') }}
-            </h3>
-            <div class="action-buttons">
-              <a-button
-                class="action-button"
-                block
-                @click="moveCard"
-              >
-                <template #icon>
-                  <ArrowRightOutlined />
-                </template>
-                {{ t('board.cardModal.move') }}
-              </a-button>
-              <a-button
-                class="action-button"
-                block
-                @click="copyCard"
-              >
-                <template #icon>
-                  <CopyOutlined />
-                </template>
-                {{ t('board.cardModal.copy') }}
-              </a-button>
-              <a-button
-                type="primary"
-                block
-                danger
-                @click="archiveCard"
-              >
-                <template #icon>
-                  <DeleteOutlined />
-                </template>
-                {{ t('board.cardModal.archive') }}
-              </a-button>
-            </div>
-          </section>
-
-          <!-- Members -->
-          <section v-if="cardUsers.length > 0" class="modal-section">
-            <h3 class="section-title">
-              {{ t('board.cardModal.members') }}
-            </h3>
-            <AvatarGroup
-              :users="cardUsers"
-              :max-visible="5"
-              size="md"
-            />
-          </section>
-        </aside>
-      </main>
-    </div>
+    <main class="card-modal__modal-containter">
+      <Spinner tip="Loading..." :spinning="isLoading">
+        <CardModalContent
+          v-if="activeCard"
+          v-model:card="activeCard"
+          :column-id="props.columnId"
+          :list-name="props.listName"
+          @card-updated="updateCard"
+        />
+      </Spinner>
+    </main>
   </ModalContainer>
 </template>
 <style scoped lang="scss">
 .card-modal {
   .item-modal-title {
     font-size: 2rem;
+  }
+  &__modal-containter {
+    display: grid;
+    min-height: 256px;
   }
   // .ant-modal-content {
   //   background: rgba(255, 255, 255, 0.95);
@@ -407,269 +117,11 @@ const archiveCard = () => {
   // }
 }
 
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  // gap: 20px;
-  max-height: 80vh;
-}
-
-.modal-header {
-  .title-section {
-    .title-input {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--color-text);
-      font-family: 'Sofia Sans Extra Condensed', sans-serif;
-      letter-spacing: 0px;
-      padding: 0 12px;
-      
-      :deep(.ant-input) {
-        font-size: 20px;
-        font-weight: 700;
-        background: transparent;
-        
-        &:focus {
-          box-shadow: none;
-        }
-      }
-    }
-    
-    .list-name {
-      font-size: 12px;
-      color: var(--color-text-weak);
-      display: block;
-      padding: 0 12px;
-      font-weight: 400;
-    }
-  }
-}
-
-.modal-main {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 32px;
-  overflow-y: auto;
-}
-
-.left-column {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-content: start;
-}
-
-.modal-section {
-  .section-title {
-    font-size: 20px;
-    font-weight: 400;
-    color: var(--color-text);
-    margin: 0 0 12px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Sofia Sans Extra Condensed', sans-serif;
-    letter-spacing: 0px;
-  }
-}
-
-.labels-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  
-  .label-tag {
-    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: 500;
-    
-    :deep(.ant-tag-close-icon) {
-      color: rgba(255, 255, 255, 0.8);
-      
-      &:hover {
-        color: white;
-      }
-    }
-  }
-}
-
-.description-textarea {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
-  transition: var(--transition-smooth);
-  
-  &:focus {
-    border-color: var(--color-primary-400);
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
-  }
-  
-  :deep(.ant-input) {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    
-    &:focus {
-      box-shadow: none;
-    }
-  }
-}
-
-.attachments-container {
-  display: grid;
-}
-
-.comment-form {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
-  align-items: start;
-  
-  .user-avatar {
-    margin-top: 4px;
-  }
-  
-  .comment-input {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 8px;
-    transition: var(--transition-smooth);
-    
-    &:focus {
-      border-color: var(--color-primary-400);
-      box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
-    }
-    
-    :deep(.ant-input) {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      
-      &:focus {
-        box-shadow: none;
-      }
-    }
-  }
-  
-  .add-comment-btn {
-    margin-top: 4px;
-    border-radius: 6px;
-  }
-}
-
-.action-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  
-  .action-button {
-    justify-content: flex-start;
-    // background: rgba(255, 255, 255, 0.8);
-    // background: var(--color-white-gradient);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    // border-radius: 8px;
-    transition: var(--transition-smooth);
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.95);
-      // border-color: var(--color-primary-400);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-    &.due-date-picker {
-      :deep(>.ant-picker-input) {
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-columns: 18px auto;
-        gap: 8px;
-        margin: 0 auto;
-        padding-left: 16px;
-        min-width: 0;
-        width: fit-content;
-        .ant-picker-suffix {
-          grid-column: 1;
-          color: inherit;
-        }
-        input {
-          grid-column: 2;
-          width: min-content;
-        }
-      }
-    }
-    
-    // &.danger {
-    //   color: var(--color-red-600);
-      
-    //   &:hover {
-    //     color: var(--color-red-700);
-    //     background: rgba(var(--color-red-rgb), 0.04);
-    //     border-color: var(--color-red-300);
-    //   }
-    // }
-  }
-}
-
-.due-date {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 18px 80px 56px;
-  justify-content: end;
-  gap: 8px;
-  padding: 4px 16px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
-  
-  span {
-    flex: 1;
-    font-weight: 500;
-    color: var(--color-text);
-  }
-  :deep(>.ant-btn) {
-    justify-self: end;
-  }
-}
-
 @media (max-width: 768px) {
   :deep(.card-modal) {
     .ant-modal-content {
       margin: 16px;
       width: calc(100vw - 32px) !important;
-    }
-  }
-  
-  .modal-main {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  
-  .modal-header {
-    .title-section {
-      .title-input {
-        font-size: 18px;
-        
-        :deep(.ant-input) {
-          font-size: 18px;
-        }
-      }
-    }
-  }
-  
-  .comment-form {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    
-    .user-avatar {
-      margin-top: 0;
-      justify-self: start;
     }
   }
 }

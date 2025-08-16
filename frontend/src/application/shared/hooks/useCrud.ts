@@ -39,9 +39,9 @@ export function createCrudHooks<
   TData = any,
   TDetailResp = any,
   TDetailData = any,
-  DetailArg = any,
+  DetailArg extends { id: number } = any,
   CreateVars = any,
-  UpdateVars = any,
+  UpdateVars extends { id: number } = any,
   DeleteVars = any,
   TCreateResp = any,
   TCreateData = any,
@@ -51,7 +51,7 @@ export function createCrudHooks<
   // Stable key generators
   const listKey = (...args: ListArgs) => [resourceKey, 'list', ...args] as const
   const defaultListKey = [resourceKey, 'list']
-  const detailKey = (id: DetailArg) => [resourceKey, 'detail', id] as const
+  const detailKey = (id: number) => [resourceKey, 'detail', id] as const
   const client = typeof clientFn === 'function' ? clientFn : () => clientFn
 
   function useList(...args: ListArgs) {
@@ -63,13 +63,13 @@ export function createCrudHooks<
     )
   }
 
-  function useDetail(id: DetailArg) {
+  function useDetail(args: DetailArg) {
     // debugger
     return useApiQuery(
-      detailKey(id),
-      () => (client()[methods.detail] as (id: DetailArg) => Promise<any>)(id),
+      detailKey(args.id),
+      () => (client()[methods.detail] as (payload: DetailArg) => Promise<any>)(args),
       mappers?.detail,
-      { enabled: !!id, staleTime: 1000 * 60 * 2, ...detailOptions }
+      { enabled: !!args, staleTime: 1000 * 60 * 2, ...detailOptions }
     )
   }
 
@@ -84,9 +84,9 @@ export function createCrudHooks<
 
   function useUpdate() {
     return useApiMutation(
-      async (vars: UpdateVars & { id: DetailArg }) => {
+      async (vars: UpdateVars) => {
         try {
-          return await (client()[methods.update] as (v: UpdateVars & { id: DetailArg }) => Promise<any>)(
+          return await (client()[methods.update] as (v: UpdateVars) => Promise<any>)(
             mappers?.update ? mappers.update(vars) : vars
           )
         } catch (ex) { // TODO: Rework to notification provider
@@ -100,7 +100,7 @@ export function createCrudHooks<
           throw ex
         }
       },
-      [defaultListKey, detailKey(({} as any as UpdateVars & { id: DetailArg }).id)]
+      [defaultListKey, detailKey(({} as any as UpdateVars).id)]
     )
   }
 

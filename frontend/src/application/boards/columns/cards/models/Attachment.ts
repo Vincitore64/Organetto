@@ -1,7 +1,6 @@
-import type { Attachment } from '@/dataAccess/cards/models'
+import type { AttachmentDto } from '@/dataAccess/cards/models'
 
-interface AttachmentVm extends Omit<Attachment, 'uploadedAt'> {
-
+interface AttachmentVm extends Omit<AttachmentDto, 'uploadedAt'> {
   uploadedAt: Date
 }
 

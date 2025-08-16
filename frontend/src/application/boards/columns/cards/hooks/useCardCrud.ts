@@ -1,19 +1,21 @@
 import { createCrudHooks } from '@/application/shared/hooks/useCrud'
 import type { CardsClient } from '@/dataAccess/cards/services/CardsClient'
 import type { CardVm } from '../models'
-import type { CardDto, CreateCardPayload, DeleteCardPayload, UpdateCardPayload } from '@/dataAccess/cards/models'
+import type { CardDetailDto, CardDetailPayload, CardDto, CreateCardPayload, DeleteCardPayload, UpdateCardPayload } from '@/dataAccess/cards/models'
 import { container } from 'tsyringe'
 import { ApiClient } from '@/dataAccess/services/ApiClient'
-import { mapCard, mapCards } from '../mappers'
+import { mapCard, mapCardDetail, mapCards } from '../mappers'
+import type { CardDetailVm } from '../models/Card'
 
-const { useList: useGetCards, useCreate: useCreateCard, useUpdate: useUpdateCard, useRemove: useRemoveCard } = createCrudHooks<
+const { useList: useGetCards, useDetail: useGetCardDetail, useCreate: useCreateCard, useUpdate: useUpdateCard, useRemove: useRemoveCard } = createCrudHooks<
+
   CardsClient,
   [number],
   CardDto,
   CardVm,
-  CardDto,
-  CardVm,
-  number,
+  CardDetailDto,
+  CardDetailVm,
+  CardDetailPayload,
   CreateCardPayload,
   UpdateCardPayload,
   DeleteCardPayload,
@@ -24,16 +26,16 @@ const { useList: useGetCards, useCreate: useCreateCard, useUpdate: useUpdateCard
   client: () => container.resolve(ApiClient).cards,
   methods: {
     create: 'create',
-    detail: 'getAll',
+    detail: 'getById',
     list: 'getAll',
     update: 'update',
     remove: 'delete',
   },
   mappers: {
     list: mapCards,
-    detail: mapCard,
+    detail: mapCardDetail,
     created: mapCard,
   },
 })
 
-export { useGetCards, useCreateCard, useUpdateCard, useRemoveCard }
+export { useGetCards, useCreateCard, useUpdateCard, useRemoveCard, useGetCardDetail }

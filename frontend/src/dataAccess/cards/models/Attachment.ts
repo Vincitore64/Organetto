@@ -1,9 +1,9 @@
-interface Attachment {
+interface AttachmentDto {
   id: number
   filename: string
   fileUrl: string
-  uploadedAt: number
+  uploadedAt: string
   uploaderId: number
 }
 
-export type { Attachment }
+export type { AttachmentDto }

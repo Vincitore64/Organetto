@@ -1,4 +1,5 @@
 export * from './Attachment'
+export * from './CardDetailDto'
 
 export interface CardDto {
   id: number

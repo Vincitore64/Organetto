@@ -37,10 +37,10 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Validation
             //    .When(x => x.AssigneeId.HasValue);
 
             // Position: if provided, must be zero or greater
-            RuleFor(x => x.Position)
-                .GreaterThanOrEqualTo(0)
-                .WithMessage("Position, if specified, must be zero or greater.")
-                .When(x => x.Position.HasValue);
+            //RuleFor(x => x.Position)
+            //    .GreaterThanOrEqualTo(0)
+            //    .WithMessage("Position, if specified, must be zero or greater.")
+            //    .When(x => x.Position.HasValue);
 
             // DueDate: if provided, must be in the future
             RuleFor(x => x.DueDate)

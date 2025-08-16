@@ -19,6 +19,9 @@ const indicator = h(LoadingOutlined, {
   </a-spin>
 </template>
 <style lang="scss" scoped>
+.ant-spin-spinning {
+  align-self: center;
+}
 .ant-spin-nested-loading {
   min-height: 0;
   height: 100%;
