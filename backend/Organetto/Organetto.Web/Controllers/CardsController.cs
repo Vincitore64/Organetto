@@ -10,7 +10,6 @@ namespace Organetto.Web.Controllers
 {
     [ApiController]
     [Route("api/columns/{columnId}/cards")]
-    [Produces(MediaTypeNames.Application.Json)]
     public class CardsController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -21,7 +21,7 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Commands
         long Id,
         string? Title,
         string? Description,
-        int? Position,
+        long? Position,
         DateTimeOffset? DueDate
     ) : IRequest<CardDto>, IHasId<long>;
 

@@ -4,6 +4,9 @@ import { useApiQuery, useApiMutation } from './useApi'
 import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
 import type { ApiException } from '@/dataAccess/shared'
 import { notification } from 'ant-design-vue'
+import { computed, type Ref } from 'vue'
+import type { IHasId } from '@/shared'
+import _ from 'lodash'
 
 interface CrudOptions<Client,
   ListArgs extends any[],
@@ -39,9 +42,9 @@ export function createCrudHooks<
   TData = any,
   TDetailResp = any,
   TDetailData = any,
-  DetailArg extends { id: number } = any,
+  DetailArg extends IHasId = any,
   CreateVars = any,
-  UpdateVars extends { id: number } = any,
+  UpdateVars extends IHasId = any,
   DeleteVars = any,
   TCreateResp = any,
   TCreateData = any,
@@ -55,19 +58,21 @@ export function createCrudHooks<
   const client = typeof clientFn === 'function' ? clientFn : () => clientFn
 
   function useList(...args: ListArgs) {
+    const argsRef: Ref<ListArgs> = computed(() => args)
     return useApiQuery(
-      listKey(...args),
-      () => (client()[methods.list] as (...a: ListArgs) => Promise<any>)(...args),
+      computed(() => listKey(...argsRef.value)),
+      () => (client()[methods.list] as (...a: ListArgs) => Promise<any>)(...argsRef.value),
       mappers?.list,
       { staleTime: 1000 * 60 * 2, ...listOptions }
     )
   }
 
-  function useDetail(args: DetailArg) {
+  function useDetail(args: DetailArg | Ref<DetailArg>) {
     // debugger
+    const argsRef: Ref<DetailArg> = _.isObject(args) && 'value' in args ? args : computed(() => args)
     return useApiQuery(
-      detailKey(args.id),
-      () => (client()[methods.detail] as (payload: DetailArg) => Promise<any>)(args),
+      computed(() => detailKey(argsRef.value.id)),
+      () => (client()[methods.detail] as (payload: DetailArg) => Promise<any>)(argsRef.value),
       mappers?.detail,
       { enabled: !!args, staleTime: 1000 * 60 * 2, ...detailOptions }
     )

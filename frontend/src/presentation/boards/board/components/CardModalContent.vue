@@ -74,16 +74,12 @@ const cardUsers = computed(() =>
   []
 )
 
-const formatDate = (date: Date) => {
-  return dayjs(date).format('MMM DD, YYYY')
-}
+// const formatDate = (date: Date) => {
+//   return dayjs(date).format('MMM DD, YYYY')
+// }
 
 const formatDueDate = (date?: Date | null) => {
   return date ? `${t('board.cardModal.dueDate')}: ${dayjs(date).format('MMM DD, YYYY')}` : 'Due date'
-}
-
-const handleClose = () => {
-  emit('close')
 }
 
 const updateCard = async (updatingCard: CardDetailVm, updater: (c: CardDetailVm) => CardDetailVm) => {

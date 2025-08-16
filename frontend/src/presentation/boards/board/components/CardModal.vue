@@ -26,7 +26,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const { data: cardDetail, isLoading } = useGetCardDetail({ id: props.card.id, columnId: props.columnId })
+const { data: cardDetail, isLoading } = useGetCardDetail(computed(() => ({ id: props.card.id, columnId: props.columnId })))
 
 const activeCard = ref<CardDetailVm | null>(null)
 
@@ -51,6 +51,7 @@ const handleClose = () => {
 }
 
 const updateCard = (updatedCard: CardVm) => {
+  card.value = updatedCard
   emit('cardUpdated', updatedCard)
 }
 </script>

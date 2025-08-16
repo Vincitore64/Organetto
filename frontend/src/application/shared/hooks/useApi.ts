@@ -8,12 +8,13 @@ import {
   QueryClient,
 } from '@tanstack/vue-query'
 import { container } from 'tsyringe'
+import type { Ref } from 'vue'
 
 /**
  * Generic wrapper for GET-style calls with explicit mapping
  */
 export function useApiQuery<TResp, TData = TResp>(
-  key: QueryKey,
+  key: QueryKey | Ref<QueryKey>,
   fetcher: () => Promise<TResp>,
   mapper?: (data: TResp) => TData,
   options?: Omit<UseQueryOptions<TData, unknown, TData, QueryKey>, 'queryKey' | 'queryFn'>
