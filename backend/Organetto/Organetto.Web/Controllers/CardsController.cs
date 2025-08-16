@@ -1,14 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Organetto.UseCases.Boards.Columns.Cards.Commands;
+using Organetto.UseCases.Boards.Columns.Cards.Data;
 using Organetto.UseCases.Boards.Columns.Cards.Queries;
 using Organetto.UseCases.Boards.Data;
-using System.Reflection.Metadata;
+using System.Net.Mime;
 
 namespace Organetto.Web.Controllers
 {
     [ApiController]
     [Route("api/columns/{columnId}/cards")]
+    [Produces(MediaTypeNames.Application.Json)]
     public class CardsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,6 +30,18 @@ namespace Organetto.Web.Controllers
         {
             var dtos = await _mediator.Send(new GetCardsQuery(columnId), cancellationToken);
             return Ok(dtos);
+        }
+
+        /// <summary>
+        /// Get detailed card info by id.
+        /// </summary>
+        [HttpGet("{id:long}")]
+        [ProducesResponseType(typeof(CardDetailDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CardDetailDto>> GetById(long id, CancellationToken ct)
+        {
+            var dto = await _mediator.Send(new GetCardDetailQuery(id), ct);
+            return Ok(dto);
         }
 
         /// <summary>

@@ -60,6 +60,11 @@
             DueDate mapping isn't done here.
             </summary>
         </member>
+        <member name="M:Organetto.Web.Controllers.CardsController.GetById(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Get detailed card info by id.
+            </summary>
+        </member>
         <member name="M:Organetto.Web.Controllers.CardsController.Create(System.Int64,Organetto.UseCases.Boards.Columns.Cards.Commands.CreateCardCommand,System.Threading.CancellationToken)">
             <summary>
             POST api/columns/{columnId}/cards

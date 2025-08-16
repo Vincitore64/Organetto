@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.UseCases.Boards.Columns.Cards.Commands;
+using Organetto.UseCases.Boards.Columns.Cards.Data;
 
 namespace Organetto.UseCases.Boards.Columns.Cards.Mappers
 {
@@ -76,6 +77,33 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Mappers
                         });
                     }
                 });
+
+            CreateMap<DueDate, DueDateDto>()
+               // Entity has DateTime, DTO expects DateTimeOffset
+               .ForCtorParam(
+                   nameof(DueDateDto.DueAt),
+                   opt => opt.MapFrom(src => src.DueAt))
+               .ForCtorParam(
+                   nameof(DueDateDto.IsComplete),
+                   opt => opt.MapFrom(src => src.IsComplete));
+
+            CreateMap<Attachment, AttachmentDto>()
+                .ForCtorParam(nameof(AttachmentDto.Id), opt => opt.MapFrom(src => src.Id))
+                .ForCtorParam(nameof(AttachmentDto.Filename), opt => opt.MapFrom(src => src.Filename))
+                .ForCtorParam(nameof(AttachmentDto.FileUrl), opt => opt.MapFrom(src => src.FileUrl))
+                .ForCtorParam(nameof(AttachmentDto.UploadedAt), opt => opt.MapFrom(src => src.UploadedAt))
+                .ForCtorParam(nameof(AttachmentDto.UploaderId), opt => opt.MapFrom(src => src.UploaderId));
+
+            // Card → CardDetailDto
+            CreateMap<Card, CardDetailDto>()
+                .ForCtorParam(nameof(CardDetailDto.Id), opt => opt.MapFrom(src => src.Id))
+                .ForCtorParam(nameof(CardDetailDto.Title), opt => opt.MapFrom(src => src.Title))
+                .ForCtorParam(nameof(CardDetailDto.Description), opt => opt.MapFrom(src => src.Description))
+                .ForCtorParam(nameof(CardDetailDto.Position), opt => opt.MapFrom(src => src.Position))
+                .ForCtorParam(nameof(CardDetailDto.DueDates), opt => opt.MapFrom(src =>
+                    (src.DueDates ?? Array.Empty<DueDate>()).OrderBy(d => d.DueAt)))
+                .ForCtorParam(nameof(CardDetailDto.Attachments), opt => opt.MapFrom(src =>
+                    (src.Attachments ?? Array.Empty<Attachment>()).OrderBy(a => a.UploadedAt)));
 
         }
     }
