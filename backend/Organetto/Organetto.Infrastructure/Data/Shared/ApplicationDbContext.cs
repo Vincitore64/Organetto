@@ -201,20 +201,47 @@ namespace Organetto.Infrastructure.Data.Shared
             });
 
             // ATTACHMENTS
-            modelBuilder.Entity<Attachment>(entity =>
+            modelBuilder.Entity<Attachment>(b =>
             {
-                entity.ToTable("attachment");
-                entity.HasKey(a => a.Id);
-                entity.Property(a => a.FileKey)
+                b.ToTable("attachment");
+                b.HasKey(a => a.Id);
+
+                b.Property(a => a.FileKey)
                       .IsRequired()
-                      .HasMaxLength(1024);
-                entity.Property(a => a.FileName)
+                      .HasColumnType("text");
+
+                b.Property(a => a.FileName)
                       .IsRequired()
                       .HasMaxLength(512);
-                entity.Property(a => a.CreatedAt)
-                      .IsRequired();
-                entity.Property(a => a.UpdatedAt)
+
+                b.Property(a => a.CreatedAt)
+                      .IsRequired()
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                b.Property(x => x.OwnerUserId).IsRequired();
+
+                b.Property(x => x.SizeBytes)
+                    .IsRequired();
+
+                b.Property(x => x.ContentType)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                b.Property(x => x.ChecksumSha256)
+                    .HasMaxLength(88) // достаточно для base64 (44) или hex (64). Можно ужесточить чек-констрейнтом ниже.
+                    .IsRequired();
+
+                b.Property(x => x.Version)
+                    .IsRequired()
+                    .IsConcurrencyToken();
+
+                b.Property(x => x.MetadataJson)
+                    .HasColumnType("jsonb")
+                    .HasDefaultValueSql("'{}'::jsonb")
+                    .IsRequired();
+
+                b.HasIndex(x => x.FileKey)
+                    .IsUnique();
 
                 //// Relationship: Attachment.Card -> Card
                 //entity.HasOne(a => a.Card)
@@ -223,7 +250,7 @@ namespace Organetto.Infrastructure.Data.Shared
                 //      .OnDelete(DeleteBehavior.Cascade);
 
                 // Relationship: Attachment.Uploader -> User
-                entity.HasOne(a => a.OwnerUser)
+                b.HasOne(a => a.OwnerUser)
                       .WithMany(u => u.Attachments)
                       .HasForeignKey(a => a.OwnerUserId)
                       .OnDelete(DeleteBehavior.Restrict);
@@ -246,6 +273,11 @@ namespace Organetto.Infrastructure.Data.Shared
                 // защита от дублей: один и тот же файл не может быть дважды привязан к одному объекту
                 b.HasIndex(x => new { x.AttachmentId, x.OwnerKind, x.OwnerId })
                  .IsUnique();
+
+                b.HasOne(a => a.CreatedByUser)
+                      .WithMany(u => u.AttachmentLinks)
+                      .HasForeignKey(a => a.CreatedByUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             // DUE_DATES

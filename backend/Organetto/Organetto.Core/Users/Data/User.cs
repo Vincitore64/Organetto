@@ -17,6 +17,7 @@ namespace Organetto.Core.Users.Data
             Comments = new HashSet<Comment>();
             Attachments = new HashSet<Attachment>();
             Notifications = new HashSet<Notification>();
+            AttachmentLinks = new HashSet<AttachmentLink>();
             FirebaseUid = string.Empty;
             Email = string.Empty;
             Name = string.Empty;
@@ -32,6 +33,8 @@ namespace Organetto.Core.Users.Data
         public ICollection<BoardMember> BoardMemberships { get; set; }   // Member link to boards (связь с участием в досках)
         public ICollection<Comment> Comments { get; set; }               // Comments authored (написанные комментарии)
         public ICollection<Attachment> Attachments { get; set; }         // Attachments uploaded (загруженные вложения)
+
+        public ICollection<AttachmentLink> AttachmentLinks { get; set; }
         public ICollection<Notification> Notifications { get; set; }     // Notifications received (полученные уведомления)
     }
 }

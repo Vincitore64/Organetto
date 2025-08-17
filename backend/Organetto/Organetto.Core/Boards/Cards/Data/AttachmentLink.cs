@@ -1,4 +1,5 @@
 ﻿using Organetto.Core.Boards.Cards.Models;
+using Organetto.Core.Users.Data;
 
 namespace Organetto.Core.Boards.Cards.Data
 {
@@ -20,6 +21,8 @@ namespace Organetto.Core.Boards.Cards.Data
         public bool IsDeleted { get; set; }    // soft-delete
         public DateTimeOffset CreatedAt { get; set; }
         public long CreatedByUserId { get; set; }
+
+        public User? CreatedByUser { get; set; }
 
         private AttachmentLink() { } // EF
 
