@@ -205,27 +205,47 @@ namespace Organetto.Infrastructure.Data.Shared
             {
                 entity.ToTable("attachment");
                 entity.HasKey(a => a.Id);
-                entity.Property(a => a.FileUrl)
+                entity.Property(a => a.FileKey)
                       .IsRequired()
                       .HasMaxLength(1024);
-                entity.Property(a => a.Filename)
+                entity.Property(a => a.FileName)
                       .IsRequired()
                       .HasMaxLength(512);
-                entity.Property(a => a.UploadedAt)
-                      .IsRequired()
+                entity.Property(a => a.CreatedAt)
+                      .IsRequired();
+                entity.Property(a => a.UpdatedAt)
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                // Relationship: Attachment.Card -> Card
-                entity.HasOne(a => a.Card)
-                      .WithMany(c => c.Attachments)
-                      .HasForeignKey(a => a.CardId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                //// Relationship: Attachment.Card -> Card
+                //entity.HasOne(a => a.Card)
+                //      .WithMany(c => c.Attachments)
+                //      .HasForeignKey(a => a.CardId)
+                //      .OnDelete(DeleteBehavior.Cascade);
 
                 // Relationship: Attachment.Uploader -> User
-                entity.HasOne(a => a.Uploader)
+                entity.HasOne(a => a.OwnerUser)
                       .WithMany(u => u.Attachments)
-                      .HasForeignKey(a => a.UploaderId)
+                      .HasForeignKey(a => a.OwnerUserId)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttachmentLink>(b =>
+            {
+                b.ToTable("attachment_link");
+                b.HasKey(t => t.Id);
+                b.Property(x => x.OwnerKind);
+
+                b.Property(x => x.CreatedAt).IsRequired();
+                b.Property(x => x.IsDeleted).HasDefaultValue(false);
+
+                b.HasOne(x => x.Attachment)
+                     .WithMany(a => a.Links)
+                     .HasForeignKey(x => x.AttachmentId)
+                     .OnDelete(DeleteBehavior.Cascade);
+
+                // защита от дублей: один и тот же файл не может быть дважды привязан к одному объекту
+                b.HasIndex(x => new { x.AttachmentId, x.OwnerKind, x.OwnerId })
+                 .IsUnique();
             });
 
             // DUE_DATES

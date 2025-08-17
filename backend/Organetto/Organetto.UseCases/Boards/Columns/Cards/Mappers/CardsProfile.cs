@@ -89,10 +89,10 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Mappers
 
             CreateMap<Attachment, AttachmentDto>()
                 .ForCtorParam(nameof(AttachmentDto.Id), opt => opt.MapFrom(src => src.Id))
-                .ForCtorParam(nameof(AttachmentDto.Filename), opt => opt.MapFrom(src => src.Filename))
-                .ForCtorParam(nameof(AttachmentDto.FileUrl), opt => opt.MapFrom(src => src.FileUrl))
-                .ForCtorParam(nameof(AttachmentDto.UploadedAt), opt => opt.MapFrom(src => src.UploadedAt))
-                .ForCtorParam(nameof(AttachmentDto.UploaderId), opt => opt.MapFrom(src => src.UploaderId));
+                .ForCtorParam(nameof(AttachmentDto.Filename), opt => opt.MapFrom(src => src.FileName))
+                .ForCtorParam(nameof(AttachmentDto.FileUrl), opt => opt.MapFrom(src => src.FileKey))
+                .ForCtorParam(nameof(AttachmentDto.UploadedAt), opt => opt.MapFrom(src => src.CreatedAt))
+                .ForCtorParam(nameof(AttachmentDto.UploaderId), opt => opt.MapFrom(src => src.OwnerUserId));
 
             // Card → CardDetailDto
             CreateMap<Card, CardDetailDto>()
@@ -103,7 +103,7 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Mappers
                 .ForCtorParam(nameof(CardDetailDto.DueDates), opt => opt.MapFrom(src =>
                     (src.DueDates ?? Array.Empty<DueDate>()).OrderBy(d => d.DueAt)))
                 .ForCtorParam(nameof(CardDetailDto.Attachments), opt => opt.MapFrom(src =>
-                    (src.Attachments ?? Array.Empty<Attachment>()).OrderBy(a => a.UploadedAt)));
+                    (src.Attachments ?? Array.Empty<Attachment>()).OrderBy(a => a.CreatedAt)));
 
         }
     }
