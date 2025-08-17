@@ -18,6 +18,16 @@ namespace Organetto.Core.Shared.Models
 
         public void ClearEvents() => _events.Clear();
 
+        public override bool Equals(object? obj)
+        {
+            return obj is not null && obj is BaseEntity<TId> other && Id != null && Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id?.GetHashCode() ?? 0;
+        }
+
         protected void Raise(IDomainEvent e)
         {
             //    Guard against duplicates raised for the same entity instance within

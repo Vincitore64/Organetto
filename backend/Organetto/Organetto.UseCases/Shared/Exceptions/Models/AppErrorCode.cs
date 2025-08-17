@@ -51,6 +51,10 @@ namespace Organetto.UseCases.Shared.Exceptions.Models
 
         // Сущности
         ENTITY_NOT_FOUND,
+
+        // Хранилище
+        STORAGE_ERROR,
+        OBJECT_NOT_FOUND,
     }
 
 }

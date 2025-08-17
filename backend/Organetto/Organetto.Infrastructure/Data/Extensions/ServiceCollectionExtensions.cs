@@ -31,6 +31,7 @@ namespace Organetto.Infrastructure.Data.Extensions
             services.AddScoped<IColumnRepository, ColumnRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICardRepository, CardRepository>();
+            services.AddScoped<IAttachmentRepository, AttachmentRepository>();
             services.AddScoped<IOutboxService, OutboxService>();
 
             return services;

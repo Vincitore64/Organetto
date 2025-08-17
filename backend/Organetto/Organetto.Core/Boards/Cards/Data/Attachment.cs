@@ -43,21 +43,20 @@ namespace Organetto.Core.Boards.Cards.Data
         public User? OwnerUser { get; set; }                               // Uploader navigation (связь с загрузившим)
         public ICollection<AttachmentLink> Links { get; set; }
 
-        public static Attachment Create(long id,  long uploaderId, string fileKey,
-            string fileName, string contentType, long sizeBytes, string checksumSha256, DateTimeOffset now)
+        public static Attachment Create(long ownerUserId,
+            string fileName, string contentType, long sizeBytes, DateTimeOffset now)
         {
             if (sizeBytes < 0) throw new ArgumentException("Size must be >= 0", nameof(sizeBytes));
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("Filename required", nameof(fileName));
 
             return new Attachment
             {
-                Id = id,
-                OwnerUserId = uploaderId,
-                FileKey = fileKey,
+                OwnerUserId = ownerUserId,
+                FileKey = string.Empty,
                 FileName = fileName,
                 SizeBytes = sizeBytes,
                 ContentType = contentType,
-                ChecksumSha256 = checksumSha256,
+                ChecksumSha256 = string.Empty,
                 Status = AttachmentStatus.PendingUpload,
                 Version = 1,
                 CreatedAt = now
@@ -69,6 +68,19 @@ namespace Organetto.Core.Boards.Cards.Data
             if (Status != AttachmentStatus.PendingUpload)
                 throw new InvalidOperationException("Attachment not in PendingUpload state.");
             Status = AttachmentStatus.PendingScan;
+            UpdatedAt = now;
+        }
+
+        public void Activate(DateTimeOffset now, string fileKey, string checksumSha256, AttachmentLink? attachmentLink)
+        {
+            if (Status != AttachmentStatus.PendingScan && Status != AttachmentStatus.PendingUpload)
+                throw new InvalidOperationException("Attachment not in a state that can be activated.");
+            FileKey = fileKey;
+            ChecksumSha256 = checksumSha256;
+            Status = AttachmentStatus.Active;
+
+            if (attachmentLink != null) Links.Add(attachmentLink);
+
             UpdatedAt = now;
         }
 

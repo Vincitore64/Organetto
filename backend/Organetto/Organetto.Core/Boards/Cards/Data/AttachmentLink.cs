@@ -1,13 +1,11 @@
 ﻿using Organetto.Core.Boards.Cards.Models;
+using Organetto.Core.Shared.Models;
 using Organetto.Core.Users.Data;
 
 namespace Organetto.Core.Boards.Cards.Data
 {
-    public sealed class AttachmentLink
+    public sealed class AttachmentLink : BaseEntity
     {
-        // PK
-        public long Id { get; set; }
-
         // FK → Attachment
         public long AttachmentId { get; set; }
         public Attachment Attachment { get; set; } = null!;
