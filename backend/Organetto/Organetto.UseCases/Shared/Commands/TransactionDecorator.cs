@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 
 namespace Organetto.UseCases.Shared.Commands
 {

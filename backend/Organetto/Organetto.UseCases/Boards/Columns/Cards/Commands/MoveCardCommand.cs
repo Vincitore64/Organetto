@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Organetto.Core.Boards.Cards.Services;
 using Organetto.Core.Boards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 
 namespace Organetto.UseCases.Boards.Columns.Cards.Commands
 {

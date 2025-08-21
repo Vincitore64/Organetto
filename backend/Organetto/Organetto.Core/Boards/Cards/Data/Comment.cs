@@ -1,4 +1,4 @@
-﻿using Organetto.Core.Shared.Models;
+﻿using Organetto.BuildingBlocks.Core.Models;
 using Organetto.Core.Users.Data;
 
 namespace Organetto.Core.Boards.Cards.Data

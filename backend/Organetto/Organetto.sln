@@ -14,7 +14,32 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6BCBB0D-5BBF-432D-B414-383999F4D180}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{881D37D5-FA00-4FB4-B1BA-5A99962C0899}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "attachments", "attachments", "{E982FC3B-6490-4C29-BA7A-0023E8A4064D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AttachmentsService", "AttachmentsService", "{155965EB-4B28-4AEE-8B76-6FC2B69FA9E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{350B54D8-645D-40E4-AB95-A6609B7B92B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{67CF5CDA-0E38-463F-AE38-AC3F396001E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{596DF5D8-7B3D-4620-8092-43E3C3875054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Attachments.UseCases", "services\attachments\AttachmentsService\src\Organetto.Attachments.UseCases\Organetto.Attachments.UseCases.csproj", "{3852A961-D0FC-47B9-9086-25E99B4EDF43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Attachments.Web", "services\attachments\AttachmentsService\src\Organetto.Attachments.Web\Organetto.Attachments.Web.csproj", "{948564B6-C452-437C-A448-E4EA09DE206D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Attachments.Core", "services\attachments\AttachmentsService\src\Organetto.Attachments.Core\Organetto.Attachments.Core.csproj", "{B90B0252-D4B4-4822-9E28-9C87CF207B9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.Attachments.Infrastructure", "services\attachments\AttachmentsService\src\Organetto.Attachments.Infrastructure\Organetto.Attachments.Infrastructure.csproj", "{BCA6848B-A849-4756-AEBA-61304026CEAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "building-blocks", "building-blocks", "{99027296-76DE-4E34-AE0D-5AF93D2A6F7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organetto.BuildingBlocks.Core", "building-blocks\Organetto.BuildingBlocks.Core\Organetto.BuildingBlocks.Core.csproj", "{F5794112-8F63-4D68-ACCC-1790782E5E8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +63,41 @@ Global
 		{D07101A0-683A-4267-A339-73B6CA7E9249}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D07101A0-683A-4267-A339-73B6CA7E9249}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D07101A0-683A-4267-A339-73B6CA7E9249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3852A961-D0FC-47B9-9086-25E99B4EDF43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3852A961-D0FC-47B9-9086-25E99B4EDF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3852A961-D0FC-47B9-9086-25E99B4EDF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3852A961-D0FC-47B9-9086-25E99B4EDF43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{948564B6-C452-437C-A448-E4EA09DE206D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{948564B6-C452-437C-A448-E4EA09DE206D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{948564B6-C452-437C-A448-E4EA09DE206D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{948564B6-C452-437C-A448-E4EA09DE206D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B90B0252-D4B4-4822-9E28-9C87CF207B9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B90B0252-D4B4-4822-9E28-9C87CF207B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B90B0252-D4B4-4822-9E28-9C87CF207B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B90B0252-D4B4-4822-9E28-9C87CF207B9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCA6848B-A849-4756-AEBA-61304026CEAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCA6848B-A849-4756-AEBA-61304026CEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCA6848B-A849-4756-AEBA-61304026CEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCA6848B-A849-4756-AEBA-61304026CEAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5794112-8F63-4D68-ACCC-1790782E5E8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5794112-8F63-4D68-ACCC-1790782E5E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5794112-8F63-4D68-ACCC-1790782E5E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5794112-8F63-4D68-ACCC-1790782E5E8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E982FC3B-6490-4C29-BA7A-0023E8A4064D} = {881D37D5-FA00-4FB4-B1BA-5A99962C0899}
+		{155965EB-4B28-4AEE-8B76-6FC2B69FA9E7} = {E982FC3B-6490-4C29-BA7A-0023E8A4064D}
+		{350B54D8-645D-40E4-AB95-A6609B7B92B0} = {155965EB-4B28-4AEE-8B76-6FC2B69FA9E7}
+		{67CF5CDA-0E38-463F-AE38-AC3F396001E6} = {155965EB-4B28-4AEE-8B76-6FC2B69FA9E7}
+		{596DF5D8-7B3D-4620-8092-43E3C3875054} = {155965EB-4B28-4AEE-8B76-6FC2B69FA9E7}
+		{3852A961-D0FC-47B9-9086-25E99B4EDF43} = {350B54D8-645D-40E4-AB95-A6609B7B92B0}
+		{948564B6-C452-437C-A448-E4EA09DE206D} = {350B54D8-645D-40E4-AB95-A6609B7B92B0}
+		{B90B0252-D4B4-4822-9E28-9C87CF207B9F} = {350B54D8-645D-40E4-AB95-A6609B7B92B0}
+		{BCA6848B-A849-4756-AEBA-61304026CEAF} = {350B54D8-645D-40E4-AB95-A6609B7B92B0}
+		{F5794112-8F63-4D68-ACCC-1790782E5E8B} = {99027296-76DE-4E34-AE0D-5AF93D2A6F7E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E586EB3-B97E-4E43-A801-C8C6594A01E7}

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Organetto.Core.Shared.Models;
+using Organetto.BuildingBlocks.Core.Models;
 using Organetto.Core.Shared.Services;
 
 namespace Organetto.UseCases.Shared.Commands

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Shared.IntegrationEvents.Factories;
 using Organetto.UseCases.Shared.Outbox.Services;
 

@@ -1,6 +1,6 @@
 ﻿using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Shared.Models;
-using Organetto.Core.Shared.Models;
+using Organetto.BuildingBlocks.Core.Models;
 
 namespace Organetto.Core.Boards.Data
 {

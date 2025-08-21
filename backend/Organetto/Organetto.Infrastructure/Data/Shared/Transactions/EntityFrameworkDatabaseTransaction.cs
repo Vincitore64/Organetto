@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Organetto.Core.Shared.Databases.Transactions;
+using Organetto.BuildingBlocks.Core.Databases.Transactions;
 
 namespace Organetto.Infrastructure.Data.Shared.Transactions
 {

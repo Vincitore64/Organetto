@@ -1,4 +1,4 @@
-﻿using Organetto.Core.Shared.Models;
+﻿using Organetto.BuildingBlocks.Core.Models;
 
 namespace Organetto.Core.Shared.FileStorage.Models
 {

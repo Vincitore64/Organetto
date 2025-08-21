@@ -4,7 +4,7 @@ using MediatR;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
 using Organetto.Core.Boards.Shared.Models;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Boards.Columns.Data;
 using Organetto.UseCases.Boards.Columns.IntergationEvents;
 using Organetto.UseCases.Shared.Outbox.Services;

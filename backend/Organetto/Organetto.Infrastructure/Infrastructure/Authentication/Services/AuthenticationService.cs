@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Organetto.Core.Authentication.Ports.Data;
 using Organetto.Core.Authentication.Ports.Services;
-using Organetto.Core.Shared.Extensions;
+using Organetto.BuildingBlocks.Core.Extensions;
 using Organetto.Infrastructure.Infrastructure.Authentication.Exceptions;
 using Organetto.Infrastructure.Infrastructure.Authentication.Extensions;
 using Organetto.Infrastructure.Infrastructure.Firebase.Data;

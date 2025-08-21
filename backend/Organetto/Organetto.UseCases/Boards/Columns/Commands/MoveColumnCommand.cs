@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Organetto.Core.Boards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Boards.Columns.Data;
 
 namespace Organetto.UseCases.Boards.Columns.Commands

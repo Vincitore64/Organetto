@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Organetto.Core.Shared.Models;
+using Organetto.BuildingBlocks.Core.Models;
 using Organetto.Core.Shared.Services;
 using Organetto.Infrastructure.Data.Shared.Exceptions;
 using System.Linq.Expressions;

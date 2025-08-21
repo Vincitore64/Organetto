@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using Organetto.Core.Boards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Boards.Hubs;
 using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Boards.Services;

@@ -1,4 +1,4 @@
-﻿using Organetto.Core.Shared.Events.Models;
+﻿using Organetto.BuildingBlocks.Core.Events.Models;
 using Organetto.UseCases.Shared.IntegrationEvents.Models;
 using System.Reflection;
 

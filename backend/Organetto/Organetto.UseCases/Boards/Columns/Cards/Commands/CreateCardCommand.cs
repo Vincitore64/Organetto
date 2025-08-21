@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Cards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Boards.Data;
 using Organetto.UseCases.Shared.Commands;
 using Organetto.UseCases.Shared.Outbox.Services;

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Organetto.Core.Boards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Shared.Outbox.Services;
 using Organetto.UseCases.Shared.Validation.Extensions;

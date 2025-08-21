@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Organetto.Core.Shared.Models;
+using Organetto.BuildingBlocks.Core.Models;
 using Organetto.Infrastructure.Data.Shared;
 using Organetto.UseCases.Shared.IntegrationEvents.Models;
 using Organetto.UseCases.Shared.IntegrationEvents.Services.Mappers;

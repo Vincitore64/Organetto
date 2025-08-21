@@ -1,4 +1,4 @@
-using Organetto.Core.Shared.Extensions;
+using Organetto.BuildingBlocks.Core.Extensions;
 using Organetto.Infrastructure.Data.Extensions;
 using Organetto.Infrastructure.Infrastructure.Extensions;
 using Organetto.UseCases.Configuration.Extensions;

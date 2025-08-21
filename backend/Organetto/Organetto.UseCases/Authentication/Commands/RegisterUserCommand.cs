@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Organetto.Core.Authentication.Ports.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.Core.Users.Services;
 
 namespace Organetto.UseCases.Authentication.Commands

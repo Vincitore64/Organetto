@@ -89,9 +89,9 @@ namespace Organetto.UseCases.Boards.Columns.Cards.Mappers
 
             CreateMap<Attachment, AttachmentDto>()
                 .ForCtorParam(nameof(AttachmentDto.Id), opt => opt.MapFrom(src => src.Id))
-                .ForCtorParam(nameof(AttachmentDto.Filename), opt => opt.MapFrom(src => src.FileName))
-                .ForCtorParam(nameof(AttachmentDto.FileUrl), opt => opt.MapFrom(src => src.FileKey))
-                .ForCtorParam(nameof(AttachmentDto.UploadedAt), opt => opt.MapFrom(src => src.CreatedAt))
+                .ForCtorParam(nameof(AttachmentDto.FileName), opt => opt.MapFrom(src => src.FileName))
+                .ForCtorParam(nameof(AttachmentDto.FileKey), opt => opt.MapFrom(src => src.FileKey))
+                //.ForCtorParam(nameof(AttachmentDto.), opt => opt.MapFrom(src => src.CreatedAt))
                 .ForCtorParam(nameof(AttachmentDto.UploaderId), opt => opt.MapFrom(src => src.OwnerUserId));
 
             // Card → CardDetailDto

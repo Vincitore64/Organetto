@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Data;
-using Organetto.Core.Shared.Databases;
-using Organetto.Core.Shared.Databases.Transactions;
+using Organetto.BuildingBlocks.Core.Databases;
+using Organetto.BuildingBlocks.Core.Databases.Transactions;
 using Organetto.Core.Users.Data;
 using Organetto.Infrastructure.Data.Boards.Shared.Services;
 using Organetto.Infrastructure.Data.Shared.Transactions;

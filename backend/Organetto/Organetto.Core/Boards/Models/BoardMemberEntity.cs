@@ -1,5 +1,5 @@
-﻿using Organetto.Core.Shared.Exceptions;
-using Organetto.Core.Shared.Models;
+﻿using Organetto.BuildingBlocks.Core.Exceptions;
+using Organetto.BuildingBlocks.Core.Models;
 
 namespace Organetto.Core.Boards.Models
 {

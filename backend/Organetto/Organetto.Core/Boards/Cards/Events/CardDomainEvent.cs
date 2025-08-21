@@ -1,6 +1,6 @@
 ﻿using Organetto.Core.Boards.Cards.Data;
-using Organetto.Core.Shared.Events.Models;
-using Organetto.Core.Shared.Extensions;
+using Organetto.BuildingBlocks.Core.Events.Models;
+using Organetto.BuildingBlocks.Core.Extensions;
 
 namespace Organetto.Core.Boards.Cards.Events
 {

@@ -3,7 +3,7 @@ using MediatR;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Cards.Models;
 using Organetto.Core.Boards.Cards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.Core.Shared.FileStorage.Models;
 using Organetto.Core.Shared.FileStorage.Services;
 using Organetto.Core.Shared.IO.Services;

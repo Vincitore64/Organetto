@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Organetto.Core.Shared.Events.Models;
+using Organetto.BuildingBlocks.Core.Events.Models;
 using Organetto.UseCases.Shared.IntegrationEvents.Services.Mappers.Configuration.Extensions;
 
 namespace Organetto.UseCases.Shared.IntegrationEvents.Services.Mappers.Configuration
