@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Organetto.UseCases.Boards.Columns.Commands;
 using Organetto.UseCases.Boards.Columns.Hubs;
@@ -17,7 +18,7 @@ namespace Organetto.UseCases.Configuration.Extensions
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
 
             services.AddMediatR(config =>
@@ -31,7 +32,7 @@ namespace Organetto.UseCases.Configuration.Extensions
                 o.EnableDetailedErrors = true;
                 o.MaximumReceiveMessageSize = 1024 * 32;      // 32 KB
             });
-            services.AddMassTransitEventSourcing();
+            services.AddMassTransitEventSourcing(configuration);
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddEventsMapper();
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>));

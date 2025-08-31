@@ -11,7 +11,7 @@ builder.AddWebLayer();
 // Add services to the container.
 
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("Organetto").ThrowIfNull());
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebLayerServices(builder.Configuration);
 
