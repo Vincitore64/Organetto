@@ -1,8 +1,8 @@
-﻿using Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Models;
+﻿using Organetto.UseCases.Shared.Exceptions.Models;
 
 namespace Organetto.Infrastructure.Infrastructure.Authentication.Exceptions
 {
-    public class AuthenticationException : ApiException
+    public class AuthenticationException : AppException
     {
         public AuthenticationException(int status, string title, string code, string message) : base(status, title, code, message, null, null)
         {

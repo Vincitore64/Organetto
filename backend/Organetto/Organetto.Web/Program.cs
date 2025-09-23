@@ -1,47 +1,28 @@
+using Organetto.BuildingBlocks.Core.Extensions;
+using Organetto.Infrastructure.Data.Extensions;
 using Organetto.Infrastructure.Infrastructure.Extensions;
 using Organetto.UseCases.Configuration.Extensions;
 using Organetto.Web.Configuration.Extensions;
-using Organetto.Infrastructure.Data.Extensions;
-using Organetto.Infrastructure.Infrastructure.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddAppSettingsServerConfigurationFile();
+builder.AddWebLayer();
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("Organetto").ThrowIfNull());
-builder.Services.AddApplicationServices();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSwaggerGenNewtonsoftSupport();
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddWebLayerServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseInfrastructureServices();
-
-//app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseWebLayer();
+app.UseApplication();
+app.UseInfrastructure(builder.Environment);
 
 
 
-app.MapControllers();
-app.UseApplicationHubs();
-
-
-app.UseAppCors();
-
-if (!builder.Environment.IsDevelopment())
-{
-    app.MigrateApplicationDb();
-}
+app.UseApplicationEndpoints();
 
 app.Run();

@@ -1,0 +1,39 @@
+export * from './Attachment'
+export * from './CardDetailDto'
+
+export interface CardDto {
+  id: number
+  title: string
+  description: string
+  position: number
+  dueDate?: string // ISO 8601 date-time string
+}
+
+export interface CreateCardPayload {
+  columnId: number
+  title: string
+  description?: string
+  position: number
+  dueDate?: string // ISO 8601 date-time string
+}
+
+export interface UpdateCardPayload {
+  columnId: number
+  id: number
+  title: string
+  description: string
+  position: number
+  dueDate?: string // ISO 8601 date-time string
+}
+
+export interface DeleteCardPayload {
+  columnId: number
+  id: number
+}
+
+export interface MoveCardCommand {
+  cardId: number
+  targetColumnId: number
+  leftSiblingId: number
+  rightSiblingId: number
+}

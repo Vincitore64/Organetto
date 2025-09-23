@@ -2,7 +2,7 @@ using AutoMapper;
 using MediatR;
 using Organetto.Core.Boards.Data;
 using Organetto.Core.Boards.Services;
-using Organetto.Core.Shared.Databases;
+using Organetto.BuildingBlocks.Core.Databases;
 using Organetto.UseCases.Boards.Data;
 using Organetto.UseCases.Boards.IntegrationEvents;
 using Organetto.UseCases.Shared.Outbox.Services;
@@ -50,7 +50,7 @@ namespace Organetto.UseCases.Boards.Commands
             };
 
             // Persist
-            var created = await _boardRepository.CreateAsync(board);
+            var created = await _boardRepository.CreateAsync(board, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _outboxService.AddAsync(new BoardCreatedIntegrationEvent(created.Id), cancellationToken);

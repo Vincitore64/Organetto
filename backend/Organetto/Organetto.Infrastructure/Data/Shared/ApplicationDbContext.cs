@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Organetto.Core.Boards.Cards.Data;
 using Organetto.Core.Boards.Data;
-using Organetto.Core.Shared.Databases;
-using Organetto.Core.Shared.Databases.Transactions;
+using Organetto.BuildingBlocks.Core.Databases;
+using Organetto.BuildingBlocks.Core.Databases.Transactions;
 using Organetto.Core.Users.Data;
+using Organetto.Infrastructure.Data.Boards.Shared.Services;
 using Organetto.Infrastructure.Data.Shared.Transactions;
 using Organetto.UseCases.Shared.Outbox.Models;
 
@@ -123,7 +124,12 @@ namespace Organetto.Infrastructure.Data.Shared
                       .IsRequired()
                       .HasMaxLength(256);
                 entity.Property(l => l.Position)
-                      .IsRequired();
+                    .HasConversion(BoardValueConverters.PositionConverter)
+                    .IsRequired()
+                    .HasColumnType("bigint")
+                    .Metadata.SetValueComparer(BoardValueConverters.PositionComparer);
+
+                entity.Ignore(l => l.Events);
 
                 // Relationship: BoardList.Board -> Board
                 entity.HasOne(l => l.Board)
@@ -146,8 +152,11 @@ namespace Organetto.Infrastructure.Data.Shared
                       .HasMaxLength(256);
                 entity.Property(c => c.Description)
                       .HasColumnType("text");
-                entity.Property(c => c.Position)
-                      .IsRequired();
+                entity.Property(l => l.Position)
+                    .HasConversion(BoardValueConverters.PositionConverter)
+                    .IsRequired()
+                    .HasColumnType("bigint")
+                    .Metadata.SetValueComparer(BoardValueConverters.PositionComparer);
                 entity.Property(c => c.CreatedAt)
                       .IsRequired()
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -192,30 +201,82 @@ namespace Organetto.Infrastructure.Data.Shared
             });
 
             // ATTACHMENTS
-            modelBuilder.Entity<Attachment>(entity =>
+            modelBuilder.Entity<Attachment>(b =>
             {
-                entity.ToTable("attachment");
-                entity.HasKey(a => a.Id);
-                entity.Property(a => a.FileUrl)
+                b.ToTable("attachment");
+                b.HasKey(a => a.Id);
+
+                b.Property(a => a.FileKey)
                       .IsRequired()
-                      .HasMaxLength(1024);
-                entity.Property(a => a.Filename)
+                      .HasColumnType("text");
+
+                b.Property(a => a.FileName)
                       .IsRequired()
                       .HasMaxLength(512);
-                entity.Property(a => a.UploadedAt)
+
+                b.Property(a => a.CreatedAt)
                       .IsRequired()
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                // Relationship: Attachment.Card -> Card
-                entity.HasOne(a => a.Card)
-                      .WithMany(c => c.Attachments)
-                      .HasForeignKey(a => a.CardId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                b.Property(x => x.OwnerUserId).IsRequired();
+
+                b.Property(x => x.SizeBytes)
+                    .IsRequired();
+
+                b.Property(x => x.ContentType)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                b.Property(x => x.ChecksumSha256)
+                    .HasMaxLength(88) // достаточно для base64 (44) или hex (64). Можно ужесточить чек-констрейнтом ниже.
+                    .IsRequired();
+
+                b.Property(x => x.Version)
+                    .IsRequired()
+                    .IsConcurrencyToken();
+
+                b.Property(x => x.MetadataJson)
+                    .HasColumnType("jsonb")
+                    .HasDefaultValueSql("'{}'::jsonb")
+                    .IsRequired();
+
+                b.HasIndex(x => x.FileKey)
+                    .IsUnique();
+
+                //// Relationship: Attachment.Card -> Card
+                //entity.HasOne(a => a.Card)
+                //      .WithMany(c => c.Attachments)
+                //      .HasForeignKey(a => a.CardId)
+                //      .OnDelete(DeleteBehavior.Cascade);
 
                 // Relationship: Attachment.Uploader -> User
-                entity.HasOne(a => a.Uploader)
+                b.HasOne(a => a.OwnerUser)
                       .WithMany(u => u.Attachments)
-                      .HasForeignKey(a => a.UploaderId)
+                      .HasForeignKey(a => a.OwnerUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttachmentLink>(b =>
+            {
+                b.ToTable("attachment_link");
+                b.HasKey(t => t.Id);
+                b.Property(x => x.OwnerKind);
+
+                b.Property(x => x.CreatedAt).IsRequired();
+                b.Property(x => x.IsDeleted).HasDefaultValue(false);
+
+                b.HasOne(x => x.Attachment)
+                     .WithMany(a => a.Links)
+                     .HasForeignKey(x => x.AttachmentId)
+                     .OnDelete(DeleteBehavior.Cascade);
+
+                // защита от дублей: один и тот же файл не может быть дважды привязан к одному объекту
+                b.HasIndex(x => new { x.AttachmentId, x.OwnerKind, x.OwnerId })
+                 .IsUnique();
+
+                b.HasOne(a => a.CreatedByUser)
+                      .WithMany(u => u.AttachmentLinks)
+                      .HasForeignKey(a => a.CreatedByUserId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
 

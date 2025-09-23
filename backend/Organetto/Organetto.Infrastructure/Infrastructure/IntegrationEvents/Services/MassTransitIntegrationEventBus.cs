@@ -11,24 +11,24 @@ namespace Organetto.Infrastructure.Infrastructure.IntegrationEvents.Services
     /// </summary>
     public class MassTransitIntegrationEventBus : IIntegrationEventBus
     {
-        private readonly IInMemoryBus _publishEndpoint;
+        private readonly IBus _publishEndpoint;
         private readonly ILogger<MassTransitIntegrationEventBus> _logger;
 
-        public MassTransitIntegrationEventBus(
-            IInMemoryBus publishEndpoint,
-            ILogger<MassTransitIntegrationEventBus> logger)
-        {
-            _publishEndpoint = publishEndpoint;
-            _logger = logger;
-        }
-
         //public MassTransitIntegrationEventBus(
-        //    IPublishEndpoint publishEndpoint,
+        //    IInMemoryBus publishEndpoint,
         //    ILogger<MassTransitIntegrationEventBus> logger)
         //{
         //    _publishEndpoint = publishEndpoint;
         //    _logger = logger;
         //}
+
+        public MassTransitIntegrationEventBus(
+            IRabbitBus publishEndpoint,
+            ILogger<MassTransitIntegrationEventBus> logger)
+        {
+            _publishEndpoint = publishEndpoint;
+            _logger = logger;
+        }
 
         public async Task PublishAsync<T>(T integrationEvent, CancellationToken cancellationToken = default)
             where T : IIntegrationEvent

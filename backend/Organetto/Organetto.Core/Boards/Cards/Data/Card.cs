@@ -1,11 +1,13 @@
 ﻿using Organetto.Core.Boards.Data;
+using Organetto.Core.Boards.Shared.Models;
+using Organetto.BuildingBlocks.Core.Models;
 
 namespace Organetto.Core.Boards.Cards.Data
 {
     /// <summary>
     /// Represents a card/task in a list.
     /// </summary>
-    public class Card
+    public class Card : CrudEntity
     {
         public Card()
         {
@@ -16,11 +18,10 @@ namespace Organetto.Core.Boards.Cards.Data
             Description = string.Empty;
         }
 
-        public long Id { get; set; }                                    // Surrogate PK (суррогатный первичный ключ)
         public long BoardListId { get; set; }                           // FK to BoardList (внешний ключ к BoardList)
         public string Title { get; set; }                               // Card title (название карточки)
         public string Description { get; set; }                         // Card description/body (описание карточки)
-        public int Position { get; set; }                                // Order index within list (позиция)
+        public Position Position { get; set; }                                // Order index within list (позиция)
         public DateTime CreatedAt { get; set; }                          // Creation timestamp (время создания)
         public DateTime UpdatedAt { get; set; }                          // Last update timestamp (время последнего обновления)
 

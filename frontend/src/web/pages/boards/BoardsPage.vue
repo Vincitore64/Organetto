@@ -135,8 +135,9 @@
             <!-- {{ boadrdPageViews.state.value.isConnected.value }} -->
             <transition-group name="board-list" tag="div" class="boards-grid">
               <BoardCard v-for="board in boardPageViews.state.value.views.value" :key="board.id" :board="board"
-                @open="openBoard" class="board-item" />
+                @open="openBoard(board.id)" class="board-item" />
               <CreateBoardCard @create="showCreateBoardModal" class="board-item create-item" />
+              <!-- <CreateBoardCardV2 @create="showCreateBoardModal" class="board-item create-item" /> -->
             </transition-group>
           </div>
 
@@ -204,7 +205,7 @@
     <ModalContainer :open="isCreateBoardModalVisible" :title="t('boards.createModal.title')"
       :description="t('boards.createModal.description')" iconUrl="https://trello.com/assets/14cda5dc635d1f13bc48.svg"
       width="450px" @close="isCreateBoardModalVisible = false">
-      <CreateBoardForm v-if="antdForm" v-model="form" :form-instance="antdForm" @submit="submit"
+      <CreateBoardForm v-if="antdForm" v-model:modelValue="form" :form-instance="antdForm" @submit="submit()"
         :loading="isCreatingBoard" />
     </ModalContainer>
   </a-layout>
@@ -291,7 +292,7 @@ function showCreateBoardModal() {
 }
 
 async function createBoard(state: CreateBoardState) {
-  debugger
+  // debugger
   console.log('Creating board with:', state)
   const created = await executeBoardCreation(0, state)
   if (!created) {
@@ -333,7 +334,10 @@ function startUp() {
 
 startUp()
 
-const openBoard = (id: number) => router.push({ name: 'Board', params: { id, userId: props.userId } })
+const openBoard = (id: number) => {
+  // debugger
+  router.push({ name: 'Board', params: { id: id, userId: props.userId } })
+}
 
 // Данные для шаблонов
 const templates = ref([

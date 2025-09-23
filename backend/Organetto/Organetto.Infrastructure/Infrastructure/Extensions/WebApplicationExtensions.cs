@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Organetto.Infrastructure.Infrastructure.Shared.Exceptions.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Organetto.Infrastructure.Data.Extensions;
 
 namespace Organetto.Infrastructure.Infrastructure.Extensions
 {
     public static class WebApplicationExtensions
     {
-        public static void UseInfrastructureServices(this WebApplication app)
+        public static void UseInfrastructure(this IApplicationBuilder app, IWebHostEnvironment webHostEnvironment)
         {
-            app.UseApiExceptionHandler();
+            if (!webHostEnvironment.IsDevelopment())
+            {
+                app.MigrateApplicationDb();
+            }
         }
     }
 }

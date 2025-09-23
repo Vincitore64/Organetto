@@ -1,0 +1,6 @@
+@Organetto.Attachments.Web_HostAddress = http://localhost:5227
+
+GET {{Organetto.Attachments.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

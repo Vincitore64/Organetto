@@ -13,6 +13,8 @@
   //   var(--color-primary-600, #096dd9)
   // );
   --color-blue-gradient: linear-gradient(135deg, #1890ff, #096dd9);
+  --color-red-gradient: linear-gradient(135deg, #f77274, #c1080e);
+  --color-white-gradient: linear-gradient(135deg, #ffffff, #f2f2f2);
   /* neutrals – light theme */
   --color-bg: #f6f8fa;
   // --color-bg-gradient: linear-gradient(
@@ -32,6 +34,7 @@
   --color-stroke: #d0d7de;
   --color-text: #1c2331;
   --color-text-weak: rgb(43 43 44);
+  --color-primary-300: #91d5ff;
 
   /* status */
   --color-success: #2dbe7f;

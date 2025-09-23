@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="CaseExtensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\building-blocks\Organetto.BuildingBlocks.Core\Organetto.BuildingBlocks.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:open="open" :footer="null" @cancel="$emit('close')" :width="width" wrapClassName="item-modal-wrap">
+  <a-modal v-model:open="open" :footer="null" @cancel="() => emit('close')" :width="width" :wrapClassName="`item-modal-wrap ${wrapClassName}`">
     <template #title>
       <header class="item-modal-title">
         {{ title }}
@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
-import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps<{
   open: boolean

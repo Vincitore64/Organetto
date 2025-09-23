@@ -23,15 +23,18 @@ import type { FormInstance } from '@/presentation/shared'
 import { useVModelFields } from '@/presentation/shared/hooks/useVModelFields'
 
 
-const props = defineProps<{ modelValue: CreateBoardState, formInstance: FormInstance, loading?: boolean }>()
+type Props = { modelValue: CreateBoardState, formInstance: FormInstance, loading?: boolean }
+
+const props = defineProps<Props>()
 
 const emit = defineEmits<{ (e: 'submit', values: CreateBoardState): void, (e: 'update:modelValue', value: CreateBoardState): void }>()
 
 const { t } = useI18n()
 
-const { name, description } = useVModelFields(props, emit)
+const { name, description } = useVModelFields<CreateBoardState, keyof CreateBoardState, 'update:modelValue', Props>(props, 'modelValue', emit)
 
 const onFinish = (values: unknown) => {
+  // debugger
   emit('submit', values as CreateBoardState)
 }
 </script>

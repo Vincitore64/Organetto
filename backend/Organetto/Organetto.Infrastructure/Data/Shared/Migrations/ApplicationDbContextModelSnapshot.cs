@@ -31,31 +31,70 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CardId")
+                    b.Property<long?>("CardId")
                         .HasColumnType("bigint")
                         .HasColumnName("card_id");
 
-                    b.Property<string>("FileUrl")
+                    b.Property<string>("ChecksumSha256")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)")
-                        .HasColumnName("file_url");
+                        .HasMaxLength(88)
+                        .HasColumnType("character varying(88)")
+                        .HasColumnName("checksum_sha256");
 
-                    b.Property<string>("Filename")
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("FileKey")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("file_key");
+
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)")
-                        .HasColumnName("filename");
+                        .HasColumnName("file_name");
 
-                    b.Property<DateTime>("UploadedAt")
+                    b.Property<string>("MetadataJson")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("uploaded_at")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("jsonb")
+                        .HasColumnName("metadata_json")
+                        .HasDefaultValueSql("'{}'::jsonb");
 
-                    b.Property<long>("UploaderId")
+                    b.Property<long>("OwnerUserId")
                         .HasColumnType("bigint")
-                        .HasColumnName("uploader_id");
+                        .HasColumnName("owner_user_id");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size_bytes");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
 
                     b.HasKey("Id")
                         .HasName("pk_attachment");
@@ -63,10 +102,66 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
                     b.HasIndex("CardId")
                         .HasDatabaseName("ix_attachment_card_id");
 
-                    b.HasIndex("UploaderId")
-                        .HasDatabaseName("ix_attachment_uploader_id");
+                    b.HasIndex("FileKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_attachment_file_key");
+
+                    b.HasIndex("OwnerUserId")
+                        .HasDatabaseName("ix_attachment_owner_user_id");
 
                     b.ToTable("attachment", (string)null);
+                });
+
+            modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.AttachmentLink", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AttachmentId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("attachment_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<long>("CreatedByUserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<long>("OwnerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("owner_id");
+
+                    b.Property<int>("OwnerKind")
+                        .HasColumnType("integer")
+                        .HasColumnName("owner_kind");
+
+                    b.Property<int?>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
+
+                    b.HasKey("Id")
+                        .HasName("pk_attachment_link");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_attachment_link_created_by_user_id");
+
+                    b.HasIndex("AttachmentId", "OwnerKind", "OwnerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_attachment_link_attachment_id_owner_kind_owner_id");
+
+                    b.ToTable("attachment_link", (string)null);
                 });
 
             modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.Card", b =>
@@ -93,8 +188,8 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("integer")
+                    b.Property<long>("Position")
+                        .HasColumnType("bigint")
                         .HasColumnName("position");
 
                     b.Property<string>("Title")
@@ -255,8 +350,8 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("board_id");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("integer")
+                    b.Property<long>("Position")
+                        .HasColumnType("bigint")
                         .HasColumnName("position");
 
                     b.Property<string>("Title")
@@ -445,23 +540,40 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
 
             modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.Attachment", b =>
                 {
-                    b.HasOne("Organetto.Core.Boards.Cards.Data.Card", "Card")
+                    b.HasOne("Organetto.Core.Boards.Cards.Data.Card", null)
                         .WithMany("Attachments")
                         .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_attachment_card_card_id");
 
-                    b.HasOne("Organetto.Core.Users.Data.User", "Uploader")
+                    b.HasOne("Organetto.Core.Users.Data.User", "OwnerUser")
                         .WithMany("Attachments")
-                        .HasForeignKey("UploaderId")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_attachment_user_uploader_id");
+                        .HasConstraintName("fk_attachment_user_owner_user_id");
 
-                    b.Navigation("Card");
+                    b.Navigation("OwnerUser");
+                });
 
-                    b.Navigation("Uploader");
+            modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.AttachmentLink", b =>
+                {
+                    b.HasOne("Organetto.Core.Boards.Cards.Data.Attachment", "Attachment")
+                        .WithMany("Links")
+                        .HasForeignKey("AttachmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_attachment_link_attachments_attachment_id");
+
+                    b.HasOne("Organetto.Core.Users.Data.User", "CreatedByUser")
+                        .WithMany("AttachmentLinks")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_attachment_link_users_created_by_user_id");
+
+                    b.Navigation("Attachment");
+
+                    b.Navigation("CreatedByUser");
                 });
 
             modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.Card", b =>
@@ -566,6 +678,11 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.Attachment", b =>
+                {
+                    b.Navigation("Links");
+                });
+
             modelBuilder.Entity("Organetto.Core.Boards.Cards.Data.Card", b =>
                 {
                     b.Navigation("Attachments");
@@ -589,6 +706,8 @@ namespace Organetto.Infrastructure.Data.Shared.Migrations
 
             modelBuilder.Entity("Organetto.Core.Users.Data.User", b =>
                 {
+                    b.Navigation("AttachmentLinks");
+
                     b.Navigation("Attachments");
 
                     b.Navigation("BoardMemberships");

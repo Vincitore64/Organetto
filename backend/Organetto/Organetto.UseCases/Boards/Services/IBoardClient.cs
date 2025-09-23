@@ -6,5 +6,6 @@ namespace Organetto.UseCases.Boards.Services
     {
         Task BoardCreated(BoardDto board);
         Task BoardDeleted(long boardId);
+        Task BoardMetadataUpdated(BoardDto board);
     }
 }

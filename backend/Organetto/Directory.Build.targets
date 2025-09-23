@@ -1,0 +1,8 @@
+<Project>
+  <Target Name="EnsureSolutionFoldersExist" BeforeTargets="Build">
+    <MakeDir Directories="$(SolutionDir)services\attachments\AttachmentsService\src" />
+    <MakeDir Directories="$(SolutionDir)services\attachments\AttachmentsService\tests" />
+    <MakeDir Directories="$(SolutionDir)services\attachments\AttachmentsService\docker" />
+    <MakeDir Directories="$(SolutionDir)building-blocks" />
+  </Target>
+</Project>
